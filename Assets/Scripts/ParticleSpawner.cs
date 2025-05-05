@@ -15,6 +15,14 @@ public class ParticleSpawner : MonoBehaviour
     [Tooltip("Local space offset from the object's center")]
     public Vector3 localOffset = Vector3.zero;
     
+    [Header("Randomness Settings")]
+    [Tooltip("Maximum random offset in X axis")]
+    public float randomXOffset = 0.5f;
+    [Tooltip("Maximum random offset in Y axis")]
+    public float randomYOffset = 0.3f;
+    [Tooltip("Maximum random offset in Z axis")]
+    public float randomZOffset = 0.5f;
+    
     [Header("Particle Management")]
     [Tooltip("Maximum number of quacks allowed at once")]
     public int maxQuacks = 5;
@@ -42,10 +50,19 @@ public class ParticleSpawner : MonoBehaviour
     {
         currentQuacks++;
         
-        // Calculate spawn position with height offset
+        // Calculate base spawn position with height offset
         Vector3 spawnPosition = transform.position + 
                               transform.up * heightOffset +
                               transform.TransformDirection(localOffset);
+        
+        // Add random offsets to the position
+        Vector3 randomOffset = new Vector3(
+            Random.Range(-randomXOffset, randomXOffset),
+            Random.Range(-randomYOffset, randomYOffset),
+            Random.Range(-randomZOffset, randomZOffset)
+        );
+        
+        spawnPosition += transform.TransformDirection(randomOffset);
         
         // Create a new GameObject for the particle
         GameObject quackInstance = new GameObject("QuackParticle");
