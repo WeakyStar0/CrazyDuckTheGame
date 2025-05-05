@@ -1542,17 +1542,16 @@ MonoBehaviour:
   cameraPivot: {fileID: 330585546}
   walkSpeed: 16
   crouchSpeed: 5
-  rotationSpeed: 120
   jumpHeight: 6
   crouchJumpHeight: 12
   gravity: -50
   maxJumps: 2
   sensitivity: 100
-  cameraDistance: 12
+  cameraDistance: 17
   minCameraDistance: 0.1
-  cameraHeight: 3
-  maxLookUpAngle: 5
-  maxLookDownAngle: -5
+  cameraHeight: 7
+  maxLookUpAngle: 75
+  maxLookDownAngle: -10
   cameraCollisionMask:
     serializedVersion: 2
     m_Bits: 23
@@ -1596,7 +1595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duckSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
-  volume: 0.29
+  volume: 1
   minPitch: 0.95
   maxPitch: 1.05
   quackParticlePrefab: {fileID: 0}
@@ -1617,8 +1616,11 @@ MonoBehaviour:
   particleColor: {r: 1, g: 1, b: 1, a: 1}
   particleSize: 0.5
   particleLifetime: 2
-  heightOffset: 1
+  heightOffset: 5
   localOffset: {x: 0, y: 0, z: 0}
+  randomXOffset: 0.5
+  randomYOffset: 0.3
+  randomZOffset: 0.5
   maxQuacks: 999
 --- !u!1 &1114731237 stripped
 GameObject:
