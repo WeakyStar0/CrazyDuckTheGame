@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float crouchSpeed = 2.5f;
     private float currentSpeed;
+    private float temporarySpeed = -1f; // Added for slash slowdown
 
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
@@ -60,23 +61,24 @@ public class PlayerController : MonoBehaviour
         Vector3 move = transform.right * Input.GetAxis("Horizontal") +
                        transform.forward * Input.GetAxis("Vertical");
 
-        // Verifica agachamento
+        // Check for temporary speed first (slash attack slowdown)
+        float speedToUse = temporarySpeed > 0 ? temporarySpeed : 
+                          (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
+
+        characterController.Move(move.normalized * speedToUse * Time.deltaTime);
+
+        // Handle visual scaling (unchanged)
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            currentSpeed = crouchSpeed;
             playerVisual.localScale = crouchScale;
-
             if (isGrounded)
                 canCrouchJump = true;
         }
         else
         {
-            currentSpeed = walkSpeed;
             playerVisual.localScale = normalScale;
             canCrouchJump = false;
         }
-
-        characterController.Move(move.normalized * currentSpeed * Time.deltaTime);
     }
 
     private void HandleJump()
@@ -91,5 +93,24 @@ public class PlayerController : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
+    }
+
+    // ====== NEW METHODS FOR SWORD SLASH INTEGRATION ======
+    public float GetCurrentSpeed()
+    {
+        return temporarySpeed > 0 ? temporarySpeed : 
+              (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
+    }
+
+    public void SetTemporarySpeed(float speed)
+    {
+        temporarySpeed = speed;
+        currentSpeed = speed;
+    }
+
+    public void ResetSpeed()
+    {
+        temporarySpeed = -1f;
+        currentSpeed = Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed;
     }
 }
