@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float crouchSpeed = 2.5f;
     private float currentSpeed;
-    private float temporarySpeed = -1f; // Added for slash slowdown
+    private float temporarySpeed = -1f;
 
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
@@ -45,29 +45,39 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        HandleGravity();
         HandleMovement();
         HandleJump();
     }
 
-    private void HandleMovement()
+    private void HandleGravity()
     {
         isGrounded = characterController.isGrounded;
+        
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f;
+            velocity.y = -2f; // Pequena força para manter o player no chão
             jumpsRemaining = maxJumps;
         }
+    }
 
-        Vector3 move = transform.right * Input.GetAxis("Horizontal") +
-                       transform.forward * Input.GetAxis("Vertical");
+    private void HandleMovement()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-        // Check for temporary speed first (slash attack slowdown)
+        // Movimento relativo à direção da câmera
+        Vector3 move = transform.right * horizontal + transform.forward * vertical;
+        move = Vector3.ClampMagnitude(move, 1f); // Normaliza para evitar movimento mais rápido na diagonal
+
+        // Verifica velocidade temporária primeiro (slowdown do ataque)
         float speedToUse = temporarySpeed > 0 ? temporarySpeed : 
-                          (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
+                         (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
 
-        characterController.Move(move.normalized * speedToUse * Time.deltaTime);
+        // Aplica movimento
+        characterController.Move(move * speedToUse * Time.deltaTime);
 
-        // Handle visual scaling (unchanged)
+        // Escala visual
         if (Input.GetKey(KeyCode.LeftControl))
         {
             playerVisual.localScale = crouchScale;
@@ -91,11 +101,13 @@ public class PlayerController : MonoBehaviour
             canCrouchJump = false;
         }
 
+        // Aplica gravidade
         velocity.y += gravity * Time.deltaTime;
+        
+        // Aplica movimento vertical
         characterController.Move(velocity * Time.deltaTime);
     }
 
-    // ====== NEW METHODS FOR SWORD SLASH INTEGRATION ======
     public float GetCurrentSpeed()
     {
         return temporarySpeed > 0 ? temporarySpeed : 

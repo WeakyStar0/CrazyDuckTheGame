@@ -10,6 +10,9 @@ public class EnemyAI : MonoBehaviour
     
     [Header("Attack Settings")]
     public float attackCooldown = 2f;
+
+    [Header("Damage Settings")]
+    public int damageAmount = 1;
     
     private Transform player;
     private EnemyPatrol patrolScript;
@@ -121,22 +124,28 @@ public class EnemyAI : MonoBehaviour
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit)
+{
+    if (hit.collider.CompareTag("Player") && canAttack)
     {
-        if (hit.collider.CompareTag("Player") && canAttack)
+        PlayerKnockback playerKnockback = hit.collider.GetComponent<PlayerKnockback>();
+        PlayerHealth playerHealth = hit.collider.GetComponent<PlayerHealth>();
+        
+        if (playerKnockback != null)
         {
-            PlayerKnockback playerKnockback = hit.collider.GetComponent<PlayerKnockback>();
-            if (playerKnockback != null)
+            playerKnockback.ApplyKnockback(transform.position);
+            
+            if (playerHealth != null)
             {
-                playerKnockback.ApplyKnockback(transform.position);
-                canAttack = false;
-                
-                // Para o inimigo durante cooldown
-                patrolScript.enabled = false;
-                isChasing = false;
-                velocity = Vector3.zero;
+                playerHealth.TakeDamage(damageAmount, transform.position);
             }
+            
+            canAttack = false;
+            patrolScript.enabled = false;
+            isChasing = false;
+            velocity = Vector3.zero;
         }
     }
+}
     
     void OnDrawGizmosSelected()
     {
