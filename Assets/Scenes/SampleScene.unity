@@ -721,7 +721,7 @@ Transform:
   m_GameObject: {fileID: 570197719}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.09, y: 0, z: 0.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1840,15 +1840,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d6f8aaeb264dc4ebf64ba8eddee28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slashEffectPrefab: {fileID: 5503505460791601945, guid: 74c549d1b06b6b140a1fd9536eea637f, type: 3}
-  effectOffset: {x: 0.5, y: 0, z: 0.5}
+  groundSlashPrefab: {fileID: 5503505460791601945, guid: 74c549d1b06b6b140a1fd9536eea637f, type: 3}
+  airSlashPrefab: {fileID: 3600389243222657682, guid: 3fee2e03e4bdc854bb38f7bcbca7c75d, type: 3}
+  effectOffset: {x: 0, y: 0, z: 0.5}
   effectDuration: 1
   swingSound: {fileID: 8300000, guid: b27eb33bd8eca1b4e8638ff987f739dd, type: 3}
+  airSwingSound: {fileID: 0}
   volume: 1
   cooldown: 0.5
   slashKey: 323
   movementSlowdown: 0.08
   slowdownDuration: 0.3
+  airBoostForce: 100
+  airBoostDuration: 0.2
 --- !u!114 &1112422599
 MonoBehaviour:
   m_ObjectHideFlags: 0

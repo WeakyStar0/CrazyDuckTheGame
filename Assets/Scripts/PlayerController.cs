@@ -46,8 +46,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleGravity();
-        HandleMovement();
-        HandleJump();
+        HandleCrouch();
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 movement = HandleMovement();
+        movement += HandleJump();
+        characterController.Move(movement * Time.fixedDeltaTime);
     }
 
     private void HandleGravity()
@@ -56,28 +62,29 @@ public class PlayerController : MonoBehaviour
         
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; // Pequena força para manter o player no chão
+            velocity.y = -2f; // Small force to keep player grounded
             jumpsRemaining = maxJumps;
         }
     }
 
-    private void HandleMovement()
+    private Vector3 HandleMovement()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        // Movimento relativo à direção da câmera
+        // Camera-relative movement
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
-        move = Vector3.ClampMagnitude(move, 1f); // Normaliza para evitar movimento mais rápido na diagonal
+        move = Vector3.ClampMagnitude(move, 1f); // Normalize to prevent faster diagonal movement
 
-        // Verifica velocidade temporária primeiro (slowdown do ataque)
+        // Check for temporary speed first (attack slowdown)
         float speedToUse = temporarySpeed > 0 ? temporarySpeed : 
                          (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
 
-        // Aplica movimento
-        characterController.Move(move * speedToUse * Time.deltaTime);
+        return move * speedToUse;
+    }
 
-        // Escala visual
+    private void HandleCrouch()
+    {
         if (Input.GetKey(KeyCode.LeftControl))
         {
             playerVisual.localScale = crouchScale;
@@ -91,8 +98,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleJump()
+    private Vector3 HandleJump()
     {
+        Vector3 jumpVector = Vector3.zero;
+        
         if (Input.GetButtonDown("Jump") && jumpsRemaining > 0)
         {
             float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight;
@@ -101,11 +110,11 @@ public class PlayerController : MonoBehaviour
             canCrouchJump = false;
         }
 
-        // Aplica gravidade
-        velocity.y += gravity * Time.deltaTime;
+        // Apply gravity
+        velocity.y += gravity * Time.fixedDeltaTime;
+        jumpVector.y = velocity.y;
         
-        // Aplica movimento vertical
-        characterController.Move(velocity * Time.deltaTime);
+        return jumpVector;
     }
 
     public float GetCurrentSpeed()
