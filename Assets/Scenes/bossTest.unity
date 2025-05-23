@@ -6900,7 +6900,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1191597524}
   playerCamera: {fileID: 1334396060}
   cameraPivot: {fileID: 0}
-  playerVisual: {fileID: 0}
+  playerVisual: {fileID: 1191597524}
   sensitivity: 100
   cameraDistance: 15
   minCameraDistance: 0.5
@@ -6910,7 +6910,7 @@ MonoBehaviour:
   maxLookDownAngle: -15
   cameraCollisionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   cameraSmoothTime: 0.05
   cameraCollisionRadius: 0.03
   knockbackCameraFollowSpeed: 5
@@ -6992,6 +6992,13 @@ MonoBehaviour:
   crouchJumpHeight: 12
   gravity: -50
   maxJumps: 2
+  groundCheckDistance: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  jumpBufferTime: 0.15
+  coyoteTime: 0.1
+  turnSmoothTime: 0.1
 --- !u!143 &1191597519
 CharacterController:
   m_ObjectHideFlags: 0
@@ -7460,9 +7467,9 @@ GameObject:
   - component: {fileID: 1378690541}
   - component: {fileID: 1378690540}
   - component: {fileID: 1378690539}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

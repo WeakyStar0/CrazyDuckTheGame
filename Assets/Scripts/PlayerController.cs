@@ -11,8 +11,14 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float crouchSpeed = 2.5f;
+    [SerializeField] private float dashSpeed = 15f;
+    [SerializeField] private float dashDuration = 0.3f;
+    [SerializeField] private float dashCooldown = 1f;
     private float currentSpeed;
     private float temporarySpeed = -1f;
+    private float lastDashTime;
+    private bool isDashing;
+    private Vector3 dashDirection;
 
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
@@ -30,7 +36,6 @@ public class PlayerController : MonoBehaviour
     private float directionX;
     private float directionY;
 
-    private Vector3 crouchScale = new Vector3(1, 0.75f, 1);
     private Vector3 normalScale = Vector3.one;
     private bool isGrounded;
     private int jumpsRemaining;
@@ -43,21 +48,19 @@ public class PlayerController : MonoBehaviour
     private bool jumpConsumed;
     private bool jumpWasBlocked;
 
-    // Parâmetros do Animator
+    // Animator parameters
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int JumpHash = Animator.StringToHash("Jump");
     private static readonly int CrouchHash = Animator.StringToHash("Crouch");
     private static readonly int DirectionXHash = Animator.StringToHash("DirectionX");
     private static readonly int DirectionYHash = Animator.StringToHash("DirectionY");
+    private static readonly int DashHash = Animator.StringToHash("Dash");
+    private static readonly int IsDashingHash = Animator.StringToHash("IsDashing");
 
     private void Awake()
     {
-        if (characterController == null)
-        {
-            characterController = GetComponent<CharacterController>();
-        }
-        
+        characterController = GetComponent<CharacterController>();
         cameraController = GetComponent<CameraController>();
         animator = GetComponentInChildren<Animator>();
     }
@@ -73,12 +76,11 @@ public class PlayerController : MonoBehaviour
     {
         HandleGravity();
         HandleCrouch();
+        HandleDashInput();
         UpdateAnimator();
-        
-        // Captura o input de pulo no Update
+
         if (Input.GetButtonDown("Jump"))
         {
-            // Só registra o input se tiver saltos disponíveis ou estiver no chão
             if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
             {
                 jumpInput = true;
@@ -100,22 +102,89 @@ public class PlayerController : MonoBehaviour
         characterController.Move(movement * Time.fixedDeltaTime);
     }
 
+    private void HandleDashInput()
+    {
+        // Dash com botão esquerdo do mouse (Input.GetMouseButtonDown(0)) apenas no ar
+        if (Input.GetMouseButtonDown(0) && !isGrounded && CanDash())
+        {
+            StartDash();
+        }
+    }
+
+    private bool CanDash()
+    {
+        return !isDashing && Time.time > lastDashTime + dashCooldown;
+    }
+
+    private void StartDash()
+    {
+        isDashing = true;
+        lastDashTime = Time.time;
+
+        // Direção do dash baseada no movimento ou na frente do personagem
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        if (Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f)
+        {
+            dashDirection = (transform.right * horizontal + transform.forward * vertical).normalized;
+        }
+        else
+        {
+            dashDirection = transform.forward;
+        }
+
+        // Congela a animação no primeiro frame do dash
+        animator.Play("Dash", 0, 0f);
+        animator.SetBool(IsDashingHash, true);
+
+        // Avisa o controlador da câmera
+        if (cameraController != null)
+        {
+            cameraController.OnPlayerDash();
+        }
+
+        Invoke("EndDash", dashDuration);
+    }
+
+    private void EndDash()
+{
+    isDashing = false;
+    animator.SetBool(IsDashingHash, false);
+    
+    // Notifica o controlador da câmera que o dash terminou
+    if (cameraController != null)
+    {
+        cameraController.EndDash();
+    }
+    
+    // Volta para a animação de queda ou idle
+    if (!isGrounded)
+    {
+        animator.Play("Fall"); // Ou sua animação de queda
+    }
+    else
+    {
+        animator.Play("Idle");
+    }
+}
+
+    // [Restante dos métodos permanecem iguais...]
     private void HandleGravity()
     {
         bool wasGrounded = isGrounded;
         isGrounded = CheckGrounded();
-        
+
         if (isGrounded)
         {
             lastGroundedTime = Time.time;
-            
+
             if (velocity.y < 0)
             {
                 velocity.y = -2f;
                 jumpsRemaining = maxJumps;
                 isJumping = false;
-                
-                // Resetamos os estados de pulo apenas se não houve tentativa bloqueada
+
                 if (!jumpWasBlocked)
                 {
                     jumpConsumed = false;
@@ -124,34 +193,34 @@ public class PlayerController : MonoBehaviour
         }
         else if (wasGrounded)
         {
-            // Tempo de "coyote time" para permitir pulo após sair da plataforma
             lastGroundedTime = Time.time;
         }
     }
 
     private bool CheckGrounded()
     {
-        // Verificação com raycast e CharacterController
-        bool raycastGrounded = Physics.Raycast(transform.position, Vector3.down, 
+        bool raycastGrounded = Physics.Raycast(transform.position, Vector3.down,
                              groundCheckDistance + characterController.skinWidth, groundLayer);
         return characterController.isGrounded || raycastGrounded;
     }
 
     private Vector3 HandleMovement()
     {
+        if (isDashing)
+        {
+            return dashDirection * dashSpeed;
+        }
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        // Atualiza as direções para o Animator
         directionX = horizontal;
         directionY = vertical;
 
-        // Camera-relative movement
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
         move = Vector3.ClampMagnitude(move, 1f);
 
-        // Check for temporary speed first (attack slowdown)
-        float speedToUse = temporarySpeed > 0 ? temporarySpeed : 
+        float speedToUse = temporarySpeed > 0 ? temporarySpeed :
                          (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
 
         return move * speedToUse;
@@ -161,13 +230,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            playerVisual.localScale = crouchScale;
             if (isGrounded)
                 canCrouchJump = true;
         }
         else
         {
-            playerVisual.localScale = normalScale;
             canCrouchJump = false;
         }
     }
@@ -175,22 +242,20 @@ public class PlayerController : MonoBehaviour
     private Vector3 HandleJump()
     {
         Vector3 jumpVector = Vector3.zero;
-        
-        // Buffer de pulo e coyote time
+
         bool jumpBuffered = Time.time - lastJumpTime < jumpBufferTime;
         bool canCoyoteJump = Time.time - lastGroundedTime < coyoteTime;
-        
-        // Verifica se pode pular
+
         bool canNormalJump = !isJumping && (jumpsRemaining == maxJumps) && (isGrounded || canCoyoteJump);
         bool canDoubleJump = jumpsRemaining > 0 && jumpsRemaining < maxJumps;
-        
+
         if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump))
         {
             float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight;
             velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity);
             jumpsRemaining--;
             canCrouchJump = false;
-            
+
             animator.SetTrigger(JumpHash);
             jumpInput = false;
             isJumping = true;
@@ -198,23 +263,21 @@ public class PlayerController : MonoBehaviour
             jumpWasBlocked = false;
         }
 
-        // Aplica gravidade
         velocity.y += gravity * Time.fixedDeltaTime;
         jumpVector.y = velocity.y;
-        
+
         return jumpVector;
     }
 
     private void UpdateAnimator()
     {
         float currentSpeedValue = Mathf.Clamp01(new Vector2(directionX, directionY).magnitude);
-        
+
         if (Input.GetKey(KeyCode.LeftControl))
         {
             currentSpeedValue *= 0.5f;
         }
-        
-        // Espelha o personagem quando andando para a esquerda
+
         if (Mathf.Abs(directionX) > 0.1f)
         {
             playerVisual.localScale = new Vector3(
@@ -223,8 +286,7 @@ public class PlayerController : MonoBehaviour
                 playerVisual.localScale.z
             );
         }
-        
-        // Atualiza os parâmetros do Animator
+
         animator.SetFloat(SpeedHash, currentSpeedValue, 0.1f, Time.deltaTime);
         animator.SetFloat(DirectionXHash, directionX, 0.1f, Time.deltaTime);
         animator.SetFloat(DirectionYHash, directionY, 0.1f, Time.deltaTime);
@@ -234,7 +296,8 @@ public class PlayerController : MonoBehaviour
 
     public float GetCurrentSpeed()
     {
-        return temporarySpeed > 0 ? temporarySpeed : 
+        if (isDashing) return dashSpeed;
+        return temporarySpeed > 0 ? temporarySpeed :
               (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
     }
 
@@ -250,7 +313,6 @@ public class PlayerController : MonoBehaviour
         currentSpeed = Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed;
     }
 
-    // Debug: Desenha o raycast de verificação de chão
     private void OnDrawGizmos()
     {
         if (characterController != null)
@@ -259,4 +321,6 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawLine(transform.position, transform.position + Vector3.down * (groundCheckDistance + characterController.skinWidth));
         }
     }
+    
+    
 }

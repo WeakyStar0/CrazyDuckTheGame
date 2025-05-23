@@ -20,6 +20,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float cameraSmoothTime = 0.05f;
     [SerializeField] private float cameraCollisionRadius = 0.3f;
     [SerializeField] private float knockbackCameraFollowSpeed = 5f;
+    [SerializeField] private float dashCameraFollowSpeed = 15f;
 
     private float currentCameraDistance;
     private float cameraDistanceSmoothVelocity;
@@ -29,7 +30,10 @@ public class CameraController : MonoBehaviour
     private Vector3 knockbackCameraOffset;
     private float currentCameraHeight;
     private bool isDuringKnockback = false;
-    private Vector3 knockbackCameraPosition;
+    private bool isDuringDash = false;
+    private Vector3 dashCameraOffset;
+    private Vector3 preDashCameraPosition;
+    private Quaternion preDashCameraRotation;
 
     private void Start()
     {
@@ -58,7 +62,7 @@ public class CameraController : MonoBehaviour
         if (!isCameraLocked)
         {
             HandleRotation();
-            HandleCrouch();
+            UpdateCameraHeight();
         }
     }
 
@@ -67,12 +71,59 @@ public class CameraController : MonoBehaviour
         if (!isCameraLocked)
         {
             cameraPivot.localPosition = new Vector3(0, currentCameraHeight, 0);
-            HandleCameraCollision();
+            
+            if (isDuringDash)
+            {
+                HandleDashCamera();
+            }
+            else
+            {
+                HandleCameraCollision();
+            }
         }
         else if (isDuringKnockback)
         {
             HandleKnockbackCamera();
         }
+    }
+
+    public void OnPlayerDash()
+    {
+        isDuringDash = true;
+        // Salva a posição e rotação da câmera antes do dash
+        preDashCameraPosition = playerCamera.transform.position;
+        preDashCameraRotation = playerCamera.transform.rotation;
+    }
+
+    private void HandleDashCamera()
+    {
+        // Calcula a direção da câmera em relação ao jogador
+        Vector3 cameraDirection = (preDashCameraPosition - playerTransform.position).normalized;
+        
+        // Posição alvo mantendo a distância original
+        Vector3 targetPosition = playerTransform.position + cameraDirection * currentCameraDistance;
+        
+        // Aplica suavização ao movimento
+        playerCamera.transform.position = Vector3.Lerp(
+            playerCamera.transform.position, 
+            targetPosition, 
+            dashCameraFollowSpeed * Time.deltaTime);
+            
+        // Mantém a rotação original
+        playerCamera.transform.rotation = Quaternion.Lerp(
+            playerCamera.transform.rotation, 
+            preDashCameraRotation, 
+            dashCameraFollowSpeed * Time.deltaTime);
+
+        // Verifica se o dash terminou (isso deve ser controlado pelo PlayerController)
+        // Aqui apenas mantemos o comportamento da câmera
+    }
+
+    public void EndDash()
+    {
+        isDuringDash = false;
+        // Retorna ao comportamento normal da câmera
+        HandleCameraCollision();
     }
 
     public void LockCameraDuringKnockback(bool shouldLock, Vector3 knockbackDirection)
@@ -82,7 +133,6 @@ public class CameraController : MonoBehaviour
         
         if (shouldLock)
         {
-            // Calcula um offset baseado na direção do knockback
             knockbackCameraOffset = playerCamera.transform.position - playerTransform.position;
         }
         else
@@ -94,10 +144,16 @@ public class CameraController : MonoBehaviour
 
     private void HandleKnockbackCamera()
     {
-        // Suavemente segue o player durante o knockback
         Vector3 targetPosition = playerTransform.position + knockbackCameraOffset;
-        playerCamera.transform.position = Vector3.Lerp(playerCamera.transform.position, targetPosition, knockbackCameraFollowSpeed * Time.deltaTime);
-        playerCamera.transform.rotation = Quaternion.Lerp(playerCamera.transform.rotation, cameraPivot.rotation, knockbackCameraFollowSpeed * Time.deltaTime);
+        playerCamera.transform.position = Vector3.Lerp(
+            playerCamera.transform.position, 
+            targetPosition, 
+            knockbackCameraFollowSpeed * Time.deltaTime);
+            
+        playerCamera.transform.rotation = Quaternion.Lerp(
+            playerCamera.transform.rotation, 
+            cameraPivot.rotation, 
+            knockbackCameraFollowSpeed * Time.deltaTime);
     }
 
     private void HandleRotation()
@@ -113,23 +169,15 @@ public class CameraController : MonoBehaviour
         cameraPivot.localRotation = Quaternion.Euler(xRotation, 0, 0);
     }
 
-    private void HandleCrouch()
+    private void UpdateCameraHeight()
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
             currentCameraHeight = crouchingCameraHeight;
-            if (playerVisual != null)
-            {
-                playerVisual.localScale = new Vector3(1, 0.75f, 1);
-            }
         }
         else
         {
             currentCameraHeight = standingCameraHeight;
-            if (playerVisual != null)
-            {
-                playerVisual.localScale = Vector3.one;
-            }
         }
     }
 
