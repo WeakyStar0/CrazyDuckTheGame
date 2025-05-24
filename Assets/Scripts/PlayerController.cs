@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float jumpBufferTime = 0.15f;
     [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] [Range(0.5f, 2f)] private float doubleJumpMultiplier = 1f; // Novo parâmetro para ajustar o double jump
 
     [Header("Animation Settings")]
     [SerializeField] private float turnSmoothTime = 0.1f;
@@ -148,28 +149,27 @@ public class PlayerController : MonoBehaviour
     }
 
     private void EndDash()
-{
-    isDashing = false;
-    animator.SetBool(IsDashingHash, false);
-    
-    // Notifica o controlador da câmera que o dash terminou
-    if (cameraController != null)
     {
-        cameraController.EndDash();
+        isDashing = false;
+        animator.SetBool(IsDashingHash, false);
+        
+        // Notifica o controlador da câmera que o dash terminou
+        if (cameraController != null)
+        {
+            cameraController.EndDash();
+        }
+        
+        // Volta para a animação de queda ou idle
+        if (!isGrounded)
+        {
+            animator.Play("Fall"); // Ou sua animação de queda
+        }
+        else
+        {
+            animator.Play("Idle");
+        }
     }
-    
-    // Volta para a animação de queda ou idle
-    if (!isGrounded)
-    {
-        animator.Play("Fall"); // Ou sua animação de queda
-    }
-    else
-    {
-        animator.Play("Idle");
-    }
-}
 
-    // [Restante dos métodos permanecem iguais...]
     private void HandleGravity()
     {
         bool wasGrounded = isGrounded;
@@ -252,6 +252,13 @@ public class PlayerController : MonoBehaviour
         if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump))
         {
             float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight;
+            
+            // Aplica o multiplicador apenas se for um double jump
+            if (jumpsRemaining < maxJumps)
+            {
+                actualJumpHeight *= doubleJumpMultiplier;
+            }
+            
             velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity);
             jumpsRemaining--;
             canCrouchJump = false;
@@ -321,6 +328,4 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawLine(transform.position, transform.position + Vector3.down * (groundCheckDistance + characterController.skinWidth));
         }
     }
-    
-    
 }
