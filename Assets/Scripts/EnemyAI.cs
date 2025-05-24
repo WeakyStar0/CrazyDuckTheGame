@@ -96,13 +96,14 @@ public class EnemyAI : MonoBehaviour
                 lastPatrolPosition = transform.position;
             }
         }
-        else if (isChasing)
-        {
+       else if (isChasing)
+{
             // Volta para patrulha
             if (Vector3.Distance(transform.position, lastPatrolPosition) < 0.5f)
             {
                 isChasing = false;
                 patrolScript.enabled = true;
+                patrolScript.ResetPatrol(); // Adicione esta linha
             }
             else
             {

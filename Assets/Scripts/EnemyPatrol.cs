@@ -23,6 +23,13 @@ public class EnemyPatrol : MonoBehaviour
         {
             Debug.LogError("CharacterController não encontrado no inimigo!");
         }
+        
+        // Garante que há pelo menos 2 pontos de patrulha
+        if (patrolPoints.Count < 2)
+        {
+            Debug.LogError("Precisa de pelo menos 2 pontos de patrulha!");
+            enabled = false;
+        }
     }
     
     void Update()
@@ -32,14 +39,14 @@ public class EnemyPatrol : MonoBehaviour
         // Verifica se está no chão
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
         
-        // Aplica gravidade
+        // Aplica gravidade apenas se não estiver no chão
         if (!isGrounded)
         {
             velocity.y -= gravity * Time.deltaTime;
         }
-        else if (velocity.y < 0)
+        else
         {
-            velocity.y = -2f; // Pequena força para manter no chão
+            velocity.y = -0.5f; // Pequena força para manter no chão
         }
         
         if (isWaiting)
@@ -76,11 +83,31 @@ public class EnemyPatrol : MonoBehaviour
                 Quaternion.LookRotation(direction), 0.1f);
         }
         
-        if (Vector3.Distance(transform.position, targetPoint.position) < 0.5f)
+        // Verifica distância apenas no eixo XZ (ignora altura)
+        Vector2 flatPosition = new Vector2(transform.position.x, transform.position.z);
+        Vector2 flatTarget = new Vector2(targetPoint.position.x, targetPoint.position.z);
+        if (Vector2.Distance(flatPosition, flatTarget) < 0.5f)
         {
             isWaiting = true;
             waitCounter = waitTimeAtPoint;
         }
+    }
+    
+    // Adicione este método para ser chamado pelo EnemyAI
+    public void ResetPatrol()
+    {
+        // Volta para o ponto mais próximo quando retomar a patrulha
+        float minDist = float.MaxValue;
+        for (int i = 0; i < patrolPoints.Count; i++)
+        {
+            float dist = Vector3.Distance(transform.position, patrolPoints[i].position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                currentPointIndex = i;
+            }
+        }
+        isWaiting = false;
     }
     
     void OnDrawGizmos()
