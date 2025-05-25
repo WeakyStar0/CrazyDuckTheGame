@@ -3,7 +3,13 @@ using System.Collections;
 
 public class SwordSlash : MonoBehaviour
 {
-    [Header("Slash Effects")]
+    [Header("Slash Settings")]
+    public float slashRange = 1.5f;
+    public float slashAngle = 90f;
+    public int slashDamage = 1;
+    public float knockbackForce = 5f;
+    
+    [Header("Effects")]
     public GameObject groundSlashPrefab;
     public GameObject airSlashPrefab;
     public Vector3 effectOffset = new Vector3(0.5f, 0, 0.5f);
@@ -14,60 +20,154 @@ public class SwordSlash : MonoBehaviour
     public AudioClip airSwingSound;
     [Range(0,1)] public float volume = 0.7f;
     
-    [Header("Settings")]
-    public float cooldown = 0.5f;
+    [Header("Cooldowns")]
+    public float groundCooldown = 0.5f;
+    public float airCooldown = 1f;
     public KeyCode slashKey = KeyCode.Mouse0;
-    [Range(0,1)] public float movementSlowdown = 0.5f;
-    public float slowdownDuration = 0.3f;
     
-    [Header("Air Slash Boost")]
-    public float airBoostForce = 10f;
-    public float airBoostDuration = 0.2f;
+    [Header("Air Dash")]
+    public float airDashForce = 10f;
+    public float airDashDuration = 0.3f;
     
     private float lastSlashTime;
     private AudioSource audioSource;
     private PlayerController playerController;
-    private bool isSlowing = false;
-    private bool isBoosting = false;
     private CharacterController characterController;
+    private bool isDashing = false;
     private GameObject currentSlashEffect;
-    private bool hasAirSlashed = false; // Track if player has air slashed
-    private bool wasGrounded = true; // Track previous ground state
 
     void Start()
+{
+    // Verifica se já existe um AudioSource, se não, cria um
+    audioSource = GetComponent<AudioSource>();
+    if (audioSource == null)
     {
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-        
-        playerController = GetComponent<PlayerController>();
-        if (playerController == null)
-        {
-            Debug.LogWarning("PlayerController not found! Slash movement effects won't work.");
-        }
-        
-        characterController = GetComponent<CharacterController>();
+        audioSource = gameObject.AddComponent<AudioSource>();
+        Debug.Log("AudioSource adicionado automaticamente ao Player");
     }
-
+    
+    playerController = GetComponent<PlayerController>();
+    characterController = GetComponent<CharacterController>();
+}
     void Update()
     {
-        // Check if player just landed
-        if (characterController != null)
-        {
-            if (wasGrounded == false && characterController.isGrounded)
-            {
-                hasAirSlashed = false; // Reset air slash when landing
-            }
-            wasGrounded = characterController.isGrounded;
-        }
-
         if (Input.GetKeyDown(slashKey) && CanSlash())
         {
             ExecuteSlash();
         }
 
+        UpdateSlashEffectPosition();
+    }
+
+    bool CanSlash()
+    {
+        bool isGrounded = characterController != null && characterController.isGrounded;
+        float cooldown = isGrounded ? groundCooldown : airCooldown;
+        
+        return Time.time > lastSlashTime + cooldown && !isDashing;
+    }
+
+    void ExecuteSlash()
+    {
+        bool isGrounded = characterController != null && characterController.isGrounded;
+        
+        // Criar efeito visual
+        CreateSlashEffect(isGrounded);
+        
+        // Tocar som
+        PlaySlashSound(isGrounded);
+        
+        // Aplicar lógica de dano
+        ApplySlashDamage(isGrounded);
+        
+        // Movimento especial no ar
+        if (!isGrounded)
+        {
+            StartCoroutine(AirDash());
+        }
+        
+        lastSlashTime = Time.time;
+    }
+
+    void CreateSlashEffect(bool isGrounded)
+    {
+        if (currentSlashEffect != null)
+        {
+            Destroy(currentSlashEffect);
+        }
+        
+        GameObject slashPrefab = isGrounded ? groundSlashPrefab : airSlashPrefab;
+        if (slashPrefab != null)
+        {
+            currentSlashEffect = Instantiate(
+                slashPrefab,
+                transform.position + transform.TransformDirection(effectOffset),
+                transform.rotation
+            );
+            Destroy(currentSlashEffect, effectDuration);
+        }
+    }
+
+    void PlaySlashSound(bool isGrounded)
+{
+    if (audioSource == null) return;
+    
+    AudioClip sound = isGrounded ? swingSound : airSwingSound;
+    if (sound != null)
+    {
+        audioSource.PlayOneShot(sound, volume);
+    }
+}
+
+    void ApplySlashDamage(bool isGrounded)
+{
+    // Cria uma esfera de detecção à frente do jogador
+    Vector3 attackPosition = transform.position + transform.forward * slashRange;
+    Collider[] hitEnemies = Physics.OverlapSphere(attackPosition, slashRange);
+    
+    foreach (Collider enemy in hitEnemies)
+    {
+        // Verifica se tem a tag "Enemy" ou componente EnemyHealth
+        if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null)
+        {
+            // Verifica se está na frente do jogador
+            Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
+            float angle = Vector3.Angle(transform.forward, directionToEnemy);
+            
+            if (angle <= slashAngle/2)
+            {
+                EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+                if (enemyHealth != null)
+                {
+                    enemyHealth.TakeDamage(slashDamage, transform.position);
+                    Debug.Log("Inimigo atingido: " + enemy.name);
+                }
+            }
+        }
+    }
+    
+    // Debug visual
+    Debug.DrawLine(transform.position, attackPosition, Color.red, 1f);
+    Debug.DrawRay(attackPosition, Vector3.up, Color.red, 1f);
+}
+
+    IEnumerator AirDash()
+    {
+        isDashing = true;
+        float dashEndTime = Time.time + airDashDuration;
+        Vector3 dashDirection = transform.forward;
+        
+        while (Time.time < dashEndTime)
+        {
+            characterController.Move(dashDirection * airDashForce * Time.deltaTime);
+            yield return null;
+        }
+        
+        isDashing = false;
+    }
+
+    void UpdateSlashEffectPosition()
+    {
         if (currentSlashEffect != null)
         {
             currentSlashEffect.transform.position = transform.position + transform.TransformDirection(effectOffset);
@@ -75,102 +175,13 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-    bool CanSlash()
+    void OnDrawGizmosSelected()
     {
-        bool onCooldown = Time.time > lastSlashTime + cooldown;
-        bool notBusy = !isSlowing && !isBoosting;
-        bool canAirSlash = !hasAirSlashed || characterController.isGrounded;
-        
-        return onCooldown && notBusy && canAirSlash;
-    }
-
-    void ExecuteSlash()
-    {
-        bool isAirSlash = characterController != null && !characterController.isGrounded;
-        
-        if (isAirSlash)
-        {
-            hasAirSlashed = true; // Mark that we've used our air slash
-        }
-
-        GameObject slashPrefabToUse = isAirSlash ? airSlashPrefab : groundSlashPrefab;
-        
-        if (currentSlashEffect != null)
-        {
-            Destroy(currentSlashEffect);
-        }
-        
-        if (slashPrefabToUse != null)
-        {
-            currentSlashEffect = Instantiate(
-                slashPrefabToUse,
-                transform.position + transform.TransformDirection(effectOffset),
-                transform.rotation
-            );
-            
-            SwordSlashEffect effect = currentSlashEffect.GetComponent<SwordSlashEffect>();
-            if (effect != null)
-            {
-                effect.Initialize(transform);
-            }
-            
-            Destroy(currentSlashEffect, effectDuration);
-        }
-        
-        AudioClip soundToPlay = isAirSlash && airSwingSound != null ? airSwingSound : swingSound;
-        if (soundToPlay != null)
-        {
-            audioSource.PlayOneShot(soundToPlay, volume);
-        }
-        
-        if (playerController != null)
-        {
-            if (isAirSlash)
-            {
-                StartCoroutine(AirBoost());
-            }
-            else
-            {
-                StartCoroutine(SlowdownDuringAttack());
-            }
-        }
-        
-        lastSlashTime = Time.time;
-    }
-
-    IEnumerator SlowdownDuringAttack()
-    {
-        isSlowing = true;
-        
-        float originalSpeed = playerController.GetCurrentSpeed();
-        float slowedSpeed = originalSpeed * movementSlowdown;
-        
-        playerController.SetTemporarySpeed(slowedSpeed);
-        
-        yield return new WaitForSeconds(slowdownDuration);
-        
-        playerController.ResetSpeed();
-        isSlowing = false;
-    }
-
-    IEnumerator AirBoost()
-    {
-        isBoosting = true;
-        float boostEndTime = Time.time + airBoostDuration;
-        
-        Vector3 boostDirection = transform.forward;
-        boostDirection.y = 0;
-        boostDirection.Normalize();
-        
-        while (Time.time < boostEndTime)
-        {
-            if (characterController != null)
-            {
-                characterController.Move(boostDirection * airBoostForce * Time.deltaTime);
-            }
-            yield return null;
-        }
-        
-        isBoosting = false;
+        // Visualizar área de ataque
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(
+            transform.position + transform.forward * (slashRange/2),
+            slashRange/2
+        );
     }
 }
