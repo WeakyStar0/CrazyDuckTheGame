@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5122b628f1222c2438d383617c9a7986
+guid: d208903637523e04b894a476a1fd1ed7
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,7 +31,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: hurricane kick
+      name: dash
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0

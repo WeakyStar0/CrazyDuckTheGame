@@ -104,18 +104,26 @@ public class PlayerController : MonoBehaviour
     }
 
     private void HandleDashInput()
+{
+    // Dash com botão esquerdo do mouse apenas no ar
+    if (Input.GetMouseButtonDown(0) 
+        && !isGrounded 
+        && CanDash() 
+        && !isDashing)
     {
-        // Dash com botão esquerdo do mouse (Input.GetMouseButtonDown(0)) apenas no ar
-        if (Input.GetMouseButtonDown(0) && !isGrounded && CanDash())
-        {
-            StartDash();
-        }
+        StartDash();
     }
+}
 
     private bool CanDash()
     {
         return !isDashing && Time.time > lastDashTime + dashCooldown;
     }
+    
+    public void SetControlEnabled(bool enabled)
+{
+    this.enabled = enabled;
+}
 
     private void StartDash()
     {
@@ -135,8 +143,8 @@ public class PlayerController : MonoBehaviour
             dashDirection = transform.forward;
         }
 
-        // Congela a animação no primeiro frame do dash
-        animator.Play("Dash", 0, 0f);
+        // Usa trigger para a animação de dash
+        animator.SetTrigger(DashHash);
         animator.SetBool(IsDashingHash, true);
 
         // Avisa o controlador da câmera
@@ -152,23 +160,18 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = false;
         animator.SetBool(IsDashingHash, false);
-        
+
         // Notifica o controlador da câmera que o dash terminou
         if (cameraController != null)
         {
             cameraController.EndDash();
         }
-        
-        // Volta para a animação de queda ou idle
-        if (!isGrounded)
-        {
-            animator.Play("Fall"); // Ou sua animação de queda
-        }
-        else
-        {
-            animator.Play("Idle");
-        }
     }
+
+public bool IsDashing()
+{
+    return isDashing;
+}
 
     private void HandleGravity()
     {

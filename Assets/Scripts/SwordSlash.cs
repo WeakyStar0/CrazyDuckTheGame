@@ -63,9 +63,14 @@ public class SwordSlash : MonoBehaviour
     {
         bool isGrounded = characterController != null && characterController.isGrounded;
         float cooldown = isGrounded ? groundCooldown : airCooldown;
-        
+
+        // Verifica se o player controller está em dash
+        bool isDashing = playerController != null && playerController.IsDashing();
+
         return Time.time > lastSlashTime + cooldown && !isDashing;
     }
+
+
 
     void ExecuteSlash()
     {

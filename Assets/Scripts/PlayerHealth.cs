@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 [System.Serializable]
 public class HealthIconSettings
 {
-    public Sprite healthSprite; // Imagem que representa cada vida
-    public Vector2 iconSize = new Vector2(50, 50); // Tamanho de cada ícone
-    public float spacing = 10f; // Espaçamento entre os ícones
+    public Sprite healthSprite;
+    public Vector2 iconSize = new Vector2(50, 50);
+    public float spacing = 10f;
 }
 
 public class PlayerHealth : MonoBehaviour
@@ -15,19 +16,28 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 3;
     public float invincibilityTime = 1.5f;
     public HealthIconSettings healthIconSettings;
-    public Transform healthContainer; // Referência ao container de vidas no Canvas
+    public Transform healthContainer;
+    
+    [Header("Damage Effects")]
+    public float flashDuration = 0.1f;
+    public Color damageColor = Color.red;
+    public string damageTrigger = "TakeDamage";
     
     private Image[] healthIcons;
     private int currentHealth;
     private bool isInvincible = false;
     private float invincibilityTimer = 0f;
     private PlayerKnockback knockback;
+    private Animator animator;
+    private Renderer[] playerRenderers;
+    private Coroutine flashCoroutine;
 
     private void Awake()
     {
         knockback = GetComponent<PlayerKnockback>();
+        animator = GetComponentInChildren<Animator>();
+        playerRenderers = GetComponentsInChildren<Renderer>();
         
-        // Verifica se o container foi atribuído
         if (healthContainer == null)
         {
             Debug.LogError("Health Container não foi atribuído no inspector!");
@@ -41,13 +51,11 @@ public class PlayerHealth : MonoBehaviour
 
     private void CreateHealthUI()
     {
-        // Limpa quaisquer ícones existentes no container
         foreach (Transform child in healthContainer)
         {
             Destroy(child.gameObject);
         }
         
-        // Configura o layout do container
         HorizontalLayoutGroup layout = healthContainer.GetComponent<HorizontalLayoutGroup>();
         if (layout == null)
         {
@@ -61,7 +69,6 @@ public class PlayerHealth : MonoBehaviour
         layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
 
-        // Cria os ícones de vida
         healthIcons = new Image[maxHealth];
         for (int i = 0; i < maxHealth; i++)
         {
@@ -98,6 +105,13 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damageAmount;
         UpdateHealthUI();
         
+        if (animator != null)
+        {
+            animator.SetTrigger(damageTrigger);
+        }
+        
+        FlashDamageEffect();
+        
         if (knockback != null)
         {
             knockback.ApplyKnockback(enemyPosition);
@@ -110,6 +124,41 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
+    }
+
+    private void FlashDamageEffect()
+    {
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+        }
+        
+        flashCoroutine = StartCoroutine(FlashCoroutine());
+    }
+
+    private IEnumerator FlashCoroutine()
+    {
+        Color[] originalColors = new Color[playerRenderers.Length];
+        for (int i = 0; i < playerRenderers.Length; i++)
+        {
+            if (playerRenderers[i] != null)
+            {
+                originalColors[i] = playerRenderers[i].material.color;
+                playerRenderers[i].material.color = damageColor;
+            }
+        }
+        
+        yield return new WaitForSeconds(flashDuration);
+        
+        for (int i = 0; i < playerRenderers.Length; i++)
+        {
+            if (playerRenderers[i] != null)
+            {
+                playerRenderers[i].material.color = originalColors[i];
+            }
+        }
+        
+        flashCoroutine = null;
     }
 
     private void UpdateHealthUI()
@@ -136,7 +185,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void OnValidate()
     {
-        // Atualiza a UI imediatamente no editor quando maxHealth é alterado
         if (Application.isPlaying && healthIcons != null && healthIcons.Length != maxHealth && healthContainer != null)
         {
             CreateHealthUI();
