@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 630854689}
   - component: {fileID: 630854688}
   m_Layer: 5
-  m_Name: PlayButton
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -765,7 +765,7 @@ GameObject:
   - component: {fileID: 1486610898}
   - component: {fileID: 1486610897}
   m_Layer: 5
-  m_Name: PlayButtonHB
+  m_Name: BackButtonHB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
