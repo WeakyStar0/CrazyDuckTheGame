@@ -106,9 +106,14 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
         
         if (animator != null)
-        {
-            animator.SetTrigger(damageTrigger);
-        }
+{
+    animator.SetTrigger("TakeDamage"); // Mantenha isso se ainda quiser um efeito visual rápido
+    // E também chame o knockback
+    if (knockback != null)
+    {
+        knockback.ApplyKnockback(enemyPosition);
+    }
+}
         
         FlashDamageEffect();
         

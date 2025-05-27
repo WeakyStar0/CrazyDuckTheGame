@@ -29,13 +29,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float jumpBufferTime = 0.15f;
     [SerializeField] private float coyoteTime = 0.1f;
-    [SerializeField] [Range(0.5f, 2f)] private float doubleJumpMultiplier = 1f; // Novo parâmetro para ajustar o double jump
+    [SerializeField][Range(0.5f, 2f)] private float doubleJumpMultiplier = 1f;
 
     [Header("Animation Settings")]
     [SerializeField] private float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
     private float directionX;
     private float directionY;
+
+    // Animator parameters
+    private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
+    private static readonly int CrouchJumpHash = Animator.StringToHash("CrouchJump");
+    private static readonly int CrouchHash = Animator.StringToHash("Crouch");
+    private static readonly int DirectionXHash = Animator.StringToHash("DirectionX");
+    private static readonly int DirectionYHash = Animator.StringToHash("DirectionY");
+    private static readonly int DashHash = Animator.StringToHash("Dash");
+    private static readonly int IsDashingHash = Animator.StringToHash("IsDashing");
 
     private Vector3 normalScale = Vector3.one;
     private bool isGrounded;
@@ -48,16 +59,6 @@ public class PlayerController : MonoBehaviour
     private bool isJumping;
     private bool jumpConsumed;
     private bool jumpWasBlocked;
-
-    // Animator parameters
-    private static readonly int SpeedHash = Animator.StringToHash("Speed");
-    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
-    private static readonly int JumpHash = Animator.StringToHash("Jump");
-    private static readonly int CrouchHash = Animator.StringToHash("Crouch");
-    private static readonly int DirectionXHash = Animator.StringToHash("DirectionX");
-    private static readonly int DirectionYHash = Animator.StringToHash("DirectionY");
-    private static readonly int DashHash = Animator.StringToHash("Dash");
-    private static readonly int IsDashingHash = Animator.StringToHash("IsDashing");
 
     private void Awake()
     {
@@ -104,33 +105,28 @@ public class PlayerController : MonoBehaviour
     }
 
     private void HandleDashInput()
-{
-    // Dash com botão esquerdo do mouse apenas no ar
-    if (Input.GetMouseButtonDown(0) 
-        && !isGrounded 
-        && CanDash() 
-        && !isDashing)
     {
-        StartDash();
+        if (Input.GetMouseButtonDown(0) && !isGrounded && CanDash() && !isDashing)
+        {
+            StartDash();
+        }
     }
-}
 
     private bool CanDash()
     {
         return !isDashing && Time.time > lastDashTime + dashCooldown;
     }
-    
+
     public void SetControlEnabled(bool enabled)
-{
-    this.enabled = enabled;
-}
+    {
+        this.enabled = enabled;
+    }
 
     private void StartDash()
     {
         isDashing = true;
         lastDashTime = Time.time;
 
-        // Direção do dash baseada no movimento ou na frente do personagem
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -143,11 +139,9 @@ public class PlayerController : MonoBehaviour
             dashDirection = transform.forward;
         }
 
-        // Usa trigger para a animação de dash
         animator.SetTrigger(DashHash);
         animator.SetBool(IsDashingHash, true);
 
-        // Avisa o controlador da câmera
         if (cameraController != null)
         {
             cameraController.OnPlayerDash();
@@ -161,17 +155,16 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         animator.SetBool(IsDashingHash, false);
 
-        // Notifica o controlador da câmera que o dash terminou
         if (cameraController != null)
         {
             cameraController.EndDash();
         }
     }
 
-public bool IsDashing()
-{
-    return isDashing;
-}
+    public bool IsDashing()
+    {
+        return isDashing;
+    }
 
     private void HandleGravity()
     {
@@ -255,18 +248,26 @@ public bool IsDashing()
         if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump))
         {
             float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight;
-            
-            // Aplica o multiplicador apenas se for um double jump
+
             if (jumpsRemaining < maxJumps)
             {
                 actualJumpHeight *= doubleJumpMultiplier;
             }
-            
+
             velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity);
             jumpsRemaining--;
             canCrouchJump = false;
 
-            animator.SetTrigger(JumpHash);
+            // Usa animação diferente para crouch jump
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                animator.SetTrigger(CrouchJumpHash);
+            }
+            else
+            {
+                animator.SetTrigger(JumpHash);
+            }
+
             jumpInput = false;
             isJumping = true;
             jumpConsumed = true;

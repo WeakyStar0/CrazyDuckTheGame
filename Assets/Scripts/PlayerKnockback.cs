@@ -5,10 +5,11 @@ public class PlayerKnockback : MonoBehaviour
 {
     [Header("Knockback Settings")]
     public float knockbackForce = 10f;
-    public float upwardForce = 2f; // Reduzi a força vertical para evitar voar muito alto
-    public float gravityScale = 3f; // Gravidade aumentada durante knockback
+    public float upwardForce = 2f;
+    public float gravityScale = 3f;
     public float stunDuration = 0.5f;
     public float groundCheckDistance = 0.2f;
+    public float getUpDuration = 1f; // Duração da animação de levantar
     public LayerMask groundLayer;
     
     [Header("Visual Effects")]
@@ -21,16 +22,20 @@ public class PlayerKnockback : MonoBehaviour
     private Renderer[] playerRenderers;
     private Color[] originalColors;
     private bool isKnockbackActive = false;
+    private bool isGettingUp = false; // Novo estado para controlar a animação de levantar
     private Vector3 knockbackVelocity;
     private Coroutine flashCoroutine;
+    private Coroutine getUpCoroutine; // Coroutine para controlar o tempo de levantar
     private float stunTimer;
     private bool wasGrounded;
+    private Animator animator;
 
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
         characterController = GetComponent<CharacterController>();
         cameraController = GetComponent<CameraController>();
+        animator = GetComponentInChildren<Animator>();
         
         playerRenderers = GetComponentsInChildren<Renderer>();
         originalColors = new Color[playerRenderers.Length];
@@ -42,26 +47,25 @@ public class PlayerKnockback : MonoBehaviour
 
     public void ApplyKnockback(Vector3 enemyPosition)
     {
-        if (isKnockbackActive) return;
+        if (isKnockbackActive || isGettingUp) return;
         
-        // Verifica se está no chão
         wasGrounded = CheckGrounded();
-        if (!wasGrounded) return; // Só aplica knockback se estiver no chão
+        if (!wasGrounded) return;
 
-        // Calcula direção do knockback
         Vector3 direction = (transform.position - enemyPosition).normalized;
-        direction.y = 0; // Mantém o movimento principalmente horizontal
+        direction.y = 0;
         
         knockbackVelocity = direction * knockbackForce;
-        knockbackVelocity.y = upwardForce; // Força vertical inicial
+        knockbackVelocity.y = upwardForce;
         
         isKnockbackActive = true;
         stunTimer = stunDuration;
         
-        // Desativa o controle do jogador
         playerController.enabled = false;
         
-        // Efeito visual
+        // Trigger da animação de knockback
+        animator.SetTrigger("Knockback");
+        
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
         flashCoroutine = StartCoroutine(KnockbackFlashCoroutine());
     }
@@ -75,40 +79,55 @@ public class PlayerKnockback : MonoBehaviour
 
     private void Update()
     {
-        if (isKnockbackActive)
+        if (isKnockbackActive && !isGettingUp)
         {
-            // Aplica gravidade personalizada durante o knockback
             knockbackVelocity.y += Physics.gravity.y * gravityScale * Time.deltaTime;
             
-            // Move o character controller
             characterController.Move(knockbackVelocity * Time.deltaTime);
             
-            // Verifica se está no chão
             if (characterController.isGrounded && knockbackVelocity.y < 0)
             {
-                knockbackVelocity.y = -2f; // Pequena força para manter no chão
+                knockbackVelocity.y = -2f;
                 
                 stunTimer -= Time.deltaTime;
                 if (stunTimer <= 0)
                 {
-                    EndKnockback();
+                    StartGettingUp();
                 }
             }
         }
     }
 
+    private void StartGettingUp()
+    {
+        isKnockbackActive = false;
+        isGettingUp = true;
+        
+        // Trigger da animação de levantar
+        animator.SetTrigger("GetUp");
+        
+        // Inicia a coroutine para terminar o estado de levantar
+        if (getUpCoroutine != null) StopCoroutine(getUpCoroutine);
+        getUpCoroutine = StartCoroutine(FinishGettingUp());
+    }
+
+    private IEnumerator FinishGettingUp()
+    {
+        yield return new WaitForSeconds(getUpDuration);
+        
+        EndKnockback();
+    }
+
     private IEnumerator KnockbackFlashCoroutine()
     {
-        while (isKnockbackActive)
+        while (isKnockbackActive || isGettingUp)
         {
-            // Piscar vermelho
             foreach (var renderer in playerRenderers)
             {
                 renderer.material.color = knockbackFlashColor;
             }
             yield return new WaitForSeconds(flashInterval);
             
-            // Voltar à cor normal
             for (int i = 0; i < playerRenderers.Length; i++)
             {
                 playerRenderers[i].material.color = originalColors[i];
@@ -119,10 +138,9 @@ public class PlayerKnockback : MonoBehaviour
 
     private void EndKnockback()
     {
-        isKnockbackActive = false;
+        isGettingUp = false;
         playerController.enabled = true;
         
-        // Garante que volta à cor original
         for (int i = 0; i < playerRenderers.Length; i++)
         {
             playerRenderers[i].material.color = originalColors[i];
