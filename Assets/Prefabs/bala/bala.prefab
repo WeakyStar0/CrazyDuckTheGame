@@ -833,13 +833,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1922f7d4e33f9249b01a979ba201b24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionRadius: 3
+  bulletMode: 1
+  explosionRadius: 10
   damage: 1
   knockbackForce: 10
   explosionEffect: {fileID: 0}
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 128
+  homingDelay: 0.1
+  homingSpeed: 0.01
+  maxHomingAngle: 100
+  homingDuration: 10
+  maxHomingDistance: 300
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  wallImpactEffect: {fileID: 0}
+  wallCheckRadius: 1
 --- !u!135 &2467839082507615784
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -859,7 +870,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.33937818
+  m_Radius: 0.38754705
   m_Center: {x: -0, y: 0, z: -0}
 --- !u!54 &8864050774755702434
 Rigidbody:

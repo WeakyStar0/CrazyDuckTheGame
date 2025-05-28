@@ -98,38 +98,33 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damageAmount, Vector3 enemyPosition)
-    {
-        if (isInvincible || currentHealth <= 0) return;
-        
-        currentHealth -= damageAmount;
-        UpdateHealthUI();
-        
-        if (animator != null)
+ public void TakeDamage(int damageAmount, Vector3 enemyPosition)
 {
-    animator.SetTrigger("TakeDamage"); // Mantenha isso se ainda quiser um efeito visual rápido
-    // E também chame o knockback
+    if (isInvincible || currentHealth <= 0) return;
+    
+    currentHealth -= damageAmount;
+    UpdateHealthUI();
+    
+    if (animator != null)
+    {
+        animator.SetTrigger(damageTrigger);
+    }
+    
     if (knockback != null)
     {
         knockback.ApplyKnockback(enemyPosition);
     }
-}
-        
-        FlashDamageEffect();
-        
-        if (knockback != null)
-        {
-            knockback.ApplyKnockback(enemyPosition);
-        }
-        
-        isInvincible = true;
-        invincibilityTimer = invincibilityTime;
-        
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+    
+    FlashDamageEffect();
+    
+    isInvincible = true;
+    invincibilityTimer = invincibilityTime;
+    
+    if (currentHealth <= 0)
+    {
+        Die();
     }
+}
 
     private void FlashDamageEffect()
     {
