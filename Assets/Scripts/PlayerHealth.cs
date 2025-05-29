@@ -31,19 +31,21 @@ public class PlayerHealth : MonoBehaviour
     private Animator animator;
     private Renderer[] playerRenderers;
     private Coroutine flashCoroutine;
+    
+    public bool IsDead { get; private set; }
 
     private void Awake()
     {
         knockback = GetComponent<PlayerKnockback>();
         animator = GetComponentInChildren<Animator>();
         playerRenderers = GetComponentsInChildren<Renderer>();
-        
+
         if (healthContainer == null)
         {
             Debug.LogError("Health Container não foi atribuído no inspector!");
             return;
         }
-        
+
         CreateHealthUI();
         currentHealth = maxHealth;
         UpdateHealthUI();
@@ -83,6 +85,100 @@ public class PlayerHealth : MonoBehaviour
             rt.sizeDelta = healthIconSettings.iconSize;
             
             healthIcons[i] = iconImage;
+        }
+    }
+
+    private void RespawnPlayer()
+    {
+        // Reinicia status
+        IsDead = false;
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+        isInvincible = false;
+
+        // Reativa componentes
+        foreach (Renderer r in playerRenderers) r.enabled = true;
+        GetComponent<Collider>().enabled = true;
+
+        // Busca a DeathZone para respawn
+        DeathZone deathZone = FindFirstObjectByType<DeathZone>();
+        if (deathZone != null)
+        {
+            // Teleporta o jogador para a safePosition
+            transform.position = deathZone.safePosition;
+            Debug.Log("RESPAWN na posição: " + deathZone.safePosition);
+        }
+        else
+        {
+            Debug.LogError("DeathZone não encontrada!");
+            transform.position = Vector3.zero; // Fallback
+        }
+
+        // Reseta inimigos (opcional)
+        ResetAllEnemies();
+    }
+
+    public void TakeDamageAndTeleport(int damageAmount, Vector3 teleportPosition)
+{
+    if (isInvincible || IsDead) return;
+
+  
+    currentHealth -= damageAmount;
+    UpdateHealthUI();
+
+    
+    PlayerController playerController = GetComponent<PlayerController>();
+    if (playerController != null)
+    {
+        playerController.ForceTeleport(teleportPosition); 
+    }
+    else
+    {
+        transform.position = teleportPosition; 
+    }
+  
+
+  
+    if (animator != null) animator.SetTrigger(damageTrigger);
+    FlashDamageEffect();
+
+
+    isInvincible = true;
+    invincibilityTimer = invincibilityTime;
+
+    if (currentHealth <= 0) Die();
+}
+
+private IEnumerator ReenableCharacterController(CharacterController controller)
+{
+    yield return new WaitForSeconds(0.1f);
+    if (controller != null)
+    {
+        controller.enabled = true;
+    }
+    
+    // Reseta a velocidade para evitar bugs
+    Rigidbody rb = GetComponent<Rigidbody>();
+    if (rb != null)
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
+}
+
+    private IEnumerator RestorePhysics(Rigidbody rb)
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (rb != null) rb.isKinematic = false;
+    }
+
+    private void ResetAllEnemies()
+    {
+        EnemyAI[] allEnemies = FindObjectsByType<EnemyAI>(FindObjectsSortMode.None);
+
+        foreach (EnemyAI enemy in allEnemies)
+        {
+            enemy.ResetEnemy();
         }
     }
 
@@ -172,10 +268,26 @@ public class PlayerHealth : MonoBehaviour
     }
 
     private void Die()
+{
+    IsDead = true;
+    
+    // Desativa colisores temporariamente
+    Collider col = GetComponent<Collider>();
+    if (col != null) col.enabled = false;
+    
+    // Desativa renderização
+    foreach (Renderer r in playerRenderers)
     {
-        Debug.Log("Player morreu!");
-        // Adicione sua lógica de morte aqui
+        if (r != null) r.enabled = false;
     }
+    
+    // Previne qualquer movimento adicional
+    Rigidbody rb = GetComponent<Rigidbody>();
+    if (rb != null) rb.linearVelocity = Vector3.zero;
+    
+    // Agenda respawn após 1.5 segundos
+    Invoke("RespawnPlayer", 1.5f);
+}
 
     public void Heal(int healAmount)
     {

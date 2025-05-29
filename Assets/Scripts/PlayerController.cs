@@ -104,6 +104,8 @@ public class PlayerController : MonoBehaviour
         characterController.Move(movement * Time.fixedDeltaTime);
     }
 
+
+
     private void HandleDashInput()
     {
         if (Input.GetMouseButtonDown(0) && !isGrounded && CanDash() && !isDashing)
@@ -332,4 +334,16 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawLine(transform.position, transform.position + Vector3.down * (groundCheckDistance + characterController.skinWidth));
         }
     }
+    
+    public void ForceTeleport(Vector3 newPosition)
+{
+    characterController.enabled = false;
+    transform.position = newPosition;
+    characterController.enabled = true;
+    
+    // Reseta estados de movimento
+    velocity = Vector3.zero;
+    isDashing = false;
+    animator.SetBool(IsDashingHash, false);
+}
 }
