@@ -13,6 +13,7 @@ public class GroundSlamAttack : MonoBehaviour
     [SerializeField] private float warningDuration = 1f;
     [SerializeField] private float postWarningPause = 0.2f;
     [SerializeField] private float impactActiveDuration = 0.5f;
+    [SerializeField] private float warningFadeInDuration = 0.3f;
     [SerializeField] private float fadeOutDuration = 0.3f;
 
     [Header("Damage Settings")]
@@ -21,6 +22,12 @@ public class GroundSlamAttack : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask safeZoneLayer;
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip impactSound;
+    [SerializeField] private AudioClip warningSound;
+    [SerializeField, Range(0f, 1f)] private float impactVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float warningVolume = 1f;
 
     [Header("Camera Shake")]
     [SerializeField] private CameraController cameraController;
@@ -79,23 +86,34 @@ public class GroundSlamAttack : MonoBehaviour
         _isAttacking = true;
 
         // Phase 1: Warning flash
+        // Phase 1: Warning flash
+        if (audioSource != null && warningSound != null)
+        {
+            audioSource.PlayOneShot(warningSound, warningVolume);
+        }
+
+
         if (warningRenderer != null)
         {
-            yield return StartCoroutine(FadeMaterial(warningRenderer.material, 0, 0.8f, warningDuration));
+            yield return StartCoroutine(FadeMaterial(warningRenderer.material, 0, 0.8f, warningFadeInDuration));
+            yield return new WaitForSeconds(warningDuration - warningFadeInDuration); // rest of the warning duration
         }
         else
         {
             yield return new WaitForSeconds(warningDuration);
         }
 
+
         // Phase 2: Brief pause before impact
         yield return new WaitForSeconds(postWarningPause);
 
         // Phase 3: Impact effects
-        if (damageCollider != null)
+        // Phase 3: Impact effects
+        if (audioSource != null && impactSound != null)
         {
-            damageCollider.enabled = true;
+            audioSource.PlayOneShot(impactSound, impactVolume);
         }
+
 
         // Immediately hide warning sprite when impact appears
         if (warningRenderer != null)
@@ -112,6 +130,12 @@ public class GroundSlamAttack : MonoBehaviour
         if (cameraController != null)
         {
             cameraController.ShakeCamera(shakeDuration, shakeIntensity, shakeRotationAmount);
+        }
+
+        // Play impact sound
+        if (audioSource != null && impactSound != null)
+        {
+            audioSource.PlayOneShot(impactSound);
         }
 
         PlayExplosionEffect();
