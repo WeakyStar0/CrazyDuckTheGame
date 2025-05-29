@@ -7,7 +7,11 @@ TagManager:
   - Ground
   - Enemy
   - Bullet
+<<<<<<< HEAD
   - FxTemporaire
+=======
+  - DeathZone
+>>>>>>> cdb76ae5564354714db4dad122bc840f07c34709
   layers:
   - Default
   - TransparentFX

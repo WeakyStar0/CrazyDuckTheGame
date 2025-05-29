@@ -149,6 +149,8 @@ public class EnemyHealth : MonoBehaviour
         Destroy(gameObject, deathSound != null ? deathSound.length : 0.1f);
     }
 
+    
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
