@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
@@ -22,6 +23,14 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float knockbackCameraFollowSpeed = 5f;
     [SerializeField] private float dashCameraFollowSpeed = 15f;
 
+    [Header("Camera Shake")]
+    [SerializeField] private float defaultShakeDuration = 0.5f;
+    [SerializeField] private float defaultShakeIntensity = 5f;
+    [SerializeField] private float defaultShakeRotationAmount = 5f;
+    [SerializeField] private Transform cameraRoot; // what you move/rotate normally
+    [SerializeField] private Transform shakeContainer; // this is where shake gets applied
+
+
     private float currentCameraDistance;
     private float cameraDistanceSmoothVelocity;
     private float xRotation;
@@ -34,6 +43,9 @@ public class CameraController : MonoBehaviour
     private Vector3 dashCameraOffset;
     private Vector3 preDashCameraPosition;
     private Quaternion preDashCameraRotation;
+    private Coroutine shakeCoroutine;
+    private Vector3 originalCamPos;
+    private Quaternion originalCamRot;
 
     private void Start()
     {
@@ -68,10 +80,10 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!isCameraLocked)
+        if (!isCameraLocked && shakeCoroutine == null)
         {
             cameraPivot.localPosition = new Vector3(0, currentCameraHeight, 0);
-            
+
             if (isDuringDash)
             {
                 HandleDashCamera();
@@ -87,42 +99,82 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void ShakeCamera(float duration, float intensity, float rotationAmount)
+    {
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+        }
+        shakeCoroutine = StartCoroutine(ShakeCameraCoroutine(duration, intensity, rotationAmount));
+    }
+
+    public void ShakeCamera()
+    {
+        ShakeCamera(defaultShakeDuration, defaultShakeIntensity, defaultShakeRotationAmount);
+    }
+
+    private IEnumerator ShakeCameraCoroutine(float duration, float intensity, float rotationAmount)
+    {
+        Vector3 originalLocalPos = shakeContainer.localPosition;
+        Quaternion originalLocalRot = shakeContainer.localRotation;
+
+        float elapsed = 0f;
+        float halfDuration = duration * 0.5f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float intensityMultiplier = 1f - Mathf.Clamp01((elapsed - halfDuration) / halfDuration);
+
+            Vector3 posOffset = new Vector3(
+                Random.Range(-1f, 1f) * intensity * intensityMultiplier,
+                Random.Range(-1f, 1f) * intensity * intensityMultiplier,
+                0f
+            );
+
+            Vector3 rotOffset = new Vector3(
+                Random.Range(-1f, 1f) * rotationAmount * intensityMultiplier,
+                Random.Range(-1f, 1f) * rotationAmount * intensityMultiplier,
+                Random.Range(-1f, 1f) * rotationAmount * intensityMultiplier
+            );
+
+            shakeContainer.localPosition = originalLocalPos + posOffset;
+            shakeContainer.localRotation = originalLocalRot * Quaternion.Euler(rotOffset);
+
+            yield return null;
+        }
+
+        shakeContainer.localPosition = originalLocalPos;
+        shakeContainer.localRotation = originalLocalRot;
+        shakeCoroutine = null;
+    }
+
     public void OnPlayerDash()
     {
         isDuringDash = true;
-        // Salva a posição e rotação da câmera antes do dash
         preDashCameraPosition = playerCamera.transform.position;
         preDashCameraRotation = playerCamera.transform.rotation;
     }
 
     private void HandleDashCamera()
     {
-        // Calcula a direção da câmera em relação ao jogador
         Vector3 cameraDirection = (preDashCameraPosition - playerTransform.position).normalized;
-        
-        // Posição alvo mantendo a distância original
         Vector3 targetPosition = playerTransform.position + cameraDirection * currentCameraDistance;
-        
-        // Aplica suavização ao movimento
+
         playerCamera.transform.position = Vector3.Lerp(
-            playerCamera.transform.position, 
-            targetPosition, 
-            dashCameraFollowSpeed * Time.deltaTime);
-            
-        // Mantém a rotação original
-        playerCamera.transform.rotation = Quaternion.Lerp(
-            playerCamera.transform.rotation, 
-            preDashCameraRotation, 
+            playerCamera.transform.position,
+            targetPosition,
             dashCameraFollowSpeed * Time.deltaTime);
 
-        // Verifica se o dash terminou (isso deve ser controlado pelo PlayerController)
-        // Aqui apenas mantemos o comportamento da câmera
+        playerCamera.transform.rotation = Quaternion.Lerp(
+            playerCamera.transform.rotation,
+            preDashCameraRotation,
+            dashCameraFollowSpeed * Time.deltaTime);
     }
 
     public void EndDash()
     {
         isDuringDash = false;
-        // Retorna ao comportamento normal da câmera
         HandleCameraCollision();
     }
 
@@ -130,7 +182,7 @@ public class CameraController : MonoBehaviour
     {
         isCameraLocked = shouldLock;
         isDuringKnockback = shouldLock;
-        
+
         if (shouldLock)
         {
             knockbackCameraOffset = playerCamera.transform.position - playerTransform.position;
@@ -146,13 +198,13 @@ public class CameraController : MonoBehaviour
     {
         Vector3 targetPosition = playerTransform.position + knockbackCameraOffset;
         playerCamera.transform.position = Vector3.Lerp(
-            playerCamera.transform.position, 
-            targetPosition, 
+            playerCamera.transform.position,
+            targetPosition,
             knockbackCameraFollowSpeed * Time.deltaTime);
-            
+
         playerCamera.transform.rotation = Quaternion.Lerp(
-            playerCamera.transform.rotation, 
-            cameraPivot.rotation, 
+            playerCamera.transform.rotation,
+            cameraPivot.rotation,
             knockbackCameraFollowSpeed * Time.deltaTime);
     }
 
@@ -201,5 +253,20 @@ public class CameraController : MonoBehaviour
         Vector3 finalCameraPos = cameraPivot.position - cameraPivot.forward * currentCameraDistance;
         playerCamera.transform.position = finalCameraPos;
         playerCamera.transform.rotation = cameraPivot.rotation;
+    }
+
+    private void OnDisable()
+    {
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+            shakeCoroutine = null;
+
+            if (playerCamera != null)
+            {
+                playerCamera.transform.position = originalCamPos;
+                playerCamera.transform.rotation = originalCamRot;
+            }
+        }
     }
 }
