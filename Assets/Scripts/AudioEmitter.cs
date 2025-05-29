@@ -19,7 +19,7 @@ public class AudioEmitter : MonoBehaviour
 
     [Header("Opcionais")]
     public bool showDebugGizmos = true;
-    public Color gizmoColor = Color.blue;
+    public Color gizmoColor = Color.green;
     public bool showOcclusionDebug = false;
 
     private AudioSource audioSource;

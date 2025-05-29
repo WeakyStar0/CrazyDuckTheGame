@@ -17,7 +17,11 @@ TagManager:
   - UI
   - Ground
   - Player
+<<<<<<< HEAD
   - SafePillars
+=======
+  - Walls
+>>>>>>> a77c2eb65f949f9e545c05ad7b8d58cfb01497df
   - 
   - 
   - 
