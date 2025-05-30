@@ -1,16 +1,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
+[System.Serializable]
 public class MenuManager : MonoBehaviour 
 {
+    [Header ("scene")]
+    [SerializeField] public string SceneName = "Tutorial";
+    [SerializeField] public string SceneCredits = "Credits";
+
     public void LoadGame()
     {
-        SceneManager.LoadScene("GameScene"); // troca "GameScene" pelo nome da tua cena de jogo
+        SceneManager.LoadScene(SceneName); 
     }
 
     public void LoadCredits()
     {
-        SceneManager.LoadScene("CreditsScene"); // troca "CreditsScene" pelo nome da tua cena de créditos
+        SceneManager.LoadScene(SceneCredits); 
     }
 }
-//código do menu, vai se adicionar mais cenas em caso de termos mis botões - mark
