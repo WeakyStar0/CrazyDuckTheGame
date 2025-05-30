@@ -3,29 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags:
-  - Ground
-  - Enemy
-  - Bullet
-<<<<<<< HEAD
-  - FxTemporaire
-=======
-  - DeathZone
->>>>>>> cdb76ae5564354714db4dad122bc840f07c34709
+  tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Enemy
+  - 
   - Water
   - UI
-  - Ground
-  - Player
-<<<<<<< HEAD
-  - SafePillars
-=======
-  - Walls
->>>>>>> a77c2eb65f949f9e545c05ad7b8d58cfb01497df
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -55,10 +43,3 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
-  - Light Layer 1
-  - Light Layer 2
-  - Light Layer 3
-  - Light Layer 4
-  - Light Layer 5
-  - Light Layer 6
-  - Light Layer 7
