@@ -35,14 +35,11 @@ public class GroundSlamAttack : MonoBehaviour
     [SerializeField] private float shakeIntensity = 5f;
     [SerializeField] private float shakeRotationAmount = 5f;
 
-
-
     private Coroutine _attackRoutine;
     private bool _isAttacking;
 
     private void Awake()
     {
-        // Initialize camera reference
         if (cameraController == null)
         {
             cameraController = FindObjectOfType<CameraController>();
@@ -52,23 +49,21 @@ public class GroundSlamAttack : MonoBehaviour
             }
         }
 
-        // Initialize damage collider
         if (damageCollider != null)
         {
             damageCollider.enabled = false;
         }
 
-        // Initialize visual effects
         if (warningRenderer != null)
         {
             SetMaterialAlpha(warningRenderer.material, 0);
         }
+
         if (impactRenderer != null)
         {
             SetMaterialAlpha(impactRenderer.material, 0);
         }
 
-        // Initialize particles
         if (explosionParticles != null)
         {
             explosionParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -86,36 +81,30 @@ public class GroundSlamAttack : MonoBehaviour
         _isAttacking = true;
 
         // Phase 1: Warning flash
-        // Phase 1: Warning flash
         if (audioSource != null && warningSound != null)
         {
             audioSource.PlayOneShot(warningSound, warningVolume);
         }
 
-
         if (warningRenderer != null)
         {
             yield return StartCoroutine(FadeMaterial(warningRenderer.material, 0, 0.8f, warningFadeInDuration));
-            yield return new WaitForSeconds(warningDuration - warningFadeInDuration); // rest of the warning duration
+            yield return new WaitForSeconds(warningDuration - warningFadeInDuration);
         }
         else
         {
             yield return new WaitForSeconds(warningDuration);
         }
 
-
-        // Phase 2: Brief pause before impact
+        // Phase 2: Pause
         yield return new WaitForSeconds(postWarningPause);
 
-        // Phase 3: Impact effects
-        // Phase 3: Impact effects
+        // Phase 3: Impact
         if (audioSource != null && impactSound != null)
         {
             audioSource.PlayOneShot(impactSound, impactVolume);
         }
 
-
-        // Immediately hide warning sprite when impact appears
         if (warningRenderer != null)
         {
             SetMaterialAlpha(warningRenderer.material, 0);
@@ -126,25 +115,23 @@ public class GroundSlamAttack : MonoBehaviour
             StartCoroutine(FadeMaterial(impactRenderer.material, 0, 1f, 0.1f));
         }
 
-        // Trigger camera shake
+        if (damageCollider != null)
+        {
+            damageCollider.enabled = true;
+        }
+
         if (cameraController != null)
         {
             cameraController.ShakeCamera(shakeDuration, shakeIntensity, shakeRotationAmount);
         }
 
-        // Play impact sound
-        if (audioSource != null && impactSound != null)
-        {
-            audioSource.PlayOneShot(impactSound);
-        }
-
         PlayExplosionEffect();
         CheckForPlayerHit();
 
-        // Phase 4: Impact active duration
+        // Phase 4: Impact active
         yield return new WaitForSeconds(impactActiveDuration);
 
-        // Phase 5: Fade out impact effect
+        // Phase 5: Fade out
         if (impactRenderer != null)
         {
             float startAlpha = impactRenderer.material.color.a;
@@ -155,11 +142,11 @@ public class GroundSlamAttack : MonoBehaviour
             yield return new WaitForSeconds(fadeOutDuration);
         }
 
-        // Clean up
         if (damageCollider != null)
         {
             damageCollider.enabled = false;
         }
+
         _isAttacking = false;
     }
 
@@ -167,7 +154,6 @@ public class GroundSlamAttack : MonoBehaviour
     {
         if (explosionParticles == null || damageCollider == null) return;
 
-        // Position particles at damage center with offset and play
         explosionParticles.transform.position = damageCollider.bounds.center + particleSpawnOffset;
         explosionParticles.Play();
     }
@@ -189,7 +175,6 @@ public class GroundSlamAttack : MonoBehaviour
             yield return null;
         }
 
-        // Final set
         color.a = toAlpha;
         material.color = color;
     }
@@ -207,13 +192,12 @@ public class GroundSlamAttack : MonoBehaviour
     {
         Collider[] safeZones = Physics.OverlapSphere(
             playerTransform.position,
-            0.1f, // Small radius around player center
+            0.1f,
             safeZoneLayer
         );
 
         return safeZones.Length > 0;
     }
-
 
     private void CheckForPlayerHit()
     {
@@ -226,22 +210,23 @@ public class GroundSlamAttack : MonoBehaviour
             playerLayer
         );
 
+        Debug.Log("Detected " + hits.Length + " hit(s)");
+
         foreach (Collider hit in hits)
         {
+            Debug.Log("Hit object: " + hit.name);
+
             if (hit.TryGetComponent<PlayerHealth>(out PlayerHealth player))
             {
-                // Check if player is in a safe zone
-                if (IsPlayerInSafeZone(player.transform))
-                {
-                    Debug.Log("Player is in safe zone — no damage.");
-                    continue;
-                }
-
+                Debug.Log("PlayerHealth found!");
                 player.TakeDamage(damage, transform.position);
+            }
+            else
+            {
+                Debug.Log("No PlayerHealth component on " + hit.name);
             }
         }
     }
-
 
     private void OnDisable()
     {
@@ -251,7 +236,6 @@ public class GroundSlamAttack : MonoBehaviour
             _attackRoutine = null;
         }
 
-        // Clean up effects
         if (damageCollider != null)
         {
             damageCollider.enabled = false;
