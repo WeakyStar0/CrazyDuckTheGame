@@ -218,7 +218,13 @@ public class GroundSlamAttack : MonoBehaviour
 
             if (hit.TryGetComponent<PlayerHealth>(out PlayerHealth player))
             {
-                Debug.Log("PlayerHealth found!");
+                if (IsPlayerInSafeZone(player.transform))
+                {
+                    Debug.Log("Player is in safe zone. No damage applied.");
+                    continue;
+                }
+
+                Debug.Log("PlayerHealth found and not in safe zone!");
                 player.TakeDamage(damage, transform.position);
             }
             else
