@@ -5678,7 +5678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfab8c9b5f0608d499b45eab75bb6587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 396609465220166209, guid: 26dad53ed4dff4d49bdddfb9f83c05dd, type: 3}
+  projectilePrefab: {fileID: 193715465091988106, guid: 7f731301161d2b24caa57b2e154d968d, type: 3}
   projectileSpawnPoint: {fileID: 397463478}
   projectileCooldown: 2
   projectileOffset: {x: 0, y: 0, z: 0}
