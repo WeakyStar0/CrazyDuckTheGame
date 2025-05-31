@@ -22,6 +22,11 @@ public class PlayerHealth : MonoBehaviour
     public float flashDuration = 0.1f;
     public Color damageColor = Color.red;
     public string damageTrigger = "TakeDamage";
+    public string getUpTrigger = "GetUp";
+    
+    [Header("Animation Settings")]
+    public float getUpToIdleBlendTime = 0.3f;
+    public float getUpAnimationLength = 1f;
     
     private Image[] healthIcons;
     private int currentHealth;
@@ -90,92 +95,121 @@ public class PlayerHealth : MonoBehaviour
 
     private void RespawnPlayer()
     {
-        // Reinicia status
         IsDead = false;
         currentHealth = maxHealth;
         UpdateHealthUI();
         isInvincible = false;
 
-        // Reativa componentes
         foreach (Renderer r in playerRenderers) r.enabled = true;
         GetComponent<Collider>().enabled = true;
 
-        // Busca a DeathZone para respawn
+        ResetToIdle();
+
         DeathZone deathZone = FindFirstObjectByType<DeathZone>();
         if (deathZone != null)
         {
-            // Teleporta o jogador para a safePosition
             transform.position = deathZone.safePosition;
             Debug.Log("RESPAWN na posição: " + deathZone.safePosition);
         }
         else
         {
             Debug.LogError("DeathZone não encontrada!");
-            transform.position = Vector3.zero; // Fallback
+            transform.position = Vector3.zero;
         }
 
-        // Reseta inimigos (opcional)
         ResetAllEnemies();
     }
 
     public void TakeDamageAndTeleport(int damageAmount, Vector3 teleportPosition)
-{
-    if (isInvincible || IsDead) return;
-
-  
-    currentHealth -= damageAmount;
-    UpdateHealthUI();
-
-    
-    PlayerController playerController = GetComponent<PlayerController>();
-    if (playerController != null)
     {
-        playerController.ForceTeleport(teleportPosition); 
+        if (isInvincible || IsDead) return;
+
+        currentHealth -= damageAmount;
+        UpdateHealthUI();
+
+        PlayerController playerController = GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.ForceTeleport(teleportPosition); 
+        }
+        else
+        {
+            transform.position = teleportPosition; 
+        }
+
+        if (animator != null) 
+        {
+            animator.ResetTrigger(damageTrigger);
+            animator.SetTrigger(damageTrigger);
+        }
+        FlashDamageEffect();
+
+        isInvincible = true;
+        invincibilityTimer = invincibilityTime;
+
+        if (currentHealth <= 0) 
+        {
+            Die();
+        }
+        else
+        {
+            StartCoroutine(TriggerGetUpAfterDelay(0.5f));
+        }
     }
-    else
+
+    private void ResetToIdle()
     {
-        transform.position = teleportPosition; 
+        if (animator != null)
+        {
+            animator.ResetTrigger(damageTrigger);
+            animator.ResetTrigger(getUpTrigger);
+            animator.Play("Idle", 0, 0f);
+            animator.Update(0f);
+        }
     }
-  
 
-  
-    if (animator != null) animator.SetTrigger(damageTrigger);
-    FlashDamageEffect();
-
-
-    isInvincible = true;
-    invincibilityTimer = invincibilityTime;
-
-    if (currentHealth <= 0) Die();
-}
-
-private IEnumerator ReenableCharacterController(CharacterController controller)
-{
-    yield return new WaitForSeconds(0.1f);
-    if (controller != null)
+    private IEnumerator SmoothTransitionToIdle()
     {
-        controller.enabled = true;
+        if (animator != null)
+        {
+            // Espera até que a animação GetUp esteja quase terminando
+            yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && 
+                                          animator.GetCurrentAnimatorStateInfo(0).IsName("GetUp"));
+            
+            // Transição suave para Idle
+            animator.CrossFade("Idle", getUpToIdleBlendTime);
+        }
     }
-    
-    // Reseta a velocidade para evitar bugs
-    Rigidbody rb = GetComponent<Rigidbody>();
-    if (rb != null)
-    {
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-    }
-}
 
-    private IEnumerator RestorePhysics(Rigidbody rb)
+    private IEnumerator TriggerGetUpAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(0.1f);
-        if (rb != null) rb.isKinematic = false;
+        yield return new WaitForSeconds(delay);
+        if (animator != null && !IsDead)
+        {
+            animator.ResetTrigger(getUpTrigger);
+            animator.SetTrigger(getUpTrigger);
+            StartCoroutine(SmoothTransitionToIdle());
+            
+            // Backup caso a transição automática falhe
+            StartCoroutine(ForceIdleAfterAnimation(getUpAnimationLength + 0.5f));
+        }
+    }
+
+    private IEnumerator ForceIdleAfterAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ResetToIdle();
+    }
+
+    // Chamado por Animation Event
+    public void OnGetUpComplete()
+    {
+        ResetToIdle();
     }
 
     private void ResetAllEnemies()
     {
         EnemyAI[] allEnemies = FindObjectsByType<EnemyAI>(FindObjectsSortMode.None);
-
         foreach (EnemyAI enemy in allEnemies)
         {
             enemy.ResetEnemy();
@@ -194,33 +228,38 @@ private IEnumerator ReenableCharacterController(CharacterController controller)
         }
     }
 
- public void TakeDamage(int damageAmount, Vector3 enemyPosition)
-{
-    if (isInvincible || currentHealth <= 0) return;
-    
-    currentHealth -= damageAmount;
-    UpdateHealthUI();
-    
-    if (animator != null)
+    public void TakeDamage(int damageAmount, Vector3 enemyPosition)
     {
-        animator.SetTrigger(damageTrigger);
+        if (isInvincible || currentHealth <= 0) return;
+        
+        currentHealth -= damageAmount;
+        UpdateHealthUI();
+        
+        if (animator != null)
+        {
+            animator.ResetTrigger(damageTrigger);
+            animator.SetTrigger(damageTrigger);
+        }
+        
+        if (knockback != null)
+        {
+            knockback.ApplyKnockback(enemyPosition);
+        }
+        
+        FlashDamageEffect();
+        
+        isInvincible = true;
+        invincibilityTimer = invincibilityTime;
+        
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            StartCoroutine(TriggerGetUpAfterDelay(0.5f));
+        }
     }
-    
-    if (knockback != null)
-    {
-        knockback.ApplyKnockback(enemyPosition);
-    }
-    
-    FlashDamageEffect();
-    
-    isInvincible = true;
-    invincibilityTimer = invincibilityTime;
-    
-    if (currentHealth <= 0)
-    {
-        Die();
-    }
-}
 
     private void FlashDamageEffect()
     {
@@ -268,26 +307,22 @@ private IEnumerator ReenableCharacterController(CharacterController controller)
     }
 
     private void Die()
-{
-    IsDead = true;
-    
-    // Desativa colisores temporariamente
-    Collider col = GetComponent<Collider>();
-    if (col != null) col.enabled = false;
-    
-    // Desativa renderização
-    foreach (Renderer r in playerRenderers)
     {
-        if (r != null) r.enabled = false;
+        IsDead = true;
+        
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+        
+        foreach (Renderer r in playerRenderers)
+        {
+            if (r != null) r.enabled = false;
+        }
+        
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.linearVelocity = Vector3.zero;
+        
+        Invoke("RespawnPlayer", 1.5f);
     }
-    
-    // Previne qualquer movimento adicional
-    Rigidbody rb = GetComponent<Rigidbody>();
-    if (rb != null) rb.linearVelocity = Vector3.zero;
-    
-    // Agenda respawn após 1.5 segundos
-    Invoke("RespawnPlayer", 1.5f);
-}
 
     public void Heal(int healAmount)
     {

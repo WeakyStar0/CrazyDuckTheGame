@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Bullet
   - FxTemporaire
+  - DeathZone
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - UI
   - Player
   - SafePillar
-  - 
+  - Walls
   - 
   - 
   - 
