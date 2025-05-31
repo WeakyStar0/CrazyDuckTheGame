@@ -29,26 +29,32 @@ public class SwordSlash : MonoBehaviour
     public float airDashForce = 10f;
     public float airDashDuration = 0.3f;
     
+    [Header("Animation")]
+    public string groundSlashTrigger = "GroundSlash";
+    public string airSlashTrigger = "AirSlash";
+    
     private float lastSlashTime;
     private AudioSource audioSource;
     private PlayerController playerController;
     private CharacterController characterController;
     private bool isDashing = false;
     private GameObject currentSlashEffect;
+    private Animator animator;
 
     void Start()
-{
-    // Verifica se já existe um AudioSource, se não, cria um
-    audioSource = GetComponent<AudioSource>();
-    if (audioSource == null)
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
-        Debug.Log("AudioSource adicionado automaticamente ao Player");
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            Debug.Log("AudioSource adicionado automaticamente ao Player");
+        }
+        
+        playerController = GetComponent<PlayerController>();
+        characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
-    
-    playerController = GetComponent<PlayerController>();
-    characterController = GetComponent<CharacterController>();
-}
+
     void Update()
     {
         if (Input.GetKeyDown(slashKey) && CanSlash())
@@ -64,17 +70,17 @@ public class SwordSlash : MonoBehaviour
         bool isGrounded = characterController != null && characterController.isGrounded;
         float cooldown = isGrounded ? groundCooldown : airCooldown;
 
-        // Verifica se o player controller está em dash
         bool isDashing = playerController != null && playerController.IsDashing();
 
         return Time.time > lastSlashTime + cooldown && !isDashing;
     }
 
-
-
     void ExecuteSlash()
     {
         bool isGrounded = characterController != null && characterController.isGrounded;
+        
+        // Trigger da animação
+        TriggerSlashAnimation(isGrounded);
         
         // Criar efeito visual
         CreateSlashEffect(isGrounded);
@@ -92,6 +98,20 @@ public class SwordSlash : MonoBehaviour
         }
         
         lastSlashTime = Time.time;
+    }
+
+    void TriggerSlashAnimation(bool isGrounded)
+    {
+        if (animator == null) return;
+        
+        if (isGrounded)
+        {
+            animator.SetTrigger(groundSlashTrigger);
+        }
+        else
+        {
+            animator.SetTrigger(airSlashTrigger);
+        }
     }
 
     void CreateSlashEffect(bool isGrounded)
@@ -114,54 +134,46 @@ public class SwordSlash : MonoBehaviour
     }
 
     void PlaySlashSound(bool isGrounded)
-{
-    if (audioSource == null) return;
-    
-    AudioClip sound = isGrounded ? swingSound : airSwingSound;
-    if (sound != null)
     {
-        audioSource.PlayOneShot(sound, volume);
-    }
-}
-
-   void ApplySlashDamage(bool isGrounded)
-{
-    Vector3 attackPosition = transform.position + transform.forward * slashRange;
-    Collider[] hitEnemies = Physics.OverlapSphere(attackPosition, slashRange);
-    
-    foreach (Collider enemy in hitEnemies)
-    {
-        // Verifica se é um inimigo (por tag ou componente)
-        if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null || enemy.GetComponent<PatutHealth>() != null)
+        if (audioSource == null) return;
+        
+        AudioClip sound = isGrounded ? swingSound : airSwingSound;
+        if (sound != null)
         {
-            Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
-            float angle = Vector3.Angle(transform.forward, directionToEnemy);
-            
-            if (angle <= slashAngle/2)
+            audioSource.PlayOneShot(sound, volume);
+        }
+    }
+
+    void ApplySlashDamage(bool isGrounded)
+    {
+        Vector3 attackPosition = transform.position + transform.forward * slashRange;
+        Collider[] hitEnemies = Physics.OverlapSphere(attackPosition, slashRange);
+        
+        foreach (Collider enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null || enemy.GetComponent<PatutHealth>() != null)
             {
-                // Tenta EnemyHealth primeiro
-                EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-                if (enemyHealth != null)
-                {
-                    enemyHealth.TakeDamage(slashDamage, transform.position);
-                    Debug.Log("Inimigo atingido: " + enemy.name);
-                    continue;
-                }
+                Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
+                float angle = Vector3.Angle(transform.forward, directionToEnemy);
                 
-                // Se não encontrou, tenta PatutHealth
-                PatutHealth patutHealth = enemy.GetComponent<PatutHealth>();
-                if (patutHealth != null)
+                if (angle <= slashAngle/2)
                 {
-                    patutHealth.TakeDamage(slashDamage, transform.position);
-                    Debug.Log("Boss atingido: " + enemy.name);
+                    EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+                    if (enemyHealth != null)
+                    {
+                        enemyHealth.TakeDamage(slashDamage, transform.position);
+                        continue;
+                    }
+                    
+                    PatutHealth patutHealth = enemy.GetComponent<PatutHealth>();
+                    if (patutHealth != null)
+                    {
+                        patutHealth.TakeDamage(slashDamage, transform.position);
+                    }
                 }
             }
         }
     }
-    
-    Debug.DrawLine(transform.position, attackPosition, Color.red, 1f);
-    Debug.DrawRay(attackPosition, Vector3.up, Color.red, 1f);
-}
 
     IEnumerator AirDash()
     {
@@ -185,15 +197,5 @@ public class SwordSlash : MonoBehaviour
             currentSlashEffect.transform.position = transform.position + transform.TransformDirection(effectOffset);
             currentSlashEffect.transform.rotation = transform.rotation;
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        // Visualizar área de ataque
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(
-            transform.position + transform.forward * (slashRange/2),
-            slashRange/2
-        );
     }
 }
