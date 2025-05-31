@@ -9,7 +9,7 @@ public class PlayerKnockback : MonoBehaviour
     public float gravityScale = 3f;
     public float stunDuration = 0.5f;
     public float groundCheckDistance = 0.2f;
-    public float getUpDuration = 1f; // Duração da animação de levantar
+    public float getUpDuration = 1f;
     public LayerMask groundLayer;
     
     [Header("Visual Effects")]
@@ -20,12 +20,12 @@ public class PlayerKnockback : MonoBehaviour
     private CharacterController characterController;
     private CameraController cameraController;
     private Renderer[] playerRenderers;
-    private Color[] originalColors;
+    private Material[][] originalMaterials; // Armazena todos os materiais originais
     private bool isKnockbackActive = false;
-    private bool isGettingUp = false; // Novo estado para controlar a animação de levantar
+    private bool isGettingUp = false;
     private Vector3 knockbackVelocity;
     private Coroutine flashCoroutine;
-    private Coroutine getUpCoroutine; // Coroutine para controlar o tempo de levantar
+    private Coroutine getUpCoroutine;
     private float stunTimer;
     private bool wasGrounded;
     private Animator animator;
@@ -38,10 +38,16 @@ public class PlayerKnockback : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         
         playerRenderers = GetComponentsInChildren<Renderer>();
-        originalColors = new Color[playerRenderers.Length];
+        originalMaterials = new Material[playerRenderers.Length][];
+        
         for (int i = 0; i < playerRenderers.Length; i++)
         {
-            originalColors[i] = playerRenderers[i].material.color;
+            // Armazena todos os materiais originais de cada renderer
+            originalMaterials[i] = new Material[playerRenderers[i].materials.Length];
+            for (int j = 0; j < playerRenderers[i].materials.Length; j++)
+            {
+                originalMaterials[i][j] = new Material(playerRenderers[i].materials[j]);
+            }
         }
     }
 
@@ -63,7 +69,6 @@ public class PlayerKnockback : MonoBehaviour
         
         playerController.enabled = false;
         
-        // Trigger da animação de knockback
         animator.SetTrigger("Knockback");
         
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -103,10 +108,8 @@ public class PlayerKnockback : MonoBehaviour
         isKnockbackActive = false;
         isGettingUp = true;
         
-        // Trigger da animação de levantar
         animator.SetTrigger("GetUp");
         
-        // Inicia a coroutine para terminar o estado de levantar
         if (getUpCoroutine != null) StopCoroutine(getUpCoroutine);
         getUpCoroutine = StartCoroutine(FinishGettingUp());
     }
@@ -122,15 +125,25 @@ public class PlayerKnockback : MonoBehaviour
     {
         while (isKnockbackActive || isGettingUp)
         {
-            foreach (var renderer in playerRenderers)
+            // Aplica a cor vermelha a todos os materiais de todos os renderers
+            for (int i = 0; i < playerRenderers.Length; i++)
             {
-                renderer.material.color = knockbackFlashColor;
+                var materials = playerRenderers[i].materials;
+                for (int j = 0; j < materials.Length; j++)
+                {
+                    materials[j].color = knockbackFlashColor;
+                }
             }
             yield return new WaitForSeconds(flashInterval);
             
+            // Restaura as cores originais
             for (int i = 0; i < playerRenderers.Length; i++)
             {
-                playerRenderers[i].material.color = originalColors[i];
+                var materials = playerRenderers[i].materials;
+                for (int j = 0; j < materials.Length; j++)
+                {
+                    materials[j].color = originalMaterials[i][j].color;
+                }
             }
             yield return new WaitForSeconds(flashInterval);
         }
@@ -141,9 +154,21 @@ public class PlayerKnockback : MonoBehaviour
         isGettingUp = false;
         playerController.enabled = true;
         
+        // Garante que todas as cores sejam restauradas
         for (int i = 0; i < playerRenderers.Length; i++)
         {
-            playerRenderers[i].material.color = originalColors[i];
+            var materials = playerRenderers[i].materials;
+            for (int j = 0; j < materials.Length; j++)
+            {
+                materials[j].color = originalMaterials[i][j].color;
+            }
+        }
+        
+        // Para garantir que a corrotina foi completamente finalizada
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+            flashCoroutine = null;
         }
     }
 }

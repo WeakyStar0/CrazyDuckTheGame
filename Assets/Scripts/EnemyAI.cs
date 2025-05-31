@@ -124,29 +124,46 @@ public class EnemyAI : MonoBehaviour
         }
     }
     
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+
+    public void ResetEnemy()
 {
-    if (hit.collider.CompareTag("Player") && canAttack)
+    isChasing = false;
+    canAttack = true;
+    attackTimer = 0f;
+    
+    if (patrolScript != null)
     {
-        PlayerKnockback playerKnockback = hit.collider.GetComponent<PlayerKnockback>();
-        PlayerHealth playerHealth = hit.collider.GetComponent<PlayerHealth>();
-        
-        if (playerKnockback != null)
+        patrolScript.enabled = true;
+        patrolScript.ResetPatrol();
+    }
+    
+    // Reseta a posição se necessário
+    // (adicione lógica específica se seus inimigos precisarem voltar para posições iniciais)
+}
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.CompareTag("Player") && canAttack)
         {
-            playerKnockback.ApplyKnockback(transform.position);
-            
-            if (playerHealth != null)
+            PlayerKnockback playerKnockback = hit.collider.GetComponent<PlayerKnockback>();
+            PlayerHealth playerHealth = hit.collider.GetComponent<PlayerHealth>();
+
+            if (playerKnockback != null)
             {
-                playerHealth.TakeDamage(damageAmount, transform.position);
+                playerKnockback.ApplyKnockback(transform.position);
+
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(damageAmount, transform.position);
+                }
+
+                canAttack = false;
+                patrolScript.enabled = false;
+                isChasing = false;
+                velocity = Vector3.zero;
             }
-            
-            canAttack = false;
-            patrolScript.enabled = false;
-            isChasing = false;
-            velocity = Vector3.zero;
         }
     }
-}
     
     void OnDrawGizmosSelected()
     {

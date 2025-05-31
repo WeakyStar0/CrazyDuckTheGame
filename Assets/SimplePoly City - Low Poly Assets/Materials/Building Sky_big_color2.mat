@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+<<<<<<< HEAD
+=======
+--- !u!114 &-4836988105952936413
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 9
+>>>>>>> c9f784b110d4723caed3174b44f0a48dce47cecc
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -26,7 +42,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
+<<<<<<< HEAD
         m_Texture: {fileID: 2800000, guid: 276815996ac5b2144bdd94486e724ca4, type: 3}
+=======
+        m_Texture: {fileID: 2800000, guid: 076be1fece3e1944da63c954eb29d137, type: 3}
+>>>>>>> c9f784b110d4723caed3174b44f0a48dce47cecc
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -50,7 +70,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
+<<<<<<< HEAD
         m_Texture: {fileID: 2800000, guid: 276815996ac5b2144bdd94486e724ca4, type: 3}
+=======
+        m_Texture: {fileID: 2800000, guid: 076be1fece3e1944da63c954eb29d137, type: 3}
+>>>>>>> c9f784b110d4723caed3174b44f0a48dce47cecc
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -121,6 +145,7 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+<<<<<<< HEAD
 --- !u!114 &8655044906209905417
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -134,3 +159,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 9
+=======
+>>>>>>> c9f784b110d4723caed3174b44f0a48dce47cecc
