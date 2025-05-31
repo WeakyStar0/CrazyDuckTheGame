@@ -124,34 +124,41 @@ public class SwordSlash : MonoBehaviour
     }
 }
 
-    void ApplySlashDamage(bool isGrounded)
+   void ApplySlashDamage(bool isGrounded)
 {
-    // Cria uma esfera de detecção à frente do jogador
     Vector3 attackPosition = transform.position + transform.forward * slashRange;
     Collider[] hitEnemies = Physics.OverlapSphere(attackPosition, slashRange);
     
     foreach (Collider enemy in hitEnemies)
     {
-        // Verifica se tem a tag "Enemy" ou componente EnemyHealth
-        if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null)
+        // Verifica se é um inimigo (por tag ou componente)
+        if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null || enemy.GetComponent<PatutHealth>() != null)
         {
-            // Verifica se está na frente do jogador
             Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
             float angle = Vector3.Angle(transform.forward, directionToEnemy);
             
             if (angle <= slashAngle/2)
             {
+                // Tenta EnemyHealth primeiro
                 EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
                 if (enemyHealth != null)
                 {
                     enemyHealth.TakeDamage(slashDamage, transform.position);
                     Debug.Log("Inimigo atingido: " + enemy.name);
+                    continue;
+                }
+                
+                // Se não encontrou, tenta PatutHealth
+                PatutHealth patutHealth = enemy.GetComponent<PatutHealth>();
+                if (patutHealth != null)
+                {
+                    patutHealth.TakeDamage(slashDamage, transform.position);
+                    Debug.Log("Boss atingido: " + enemy.name);
                 }
             }
         }
     }
     
-    // Debug visual
     Debug.DrawLine(transform.position, attackPosition, Color.red, 1f);
     Debug.DrawRay(attackPosition, Vector3.up, Color.red, 1f);
 }
