@@ -291,14 +291,7 @@ public class PlayerController : MonoBehaviour
             currentSpeedValue *= 0.5f;
         }
 
-        if (Mathf.Abs(directionX) > 0.1f)
-        {
-            playerVisual.localScale = new Vector3(
-                Mathf.Sign(directionX) * Mathf.Abs(playerVisual.localScale.x),
-                playerVisual.localScale.y,
-                playerVisual.localScale.z
-            );
-        }
+
 
         animator.SetFloat(SpeedHash, currentSpeedValue, 0.1f, Time.deltaTime);
         animator.SetFloat(DirectionXHash, directionX, 0.1f, Time.deltaTime);
