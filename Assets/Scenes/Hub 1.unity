@@ -6132,78 +6132,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 152095147e5492c41a9718b9b09863a4, type: 3}
   m_PrefabInstance: {fileID: 396176518}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &402797120
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 402797121}
-  - component: {fileID: 402797123}
-  - component: {fileID: 402797122}
-  m_Layer: 0
-  m_Name: dialoguetrigger (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &402797121
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 402797120}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -528.9, y: 125.2, z: -326.8}
-  m_LocalScale: {x: 0.11612, y: 0.11612, z: 0.11612}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 905308769}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &402797122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 402797120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95c3477a9391d884883e743a24bf7111, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  promptText3D: {fileID: 0}
-  message: "N\xEDvel 1"
-  interactionKey: 101
-  hubSceneName: City
-  isPromptZone: 1
-  isInteractionZone: 1
---- !u!65 &402797123
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 402797120}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 158.44135, y: 213.54549, z: 127.29174}
-  m_Center: {x: -35.556694, y: -4.548161, z: -37.957897}
 --- !u!1001 &416633420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9498,6 +9426,7 @@ Transform:
   - {fileID: 354333046}
   - {fileID: 2119319347}
   - {fileID: 1094783330}
+  - {fileID: 1545117796}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &643346488
@@ -9602,356 +9531,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 643346488}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &643845975
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 643845976}
-  - component: {fileID: 643845978}
-  - component: {fileID: 643845977}
-  m_Layer: 0
-  m_Name: dialoguetrigger (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &643845976
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643845975}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -401.6, y: 125.2, z: -299}
-  m_LocalScale: {x: 0.11612, y: 0.11612, z: 0.11612}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 905308769}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &643845977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643845975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 090f0faf2e217c149b0ea83a0f8e6a90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  messages:
-  - message: "Ok, esta \xE9 a situa\xE7\xE3o atual no laborat\xF3rio."
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Este \xE9 o laborat\xF3rio do Dr. Silverstein, um cientista muito renomado. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: 'Mas durante um experimento, algo correu mal. '
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: 'E isso soltou algo mau... algo sinistro... '
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Uma amea\xE7a escondida... "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "O seu nome \xE9... "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: CRAZY DUCK!
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Um terr\xEDvel vil\xE3o que apareceu fruto desse experimento que correu
-      mal. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "E este ex\xE9rcito de patos est\xE1 sob o comando dele."
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "E h\xE1 mais!"
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "O mais curioso \xE9 que tanto aqueles patos como aquele pato ciborgue
-      est\xE3o marcados como ideias ou prot\xF3tipos do Dr. Silverstein. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Mas nunca foram criados, est\xE3o marcados como inven\xE7\xF5es falhadas. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "O que explica porqu\xEA que este s\xEDtio \xE9 t\xE3o estranho. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: 'Prepara-te. '
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "N\xF3s estamos dentro da mente do Dr. Silverstein, onde todas as usas
-      ideias se tornaram realidade. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "E o Crazy Duck n\xE3o \xE9 nada mais sen\xE3o a persona malvada do
-      Dr. Silverstein. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "\xC9 como ele se imagina como vil\xE3o. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: 'Pelos vistos ele gosta muito de patos! '
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "E neste mundo dentro da mente do Dr. Silverstein \xE9 esse tal Crazy
-      Duck que reina como o grande ditador. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "E ele est\xE1 atr\xE1s de n\xF3s. Acho que ele nos v\xEA como anomalias."
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Temos de o derrotar. Mas precisamos de mais informa\xE7\xE3o. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: 'No entanto, eu acho que sei como podemos resolver isso. '
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Fragmentos da mem\xF3ria do Dr. Silverstein! Artefactos espalhados
-      pelo mundo. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Eu consigo-te guiar at\xE9 locais onde eles est\xE3o. Se os apanharmos,
-      descobriremos como derrotar o Crazy Duck e sair daqui. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Parece que \xE9 o in\xEDcio de uma aventura, meu caro. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "J\xE1 liguei um portal que nos leva a um s\xEDtio cheio de artefactos. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 5
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  - message: "Assim que estiveres pronto \xE9 s\xF3 entrar. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 3
-    typingSpeed: 0.025
-    fontSize: 50
-    skipKey: 101
-  triggerOnEnter: 1
-  triggerOnInteract: 0
-  interactKey: 101
-  destroyAfterTrigger: 1
-  requireTag: 1
-  requiredTag: Player
---- !u!65 &643845978
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643845975}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 158.44135, y: 213.54549, z: 127.29174}
-  m_Center: {x: -35.556694, y: -4.548161, z: -37.957897}
 --- !u!1 &645374212
 GameObject:
   m_ObjectHideFlags: 0
@@ -14436,8 +14015,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 924784987}
-  - {fileID: 643845976}
-  - {fileID: 402797121}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &924784986
@@ -23565,6 +23142,119 @@ Transform:
   m_Children: []
   m_Father: {fileID: 798755284}
   m_LocalEulerAnglesHint: {x: -59.571, y: 0, z: 0}
+--- !u!1 &1545117795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1545117796}
+  - component: {fileID: 1545117799}
+  - component: {fileID: 1545117798}
+  - component: {fileID: 1545117797}
+  m_Layer: 0
+  m_Name: Door_Single (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1545117796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545117795}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: -149, y: -68, z: 95.5}
+  m_LocalScale: {x: 5201.6997, y: 5201.6997, z: 5201.6997}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 632548180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &1545117797
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545117795}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7250910376441019101, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+--- !u!23 &1545117798
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545117795}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: -1580535799172915004, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+  - {fileID: 2781410738928257789, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+  - {fileID: -9003920172004352368, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+  - {fileID: 8161702950221214535, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+  - {fileID: -2588933649015344934, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1545117799
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545117795}
+  m_Mesh: {fileID: -7250910376441019101, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
 --- !u!1001 &1549041629
 PrefabInstance:
   m_ObjectHideFlags: 0
