@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class DialogueMessage
@@ -55,7 +56,7 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine autoAdvanceCoroutine;
     private Vector3 playerVelocityBeforeDialogue;
 
-    private void Awake()
+        private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -72,13 +73,75 @@ public class DialogueSystem : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
         
+        // Adicione este listener para detectar mudanças de cena
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        
         DeactivateAllUIElements();
     }
+    
+        private void OnDestroy()
+    {
+        // Remova o listener quando o objeto for destruído
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    InstantiateDialogueCanvas();
+    FindUIReferences();
+        
+        // Se o diálogo estava ativo, reative-o com as novas referências
+        if (dialogueActive)
+        {
+            DisplayCurrentMessage();
+        }
+    }
+    
+    private void InstantiateDialogueCanvas()
+{
+    if (GameObject.FindGameObjectWithTag("DialogueCanvas") == null)
+    {
+        GameObject canvasPrefab = Resources.Load<GameObject>("DialogueCanvas");
+        if (canvasPrefab != null)
+        {
+            Instantiate(canvasPrefab);
+        }
+    }
+}
+
+
+  private void FindUIReferences()
+{
+    // Encontra o Canvas primeiro
+    GameObject canvasObj = GameObject.FindGameObjectWithTag("DialogueCanvas");
+    if (canvasObj == null)
+    {
+        Debug.LogError("DialogueCanvas not found in scene! Make sure it's instantiated and tagged.");
+        return;
+    }
+
+    // Busca recursiva pelos elementos
+    dialoguePanel = FindChildByTag(canvasObj.transform, "DialoguePanel")?.gameObject;
+    characterImage = FindChildByTag(canvasObj.transform, "CharacterImage")?.GetComponent<Image>();
+    characterNameText = FindChildByTag(canvasObj.transform, "CharacterNameText")?.GetComponent<TMP_Text>();
+    dialogueText = FindChildByTag(canvasObj.transform, "DialogueText")?.GetComponent<TMP_Text>();
+    namePanel = FindChildByTag(canvasObj.transform, "NamePanel")?.gameObject;
+    skipButton = FindChildByTag(canvasObj.transform, "SkipButton")?.GetComponent<Button>();
+
+    // Configuração adicional
+    if (skipButton != null)
+    {
+        skipButton.onClick.RemoveAllListeners();
+        skipButton.onClick.AddListener(SkipDialogue);
+    }
+
+    playerController = FindFirstObjectByType<PlayerController>();
+}
 
     private void Start()
     {
         playerController = FindFirstObjectByType<PlayerController>();
-        
+
         if (characterImage != null)
         {
             characterInitialRotation = characterImage.transform.rotation;
@@ -91,6 +154,17 @@ public class DialogueSystem : MonoBehaviour
             skipButton.gameObject.SetActive(false);
         }
     }
+
+    private Transform FindChildByTag(Transform parent, string tag)
+{
+    foreach (Transform child in parent)
+    {
+        if (child.CompareTag(tag)) return child;
+        var result = FindChildByTag(child, tag);
+        if (result != null) return result;
+    }
+    return null;
+}
 
     private void DeactivateAllUIElements()
     {

@@ -49,12 +49,20 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (alreadyTriggered) return;
         
-        DialogueSystem.Instance.StartDialogue(messages);
-        alreadyTriggered = true;
-        
-        if (destroyAfterTrigger)
+        // Certifique-se de que o sistema de diálogo está pronto
+        if (DialogueSystem.Instance != null)
         {
-            Destroy(gameObject);
+            DialogueSystem.Instance.StartDialogue(messages);
+            alreadyTriggered = true;
+            
+            if (destroyAfterTrigger)
+            {
+                Destroy(gameObject);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("DialogueSystem instance not found!");
         }
     }
 }

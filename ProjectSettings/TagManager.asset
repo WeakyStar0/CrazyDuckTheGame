@@ -11,6 +11,13 @@ TagManager:
   - DeathZone
   - PromptZone
   - InteractionZone
+  - DialoguePanel
+  - NamePanel
+  - CharacterNameText
+  - DialogueText
+  - CharacterImage
+  - SkipButton
+  - DialogueCanvas
   layers:
   - Default
   - TransparentFX
