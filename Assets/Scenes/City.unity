@@ -16250,7 +16250,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 7ab1249794b60ac4bba6c45780b60c8f, type: 3}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: MaxDistance
-      value: 5.05
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: MinDistance
@@ -16302,7 +16302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: panLevelCustomCurve.m_Curve.Array.data[1].value
-      value: 0.93276036
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].inSlope
@@ -26557,7 +26557,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 7ab1249794b60ac4bba6c45780b60c8f, type: 3}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: MaxDistance
-      value: 5.05
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: MinDistance
@@ -34534,6 +34534,89 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 993569477170046714, guid: 6520c163caca7ce4283e20c85049a3e4, type: 3}
   m_PrefabInstance: {fileID: 737421988}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &747764221
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 747764222}
+  - component: {fileID: 747764224}
+  - component: {fileID: 747764223}
+  m_Layer: 0
+  m_Name: dialoguetrigger (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &747764222
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747764221}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1072.2, y: 151.6542, z: -53.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2088654160}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &747764223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747764221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090f0faf2e217c149b0ea83a0f8e6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messages:
+  - message: "Olha.... Cheg\xE1mos ao fim da Demo..."
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 60
+    skipKey: 101
+  triggerOnEnter: 1
+  triggerOnInteract: 0
+  interactKey: 101
+  destroyAfterTrigger: 1
+  requireTag: 1
+  requiredTag: Player
+--- !u!65 &747764224
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747764221}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 58.133774, y: 90.81539, z: 46.301582}
+  m_Center: {x: -28.566887, y: 13.037975, z: -17.7756}
 --- !u!1 &749297625
 GameObject:
   m_ObjectHideFlags: 0
@@ -38288,6 +38371,153 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 3181f15579d1b0c46872c9980226268b, type: 3}
   m_PrefabInstance: {fileID: 838701810}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &843471515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 843471516}
+  - component: {fileID: 843471518}
+  - component: {fileID: 843471517}
+  m_Layer: 0
+  m_Name: dialoguetrigger (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &843471516
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843471515}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 53.7, y: 151.6542, z: -420.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2088654160}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &843471517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843471515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090f0faf2e217c149b0ea83a0f8e6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messages:
+  - message: 'E agora? Estamos presos? '
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "A n\xE3o ser que..."
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: 'Eu consegui desbloquear uma nova habilidade para tu usares. '
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: 'Lembraste de como eu te ensinei a saltar? O Dr. Silverstein inventou
+      umas botas com propulsores que permitem saltar duas vezes. '
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Como estamos na mente dele, consegues aceder a essas habilidades como
+      se tivesses as pr\xF3prias botas. "
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Quando saltares, volta a clicar no espa\xE7o antes de aterrares e vais
+      conseguir saltar uma segunda vez permitindo-te alcan\xE7ar lugares antes imposs\xEDveis. "
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 10
+    typingSpeed: 0.025
+    fontSize: 40
+    skipKey: 101
+  - message: "Agora, olha \xE0 volta, podemos usar essa habilidade e fazer um novo
+      caminho para passar para o outro lado. "
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  triggerOnEnter: 1
+  triggerOnInteract: 0
+  interactKey: 101
+  destroyAfterTrigger: 1
+  requireTag: 1
+  requiredTag: Player
+--- !u!65 &843471518
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843471515}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 32.777145, y: 53.587833, z: 46.301582}
+  m_Center: {x: -1.6176987, y: -5.5758038, z: -17.7756}
 --- !u!1 &843800873 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5416186344305875156, guid: f518858be349926409b88c0c06af8b57, type: 3}
@@ -69426,6 +69656,164 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377974550}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1379625526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1379625527}
+  - component: {fileID: 1379625529}
+  - component: {fileID: 1379625528}
+  m_Layer: 0
+  m_Name: dialoguetrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1379625527
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379625526}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 164.8, y: 151.6542, z: -578.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2088654160}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1379625528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379625526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090f0faf2e217c149b0ea83a0f8e6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messages:
+  - message: 'Woah! '
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 1
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+  - message: 'Parece que estamos na cidade do tal Crazy Duck. '
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+  - message: "E acho que \xE9 uma cidade sob um regime de ditadura."
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Estou a detetar v\xE1rias leituras como daquele artefacto que vimos
+      no Hub. Se come\xE7ares a ouvir um som espec\xEDfico significa que est\xE1s
+      pr\xF3ximo de um."
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Em alternativa podes perguntar a algum dos habitantes da cidade, n\xE3o
+      sei \xE9 se eles v\xE3o ser grande ajuda."
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Mas tem cuidado, esta cidade est\xE1 cheia de guardas. Se eles te virem
+      vais ter de lutar. "
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "E qualquer coisa, podes voltar ao laborat\xF3rio onde est\xE1vamos
+      atrav\xE9s das tampas de esgoto. Elas funcionam como portais tamb\xE9m, confia."
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Vamos l\xE1 ent\xE3o, j\xE1 estou a ficar todo encharcado. "
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  triggerOnEnter: 1
+  triggerOnInteract: 0
+  interactKey: 101
+  destroyAfterTrigger: 1
+  requireTag: 1
+  requiredTag: Player
+--- !u!65 &1379625529
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379625526}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 58.133774, y: 50.77975, z: 46.301582}
+  m_Center: {x: -28.566887, y: -6.979845, z: -17.7756}
 --- !u!1 &1381444907 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 3181f15579d1b0c46872c9980226268b, type: 3}
@@ -70695,8 +71083,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.6
-  m_fontSizeBase: 17.6
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -103117,6 +103505,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2086678525}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2088654159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2088654160}
+  m_Layer: 0
+  m_Name: Dialogos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2088654160
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088654159}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -242.31947, y: -110.9542, z: 194.07372}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1379625527}
+  - {fileID: 747764222}
+  - {fileID: 843471516}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2091347304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106673,7 +107095,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 7ab1249794b60ac4bba6c45780b60c8f, type: 3}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: MaxDistance
-      value: 5.05
+      value: 221.87
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: MinDistance
@@ -106697,7 +107119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].time
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: spreadCustomCurve.m_Curve.Array.data[0].value
@@ -106709,7 +107131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].value
-      value: 1.1
+      value: 1.005714
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
@@ -106717,7 +107139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: panLevelCustomCurve.m_Curve.Array.data[1].value
-      value: 0.95520276
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 8655499526515539477, guid: 65254b5209d0a754a9f4602502bbc75a, type: 3}
       propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].inSlope
@@ -106789,3 +107211,4 @@ SceneRoots:
   - {fileID: 1077373214}
   - {fileID: 566863574}
   - {fileID: 351177109}
+  - {fileID: 2088654160}
