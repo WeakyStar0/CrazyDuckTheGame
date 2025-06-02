@@ -14,6 +14,9 @@ public class DialogueMessage
     public bool showCharacter = true;
     public bool freezePlayer = true;
     public float autoAdvanceDelay = 0f;
+    public float typingSpeed = 0.05f;
+    public int fontSize = 36;
+    public KeyCode skipKey = KeyCode.None; // Tecla para pular o diálogo
 }
 
 public class DialogueSystem : MonoBehaviour
@@ -22,10 +25,11 @@ public class DialogueSystem : MonoBehaviour
 
     [Header("UI References")]
     public GameObject dialoguePanel;
-    public Image characterImage; // Referência direta ao Image do sprite do personagem
+    public Image characterImage;
     public TMP_Text characterNameText;
     public TMP_Text dialogueText;
     public GameObject namePanel;
+    public Button skipButton;
 
     [Header("Animation Settings")]
     public float characterSwingAngle = 5f;
@@ -34,11 +38,12 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine swingCoroutine;
 
     [Header("Settings")]
-    public float typingSpeed = 0.05f;
+    public float defaultTypingSpeed = 0.05f;
     public AudioClip typingSound;
     public AudioClip advanceSound;
     [Range(0, 1)] public float soundVolume = 0.5f;
     public bool freezePlayerDuringDialogue = true;
+    public KeyCode globalSkipKey = KeyCode.Space; // Tecla global para pular
 
     private AudioSource audioSource;
     private PlayerController playerController;
@@ -48,6 +53,7 @@ public class DialogueSystem : MonoBehaviour
     private bool dialogueActive = false;
     private Coroutine typingCoroutine;
     private Coroutine autoAdvanceCoroutine;
+    private Vector3 playerVelocityBeforeDialogue;
 
     private void Awake()
     {
@@ -66,7 +72,6 @@ public class DialogueSystem : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
         
-        // Garante que todos os elementos estão desativados no início
         DeactivateAllUIElements();
     }
 
@@ -74,11 +79,16 @@ public class DialogueSystem : MonoBehaviour
     {
         playerController = FindFirstObjectByType<PlayerController>();
         
-        // Guarda a rotação inicial do sprite
         if (characterImage != null)
         {
             characterInitialRotation = characterImage.transform.rotation;
             characterImage.gameObject.SetActive(false);
+        }
+
+        if (skipButton != null)
+        {
+            skipButton.onClick.AddListener(SkipDialogue);
+            skipButton.gameObject.SetActive(false);
         }
     }
 
@@ -89,50 +99,65 @@ public class DialogueSystem : MonoBehaviour
         if (dialogueText != null) dialogueText.gameObject.SetActive(false);
         if (characterNameText != null) characterNameText.gameObject.SetActive(false);
         if (characterImage != null) characterImage.gameObject.SetActive(false);
+        if (skipButton != null) skipButton.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         if (!dialogueActive) return;
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+        // Verifica tanto a tecla global quanto a tecla específica da mensagem
+        bool skipPressed = Input.GetKeyDown(globalSkipKey) || 
+                          (currentMessageIndex < currentDialogue.Length && 
+                           currentDialogue[currentMessageIndex].skipKey != KeyCode.None && 
+                           Input.GetKeyDown(currentDialogue[currentMessageIndex].skipKey));
+
+        if (skipPressed)
         {
-            if (isTyping)
-            {
-                CompleteMessage();
-            }
-            else if (currentMessageIndex < currentDialogue.Length - 1)
-            {
-                NextMessage();
-            }
-            else
-            {
-                EndDialogue();
-            }
+            AdvanceDialogue();
         }
     }
 
-    public void StartDialogue(DialogueMessage[] dialogue)
+    private void AdvanceDialogue()
     {
-        if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
-
-        currentDialogue = dialogue;
-        currentMessageIndex = 0;
-        dialogueActive = true;
-        
-        if (freezePlayerDuringDialogue && playerController != null)
+        if (isTyping)
         {
-            playerController.SetControlEnabled(false);
+            CompleteMessage();
         }
-        
-        // Ativa apenas o painel principal
-        if (dialoguePanel != null)
+        else if (currentMessageIndex < currentDialogue.Length - 1)
         {
-            dialoguePanel.SetActive(true);
+            NextMessage();
         }
-        
-        DisplayCurrentMessage();
+        else
+        {
+            EndDialogue();
+        }
     }
+
+ public void StartDialogue(DialogueMessage[] dialogue)
+{
+    if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
+
+    currentDialogue = dialogue;
+    currentMessageIndex = 0;
+    dialogueActive = true;
+    
+    if (playerController != null)
+    {
+        // Salva apenas a velocidade horizontal
+        Vector3 horizontalVelocity = playerController.GetVelocity();
+        horizontalVelocity.y = 0; // Ignora a componente vertical
+        playerVelocityBeforeDialogue = horizontalVelocity;
+        
+        playerController.SetControlEnabled(false);
+        playerController.ForceIdleAnimation();
+    }
+    
+    if (dialoguePanel != null) dialoguePanel.SetActive(true);
+    if (skipButton != null) skipButton.gameObject.SetActive(true);
+    
+    DisplayCurrentMessage();
+}
 
     private void DisplayCurrentMessage()
     {
@@ -140,38 +165,34 @@ public class DialogueSystem : MonoBehaviour
 
         DialogueMessage message = currentDialogue[currentMessageIndex];
         
-        // Para e reseta qualquer animação anterior
         StopSwingAnimation();
-        
-        // Configura a imagem do personagem
         SetupCharacterImage(message);
-        
-        // Configura o nome do personagem
         SetupCharacterName(message);
         
-        // Ativa o texto do diálogo
         if (dialogueText != null)
         {
             dialogueText.gameObject.SetActive(true);
             dialogueText.text = "";
+            dialogueText.fontSize = message.fontSize;
         }
         
-        // Toca efeito sonoro se houver
         if (message.soundEffect != null)
         {
             audioSource.PlayOneShot(message.soundEffect, soundVolume);
         }
         
-        // Controla o movimento do jogador
         if (playerController != null)
         {
             playerController.SetControlEnabled(!message.freezePlayer);
+            if (message.freezePlayer)
+            {
+                playerController.ForceIdleAnimation();
+            }
         }
         
-        // Inicia a digitação do texto
-        StartTyping(message.message);
+        float speedToUse = message.typingSpeed > 0 ? message.typingSpeed : defaultTypingSpeed;
+        StartTyping(message.message, speedToUse);
         
-        // Configura avanço automático se necessário
         SetupAutoAdvance(message.autoAdvanceDelay);
     }
 
@@ -186,7 +207,6 @@ public class DialogueSystem : MonoBehaviour
         {
             characterImage.sprite = message.characterSprite;
             
-            // Inicia a animação de balanço
             if (characterSwingAngle > 0 && characterSwingSpeed > 0)
             {
                 swingCoroutine = StartCoroutine(SwingCharacterAnimation());
@@ -232,16 +252,16 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    private void StartTyping(string text)
+    private void StartTyping(string text, float speed)
     {
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
         }
-        typingCoroutine = StartCoroutine(TypeText(text));
+        typingCoroutine = StartCoroutine(TypeText(text, speed));
     }
 
-    private IEnumerator TypeText(string text)
+    private IEnumerator TypeText(string text, float speed)
     {
         isTyping = true;
         dialogueText.text = "";
@@ -253,7 +273,7 @@ public class DialogueSystem : MonoBehaviour
             {
                 audioSource.PlayOneShot(typingSound, soundVolume * 0.5f);
             }
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSeconds(speed);
         }
         
         isTyping = false;
@@ -274,15 +294,7 @@ public class DialogueSystem : MonoBehaviour
     private IEnumerator AutoAdvance(float delay)
     {
         yield return new WaitForSeconds(delay);
-        
-        if (currentMessageIndex < currentDialogue.Length - 1)
-        {
-            NextMessage();
-        }
-        else
-        {
-            EndDialogue();
-        }
+        AdvanceDialogue();
     }
 
     private void CompleteMessage()
@@ -313,29 +325,33 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public void EndDialogue()
+ public void EndDialogue()
+{
+    if (!dialogueActive) return;
+    
+    if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+    if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
+    StopSwingAnimation();
+    
+    DeactivateAllUIElements();
+    
+    if (playerController != null)
     {
-        if (!dialogueActive) return;
+        playerController.SetControlEnabled(true);
         
-        // Para todas as corrotinas
-        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-        if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
-        StopSwingAnimation();
-        
-        // Desativa todos os elementos UI
-        DeactivateAllUIElements();
-        
-        // Restaura o controle do jogador
-        if (playerController != null)
-        {
-            playerController.SetControlEnabled(true);
-        }
-        
-        dialogueActive = false;
+        // Restaura apenas a velocidade horizontal
+        Vector3 currentVelocity = playerController.GetVelocity();
+        Vector3 newVelocity = playerVelocityBeforeDialogue;
+        newVelocity.y = currentVelocity.y; // Mantém a velocidade vertical atual
+        playerController.SetVelocity(newVelocity);
     }
+    
+    dialogueActive = false;
+}
 
     public void SkipDialogue()
     {
         EndDialogue();
     }
+
 }

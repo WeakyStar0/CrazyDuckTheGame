@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 dashDirection;
 
     private float originalHeight;
-private Vector3 originalCenter;
-private float crouchHeight = 0.9f;
+    private Vector3 originalCenter;
+    private float crouchHeight = 0.9f;
 
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
@@ -77,39 +77,50 @@ private float crouchHeight = 0.9f;
         Cursor.lockState = CursorLockMode.Locked;
         jumpsRemaining = maxJumps;
 
-            originalHeight = characterController.height;
-    originalCenter = characterController.center;
+        originalHeight = characterController.height;
+        originalCenter = characterController.center;
     }
 
     private void Update()
+{
+    if (!enabled)
     {
+        // Apenas atualiza a gravidade e animações quando desativado
         HandleGravity();
-        HandleCrouch();
-        HandleDashInput();
         UpdateAnimator();
+        return;
+    }
 
-        if (Input.GetButtonDown("Jump"))
+    HandleGravity();
+    HandleCrouch();
+    HandleDashInput();
+    UpdateAnimator();
+
+    if (Input.GetButtonDown("Jump"))
+    {
+        if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
         {
-            if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
-            {
-                jumpInput = true;
-                lastJumpTime = Time.time;
-                jumpConsumed = false;
-                jumpWasBlocked = false;
-            }
-            else
-            {
-                jumpWasBlocked = true;
-            }
+            jumpInput = true;
+            lastJumpTime = Time.time;
+            jumpConsumed = false;
+            jumpWasBlocked = false;
+        }
+        else
+        {
+            jumpWasBlocked = true;
         }
     }
+}
 
-    private void FixedUpdate()
-    {
-        Vector3 movement = HandleMovement();
-        movement += HandleJump();
-        characterController.Move(movement * Time.fixedDeltaTime);
-    }
+private void FixedUpdate()
+{
+    // Sempre aplica gravidade, mesmo quando o controle está desativado
+    HandleGravity();
+    
+    Vector3 movement = enabled ? HandleMovement() : Vector3.zero;
+    movement += HandleJump();
+    characterController.Move(movement * Time.fixedDeltaTime);
+}
 
 
 
@@ -125,11 +136,25 @@ private float crouchHeight = 0.9f;
     {
         return !isDashing && Time.time > lastDashTime + dashCooldown;
     }
-
-    public void SetControlEnabled(bool enabled)
+public void SetControlEnabled(bool enabled)
+{
+    this.enabled = enabled;
+    
+    // Se estiver desativando, força uma atualização da gravidade
+    if (!enabled)
     {
-        this.enabled = enabled;
+        HandleGravity();
+        characterController.Move(velocity * Time.fixedDeltaTime);
     }
+    else
+    {
+        // Reseta a velocidade vertical quando o controle é reativado
+        if (isGrounded)
+        {
+            velocity.y = -2f;
+        }
+    }
+}
 
     private void StartDash()
     {
@@ -231,26 +256,26 @@ private float crouchHeight = 0.9f;
         return move * speedToUse;
     }
 
-private void HandleCrouch()
-{
-    if (Input.GetKey(KeyCode.LeftControl))
+    private void HandleCrouch()
     {
-        if (isGrounded)
-            canCrouchJump = true;
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            if (isGrounded)
+                canCrouchJump = true;
 
-        // Shrink collider
-        characterController.height = originalHeight / 2f;
-        characterController.center = originalCenter / 2f;
-    }
-    else
-    {
-        // Reset collider
-        characterController.height = originalHeight;
-        characterController.center = originalCenter;
+            // Shrink collider
+            characterController.height = originalHeight / 2f;
+            characterController.center = originalCenter / 2f;
+        }
+        else
+        {
+            // Reset collider
+            characterController.height = originalHeight;
+            characterController.center = originalCenter;
 
-        canCrouchJump = false;
+            canCrouchJump = false;
+        }
     }
-}
 
 
     private Vector3 HandleJump()
@@ -343,16 +368,39 @@ private void HandleCrouch()
             Gizmos.DrawLine(transform.position, transform.position + Vector3.down * (groundCheckDistance + characterController.skinWidth));
         }
     }
-    
+
     public void ForceTeleport(Vector3 newPosition)
+    {
+        characterController.enabled = false;
+        transform.position = newPosition;
+        characterController.enabled = true;
+
+        // Reseta estados de movimento
+        velocity = Vector3.zero;
+        isDashing = false;
+        animator.SetBool(IsDashingHash, false);
+    }
+
+public Vector3 GetVelocity()
 {
-    characterController.enabled = false;
-    transform.position = newPosition;
-    characterController.enabled = true;
-    
-    // Reseta estados de movimento
-    velocity = Vector3.zero;
-    isDashing = false;
-    animator.SetBool(IsDashingHash, false);
+    return velocity;
 }
+
+public void SetVelocity(Vector3 newVelocity)
+{
+    velocity = newVelocity;
+}
+
+public void ForceIdleAnimation()
+{
+    if (animator != null)
+    {
+        animator.SetFloat(SpeedHash, 0);
+        animator.SetBool(IsGroundedHash, true);
+        animator.SetBool(CrouchHash, false);
+    }
+}
+
+
+
 }

@@ -393,15 +393,21 @@ MonoBehaviour:
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
-    freezePlayer: 0
-    autoAdvanceDelay: 5
+    freezePlayer: 1
+    autoAdvanceDelay: 100000
+    typingSpeed: 0.05
+    fontSize: 10
+    skipKey: 101
   - message: ?TUDO BEMAKSJDAIUSGDAUGSDIUASGDIUAGSDIUAGSDUIAGSDIGASDIUAGUISDGAISUGDIAGSDIUASGDIASGDIUASGDIAUSGDUAISGDAISUGDAUGSDIUASGDIAGSDIUGASIDGASIASDASDSA
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
     freezePlayer: 0
-    autoAdvanceDelay: 5
+    autoAdvanceDelay: 10000
+    typingSpeed: 0.05
+    fontSize: 36
+    skipKey: 101
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -16637,13 +16643,15 @@ MonoBehaviour:
   characterNameText: {fileID: 728656775}
   dialogueText: {fileID: 1298913556}
   namePanel: {fileID: 1856840691}
+  skipButton: {fileID: 0}
   characterSwingAngle: 10
   characterSwingSpeed: 1
-  typingSpeed: 0.05
+  defaultTypingSpeed: 0.05
   typingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   advanceSound: {fileID: 0}
   soundVolume: 0.035
   freezePlayerDuringDialogue: 1
+  globalSkipKey: 0
 --- !u!4 &1329272380
 Transform:
   m_ObjectHideFlags: 0
