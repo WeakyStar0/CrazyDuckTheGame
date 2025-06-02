@@ -137,9 +137,9 @@ private IEnumerator PerformGroundSlamSequence()
     _isPerformingGroundSlam = true;
 
     patutAnimator?.SetTrigger("PatutGroundSlam");
-    yield return new WaitForSeconds(2.5f);
+    yield return new WaitForSeconds(3.5f);
 
-    StartCoroutine(PlayExplosionWithDelay(1.3f)); // Delay particle by 2 seconds
+    StartCoroutine(PlayExplosionWithDelay(0f));
 
     groundSlamAttack.TriggerAttack();
 
