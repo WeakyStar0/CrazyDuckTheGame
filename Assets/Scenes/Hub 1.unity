@@ -25361,7 +25361,7 @@ GameObject:
   - component: {fileID: 1688445320}
   - component: {fileID: 1688445319}
   m_Layer: 0
-  m_Name: ToHub
+  m_Name: ToCity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25380,9 +25380,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptText3D: {fileID: 523780788}
-  message: 'Ir para o HUB [E]'
+  message: 'Ir para a Cidade [E]'
   interactionKey: 101
-  hubSceneName: Hub 1
+  hubSceneName: City
   isPromptZone: 1
   isInteractionZone: 1
 --- !u!65 &1688445320
