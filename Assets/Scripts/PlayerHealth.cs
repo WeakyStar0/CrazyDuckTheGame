@@ -8,6 +8,8 @@ public class HealthIconSettings
     public Sprite healthSprite;
     public Vector2 iconSize = new Vector2(50, 50);
     public float spacing = 10f;
+    public ParticleSystem damageEffect;
+
 }
 
 public class PlayerHealth : MonoBehaviour
