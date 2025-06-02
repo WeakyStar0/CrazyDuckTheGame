@@ -11,10 +11,11 @@ public class DialogueTrigger : MonoBehaviour
     public string requiredTag = "Player";
     
     private bool playerInRange = false;
+    private bool alreadyTriggered = false;
 
     private void Update()
     {
-        if (triggerOnInteract && playerInRange && Input.GetKeyDown(interactKey))
+        if (triggerOnInteract && playerInRange && Input.GetKeyDown(interactKey) && !alreadyTriggered)
         {
             TriggerDialogue();
         }
@@ -22,7 +23,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggerOnEnter && (!requireTag || other.CompareTag(requiredTag)))
+        if (triggerOnEnter && !alreadyTriggered && (!requireTag || other.CompareTag(requiredTag)))
         {
             TriggerDialogue();
         }
@@ -46,7 +47,11 @@ public class DialogueTrigger : MonoBehaviour
 
     public void TriggerDialogue()
     {
+        if (alreadyTriggered) return;
+        
         DialogueSystem.Instance.StartDialogue(messages);
+        alreadyTriggered = true;
+        
         if (destroyAfterTrigger)
         {
             Destroy(gameObject);
