@@ -9,6 +9,8 @@ TagManager:
   - Bullet
   - FxTemporaire
   - DeathZone
+  - PromptZone
+  - InteractionZone
   layers:
   - Default
   - TransparentFX

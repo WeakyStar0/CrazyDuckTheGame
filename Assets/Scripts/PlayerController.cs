@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     private bool isDashing;
     private Vector3 dashDirection;
 
+    private float originalHeight;
+private Vector3 originalCenter;
+private float crouchHeight = 0.9f;
+
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float crouchJumpHeight = 2.5f;
@@ -72,6 +76,9 @@ public class PlayerController : MonoBehaviour
         currentSpeed = walkSpeed;
         Cursor.lockState = CursorLockMode.Locked;
         jumpsRemaining = maxJumps;
+
+            originalHeight = characterController.height;
+    originalCenter = characterController.center;
     }
 
     private void Update()
@@ -224,18 +231,27 @@ public class PlayerController : MonoBehaviour
         return move * speedToUse;
     }
 
-    private void HandleCrouch()
+private void HandleCrouch()
+{
+    if (Input.GetKey(KeyCode.LeftControl))
     {
-        if (Input.GetKey(KeyCode.LeftControl))
-        {
-            if (isGrounded)
-                canCrouchJump = true;
-        }
-        else
-        {
-            canCrouchJump = false;
-        }
+        if (isGrounded)
+            canCrouchJump = true;
+
+        // Shrink collider
+        characterController.height = originalHeight / 2f;
+        characterController.center = originalCenter / 2f;
     }
+    else
+    {
+        // Reset collider
+        characterController.height = originalHeight;
+        characterController.center = originalCenter;
+
+        canCrouchJump = false;
+    }
+}
+
 
     private Vector3 HandleJump()
     {
