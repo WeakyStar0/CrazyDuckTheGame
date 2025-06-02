@@ -4172,13 +4172,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messages:
-  - message: "Ena! Cuidado!  Quase que ca\xEDamos."
+  - message: "Ena! Cuidado! Quase que ca\xEDamos."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: Quem foi o gajo que deixou este buraco aqui? Estas infraestruturas hoje
       em dia...
     soundEffect: {fileID: 0}
@@ -4186,14 +4189,20 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Mas n\xE3o te preocupes, acho que arranjei uma solu\xE7\xE3o."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Eu tive aqui a ver as funcionalidades deste dispositivo e isto tem
       aqui muita informa\xE7\xE3o. "
     soundEffect: {fileID: 0}
@@ -4201,7 +4210,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Por exemplo, tem aqui um tutorial que ensina a passar por este buraco
       atrav\xE9s daquelas plataformas e outros obst\xE1culos parecidos. "
     soundEffect: {fileID: 0}
@@ -4210,6 +4222,9 @@ MonoBehaviour:
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 10
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "\xC9 uma mec\xE2nica chamada saltar. Basicamente tens de ganhar balan\xE7o,
       depois dobrar um pouco as pernas e, por fim, impulsionar todo o teu corpo para
       cima, tirando ambos os p\xE9s do ch\xE3o. "
@@ -4219,6 +4234,9 @@ MonoBehaviour:
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 15
+    typingSpeed: 0.025
+    fontSize: 40
+    skipKey: 101
   - message: "Durante uns momentos vais estar a aplicar uma for\xE7a que eleva o
       teu corpo para cima, e depois a gravidade voltar\xE1 a trazer-te para baixo. "
     soundEffect: {fileID: 0}
@@ -4227,6 +4245,9 @@ MonoBehaviour:
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 10
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Clica no espa\xE7o para conseguires saltar. Assim consegues passar
       para a plataforma sem cair no buraco. "
     soundEffect: {fileID: 0}
@@ -4234,7 +4255,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -7311,6 +7335,127 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 367080794}
   m_Mesh: {fileID: -1937589949539032284, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+--- !u!1 &370949307
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 370949311}
+  - component: {fileID: 370949310}
+  - component: {fileID: 370949309}
+  - component: {fileID: 370949308}
+  m_Layer: 5
+  m_Name: Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &370949308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370949307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 370949309}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &370949309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370949307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &370949310
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370949307}
+  m_CullTransparentMesh: 1
+--- !u!224 &370949311
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370949307}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 842789819}
+  m_Father: {fileID: 1371018456}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -190.89987, y: 32.605713}
+  m_SizeDelta: {x: 51.7, y: 50.8}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &383411072
 GameObject:
   m_ObjectHideFlags: 0
@@ -7905,67 +8050,94 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 60
+    skipKey: 101
+  - message: "Cuidado, eles parecem estar a patrulhar \xE0 procura de alguma coisa.
+      Devem estar atr\xE1s de ti. "
+    soundEffect: {fileID: 0}
+    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
     autoAdvanceDelay: 5
-  - message: "Cuidado, Mamoca, eles parecem estar a patrulhar \xE0 procura de alguma
-      coisa. Devem estar atr\xE1s de ti. "
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Se eles te veem, est\xE1s tramado. N\xE3o tens com que te defender. "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "Se eles te veem, t\xE1s tramado. N\xE3o tens com que te defender. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Espera a\xED, o qu\xEA que est\xE1s a ver a\xED? "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: 'Toue?! De onde sacaste isso? '
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Isso \xE9 uma espada com uma pega em forma de pato.... Uma Espato!"
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Bem, agora j\xE1 podes lutar. "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Usa o bot\xE3o esquerdo do rato, isso vai te permitir fazer um movimento
-      de rota\xE7\xE3o com o teu bra\xE7o no eixo do x enquanto seguras a espada,
-      e durante esse movimento os teus m\xFAsculos v\xE3o exercer uma for\xE7a que
-      juntamente com a velocidade do teu ataque te vai permitir danificar o inimigo."
+      de rota\xE7\xE3o com o teu bra\xE7o num eixo enquanto seguras a espada, e durante
+      esse movimento os teus m\xFAsculos v\xE3o exercer uma for\xE7a que, com a velocidade
+      do teu ataque, vai-te permitir danificar o inimigo."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 20
+    typingSpeed: 0.025
+    fontSize: 30
+    skipKey: 101
   - message: "Agora \xE9s um homem armado, por isso... toca a bater neles. "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -9596,7 +9768,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1371018456}
   m_Father: {fileID: 1467914640}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -10921,7 +11094,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -14277,13 +14453,15 @@ MonoBehaviour:
   characterNameText: {fileID: 1832423607}
   dialogueText: {fileID: 590046720}
   namePanel: {fileID: 208592805}
+  skipButton: {fileID: 370949308}
   characterSwingAngle: 10
   characterSwingSpeed: 1
-  typingSpeed: 0.05
+  defaultTypingSpeed: 0.05
   typingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   advanceSound: {fileID: 0}
   soundVolume: 0.035
   freezePlayerDuringDialogue: 1
+  globalSkipKey: 32
 --- !u!4 &775472278
 Transform:
   m_ObjectHideFlags: 0
@@ -15604,6 +15782,142 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842381190}
   m_Mesh: {fileID: -3935645164499962474, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+--- !u!1 &842789818
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 842789819}
+  - component: {fileID: 842789821}
+  - component: {fileID: 842789820}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &842789819
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842789818}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 370949311}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &842789820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842789818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: E
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &842789821
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842789818}
+  m_CullTransparentMesh: 1
 --- !u!1 &855381061
 GameObject:
   m_ObjectHideFlags: 0
@@ -17406,14 +17720,20 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
   - message: "Espera... n\xE3o, n\xE3o \xE9 esse o problema aqui."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
   - message: "Tu est\xE1 a ver-me pela primeira vez, n\xE3o \xE9? Tu tamb\xE9m n\xE3o
       sabes o que se est\xE1 a passar."
     soundEffect: {fileID: 0}
@@ -17421,75 +17741,63 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "N\xE3o, pois n\xE3o? \xC9 como eu. Eu sinto que tenho um prop\xF3sito,
-      mas n\xE3o h\xE1 meio de me lembrar qual \xE9."
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "\xC9 como eu. Eu sinto que tenho um prop\xF3sito, mas n\xE3o h\xE1
+      meio de me lembrar qual \xE9."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Eu nem me lembro do meu pr\xF3prio nome. Tu lembras-te do teu? "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: 'Mamoca? Que nome estranho. Os teus pais tiveram muita criatividade
-      quando escolheram esse nome para ti. '
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "N\xE3o, pois n\xE3o? Pois... A\xED \xE9 complicado. "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "Bem, eu n\xE3o quero ficar aqui sem nome, por isso deixa-me arranjar
-      um tempor\xE1rio. "
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Bem, eu n\xE3o fa\xE7o ideia o que se est\xE1 a passar, mas d\xE1 para
+      perceber que estamos dentro de algum s\xEDtio e que algo de errado n\xE3o est\xE1
+      certo. "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: Hmm... e que tal... Maminhas.
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "\xC9 isso mesmo! Maminhas. T\xE1 decido!"
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "Bem, Mamocas, eu n\xE3o fa\xE7o ideia o que se est\xE1 a passar, mas
-      d\xE1 para perceber que estamos dentro de algum s\xEDtio e que algo de errado
-      n\xE3o est\xE1 certo. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Acho que o melhor \xE9 continuarmos em frente e ver o que encontramos. "
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "Acho que o melhor \xE9 continuarmos em frente e ver o que encontramos. "
-    soundEffect: {fileID: 0}
-    characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
-    characterName: ???
-    showCharacter: 1
-    freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -19575,7 +19883,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 70
+    skipKey: 101
   - message: "Inimigo detetado. Amea\xE7a ao l\xEDder. Objetivo: Aniquila\xE7\xE3o
       imediata."
     soundEffect: {fileID: 0}
@@ -19583,22 +19894,30 @@ MonoBehaviour:
     characterName: PATUT
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
-  - message: "Cuidado, Mamocas, este inimigo \xE9 diferente dos outros. Esta luta
-      vai doer."
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+  - message: "Cuidado, este inimigo \xE9 diferente dos outros. Esta luta vai doer."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   - message: "Gloria ao grande l\xEDder."
     soundEffect: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -21564,7 +21883,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< HEAD
       value: -437.2
+=======
+      value: -1393
+>>>>>>> b83da97e3c906446557993b9232392e20a46a790
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -21572,7 +21895,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalPosition.z
+<<<<<<< HEAD
       value: 450.9
+=======
+      value: 110
+>>>>>>> b83da97e3c906446557993b9232392e20a46a790
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -23989,7 +24316,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4830835702506477982, guid: 7dca9931a1048d24790effd45ad9d2aa, type: 3}
   m_PrefabInstance: {fileID: 1364060758}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
 --- !u!1 &1370786501
+=======
+--- !u!1 &1371018455
+>>>>>>> b83da97e3c906446557993b9232392e20a46a790
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -23997,21 +24328,32 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< HEAD
   - component: {fileID: 1370786502}
   - component: {fileID: 1370786503}
   m_Layer: 5
   m_Name: BossHealthlBar
+=======
+  - component: {fileID: 1371018456}
+  m_Layer: 5
+  m_Name: Skip
+>>>>>>> b83da97e3c906446557993b9232392e20a46a790
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< HEAD
 --- !u!224 &1370786502
+=======
+--- !u!224 &1371018456
+>>>>>>> b83da97e3c906446557993b9232392e20a46a790
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 1370786501}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -24078,6 +24420,22 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+=======
+  m_GameObject: {fileID: 1371018455}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 370949311}
+  m_Father: {fileID: 518642183}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 710.49994, y: -80.0094}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+>>>>>>> b83da97e3c906446557993b9232392e20a46a790
 --- !u!1 &1373316905
 GameObject:
   m_ObjectHideFlags: 0
@@ -42580,7 +42938,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 0
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -44320,7 +44681,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 0
-    autoAdvanceDelay: 3
+    autoAdvanceDelay: 1
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
@@ -46082,7 +46446,7 @@ Transform:
   m_GameObject: {fileID: 1738555590}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -64.9, y: 105.9, z: -27.1}
+  m_LocalPosition: {x: -64.9, y: 105.9, z: -49.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47248,8 +47612,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.6
-  m_fontSizeBase: 17.6
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -66724,7 +67088,10 @@ MonoBehaviour:
     characterName: ???
     showCharacter: 1
     freezePlayer: 0
-    autoAdvanceDelay: 10
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
