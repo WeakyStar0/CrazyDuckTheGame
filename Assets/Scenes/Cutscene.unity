@@ -586,7 +586,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   fadeDuration: 1
   autoAdvanceTime: 1
-  nextSceneName: Tutorial
+  nextSceneName: TutorialScene
   typingAudioSource: {fileID: 0}
   audioSource: {fileID: 39463467}
 --- !u!4 &726821321

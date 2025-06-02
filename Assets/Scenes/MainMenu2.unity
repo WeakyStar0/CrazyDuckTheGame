@@ -505,7 +505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1c414e956b8c4468f2738e40c3126b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SceneName: Tutorial
+  SceneName: TutorialScene
   SceneCredits: Credits
 --- !u!4 &635715762
 Transform:
