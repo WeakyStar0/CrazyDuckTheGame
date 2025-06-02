@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1536
     height: 772.8
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Project
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 112
+  controlID: 56
   draggingID: 0
 --- !u!114 &3
 MonoBehaviour:
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 51
+  controlID: 57
   draggingID: 0
 --- !u!114 &10
 MonoBehaviour:
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 52
+  controlID: 58
   draggingID: 0
 --- !u!114 &11
 MonoBehaviour:
@@ -416,7 +416,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Sounds
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -426,16 +426,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Sounds
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: C:\Users\ruben\Desktop\Pasta\CRAZY DUCK\CrazyDuckTheGame
+  m_LastProjectPath: C:\Users\joaos\Desktop\Crazy Duck\CrazyDuckTheGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 368.40002}
-    m_SelectedIDs: cac50000
-    m_LastClickedID: 50634
-    m_ExpandedIDs: 000000007acc00007ccc00007ecc000080cc0000
+    scrollPos: {x: 0, y: 401.19998}
+    m_SelectedIDs: fecd0000
+    m_LastClickedID: 52734
+    m_ExpandedIDs: 0000000058cd00005acd00005ccd0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -464,7 +464,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000007acc00007ccc00007ecc000080cc0000
+    m_ExpandedIDs: 0000000058cd00005acd00005ccd0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -518,7 +518,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 0}
+    m_ScrollPosition: {x: 0, y: 54.400024}
     m_GridSize: 64
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207
@@ -612,7 +612,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: e0aafbffecaefbff52b5fbff0cd1fbffdedffbff28e6fbff6eecfbff68f1fbffaef7fbfffcfdfbff4403fcff6607fcff5c0cfcffa212fcffec18fcffe21dfcff2824fcff2229fcff482cfcff8e32fcff8437fcffa63bfcff9c40fcffce4bfcff1852fcff5e58fcffa85efcfff264fcff2e6bfcffb8dbfcff1ee1fcff18e8fcffacecfcff02f3fcff48f9fcff8efffcffd405fdff200cfdff6612fdffac18fdfff21efdff3c25fdffdc4ffdffc056fdff6a5bfdff4676fdff307cfdff82affdff92befdfff2cbfdffa4d4fdff2adafdff76e0fdff20e8fdff48fafdfffe02feffd214feff004ffeff1250feff7250feff8a61feff8867feffbe72feff8c77feff8a85feffa89afeff0aa1feff76a7feff1eb2feff7eb6feff0abcfeff42d0feff20dbfeffe2e3feff4222fffff629fffff02efffff039ffff183ffffffa45ffffa064ffff349bffff32a0ffff00a5fffff6a9ffff4eaeffffc0b3ffffd6b8ffff48beffff54c3ffffc6c8ffffbccdffff2ed3ffff24d8ffff7cdcffffeee1ffffdce7ffff78edffff82f2fffff4faffff1aba00000acc00002cd30000aeda0000405d0100d8a101000ea4010064ab0100500e0200fe180200a247020064930200e0940200deca0200a2cd02003200030018d803002ce30300c6ec0300c6f70400f4080500661205008cb80600
+      m_ExpandedIDs: f0faffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1244,9 +1244,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -327.37683, y: -417.62845, z: 697.24695}
+    m_Target: {x: -124.840744, y: 40.01339, z: 62.48466}
     speed: 2
-    m_Value: {x: -364.66904, y: -59.249065, z: -281.28583}
+    m_Value: {x: -124.840744, y: 40.01339, z: 62.48466}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1292,13 +1292,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.3529868, y: 0.025257608, z: -0.009532926, w: 0.9352413}
+    m_Target: {x: -0.42605364, y: -0.08474588, z: 0.040125538, w: -0.8998294}
     speed: 2
-    m_Value: {x: -0.4146974, y: -0.026200326, z: 0.011947587, w: -0.9095101}
+    m_Value: {x: -0.42605364, y: -0.08474588, z: 0.040125538, w: -0.8998294}
   m_Size:
-    m_Target: 540.12537
+    m_Target: 98.61412
     speed: 2
-    m_Value: 835.64185
+    m_Value: 98.61412
   m_Ortho:
     m_Target: 0
     speed: 2
