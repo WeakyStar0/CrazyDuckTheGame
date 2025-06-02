@@ -1,0 +1,221 @@
+fileFormatVersion: 2
+guid: 27e00004f61f2ab4b8866e3f69e5844f
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: DonutAttack
+      takeName: Armature|ArmatureAction
+      internalID: 4781951162920444690
+      firstFrame: 0
+      lastFrame: 49
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: Patut(ataqueDonut)(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Cube
+      parentName: Patut(ataqueDonut)(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Armature
+      parentName: Patut(ataqueDonut)(Clone)
+      position: {x: -0, y: 13.52487, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 619.0747, y: 619.0747, z: 619.0747}
+    - name: Hips
+      parentName: Armature
+      position: {x: -0, y: 0, z: -0.0057264045}
+      rotation: {x: 0.7071068, y: -0.000000084293696, z: -0.00000008429371, w: 0.7071067}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: UpLeg.L
+      parentName: Hips
+      position: {x: -0.002541039, y: -0.00060850795, z: -0.00000030642272}
+      rotation: {x: 1, y: -0, z: -0.00000019470716, w: -4.2351647e-22}
+      scale: {x: 1, y: 0.99999976, z: 0.99999994}
+    - name: Leg.L
+      parentName: UpLeg.L
+      position: {x: 0.0014177605, y: 0.00905199, z: -2.1408735e-10}
+      rotation: {x: -0.00000017259435, y: -0.000000041135184, z: -0.7071068, w: 0.7071068}
+      scale: {x: 0.9999998, y: 0.99999976, z: 1.0000004}
+    - name: UpLeg.R
+      parentName: Hips
+      position: {x: 0.002541039, y: -0.00060850795, z: -0.0000003076344}
+      rotation: {x: 1, y: -0, z: 0.00000004371136, w: 0}
+      scale: {x: 1, y: 0.99999976, z: 0.99999994}
+    - name: Spine
+      parentName: Armature
+      position: {x: -0, y: 0, z: -0.0004396207}
+      rotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071067}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Neck
+      parentName: Spine
+      position: {x: -0, y: 0.011825408, z: 0}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Head
+      parentName: Neck
+      position: {x: -0, y: 0.0027960825, z: 0}
+      rotation: {x: -0, y: -0.00000011920929, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Shoulder.L
+      parentName: Spine
+      position: {x: -0.0013566586, y: 0.010468025, z: 0}
+      rotation: {x: -0.011666716, y: 0.011615605, z: 0.7085629, w: 0.7054556}
+      scale: {x: 0.99999994, y: 0.9999999, z: 0.99999994}
+    - name: Arm.L
+      parentName: Shoulder.L
+      position: {x: -0.001841361, y: 0.0075646723, z: -0.000118718264}
+      rotation: {x: -0.000023587607, y: -0.03821581, z: -0.00444245, w: 0.99925965}
+      scale: {x: 1.0000001, y: 1.0000002, z: 1.0000004}
+    - name: ForeArm.L
+      parentName: Arm.L
+      position: {x: -1.8044374e-10, y: 0.008402203, z: -6.257323e-11}
+      rotation: {x: 0.00001629722, y: -0.00000012665987, z: 0.0003740672, w: 0.99999994}
+      scale: {x: 1.0000006, y: 1.0000006, z: 1.0000004}
+    - name: Shoulder.R
+      parentName: Spine
+      position: {x: 0.0013566586, y: 0.010468025, z: 0}
+      rotation: {x: -0.011666716, y: -0.011615605, z: -0.7085629, w: 0.7054556}
+      scale: {x: 0.99999994, y: 0.9999999, z: 0.99999994}
+    - name: Arm.R
+      parentName: Shoulder.R
+      position: {x: 0.0018413647, y: 0.007564673, z: -0.00011871857}
+      rotation: {x: -0.000023587607, y: 0.03821581, z: 0.00444245, w: 0.99925965}
+      scale: {x: 1.0000002, y: 1, z: 1.0000001}
+    - name: ForeArm.R
+      parentName: Arm.R
+      position: {x: 2.188608e-10, y: 0.008402202, z: -1.6298145e-11}
+      rotation: {x: -0.000010045452, y: 0.00000030547383, z: 0.00023094838, w: 1}
+      scale: {x: 1.0000002, y: 1.0000002, z: 0.99999976}
+    - name: Hand.R
+      parentName: ForeArm.R
+      position: {x: 2.4214386e-10, y: 0.007575428, z: 1.4901161e-10}
+      rotation: {x: -0.000026367707, y: -0.000000011166293, z: 0.0006052526, w: 0.9999998}
+      scale: {x: 1.0000004, y: 1.0000006, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
