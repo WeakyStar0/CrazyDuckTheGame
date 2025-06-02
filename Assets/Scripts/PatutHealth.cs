@@ -4,6 +4,9 @@ using System.Collections;
 
 public class PatutHealth : MonoBehaviour
 {
+
+    [HideInInspector] public bool externallyInvincible = false;
+
     [Header("Health Settings")]
     public int maxHealth = 3;
     public int currentHealth;
@@ -105,7 +108,7 @@ public class PatutHealth : MonoBehaviour
 
     public void TakeDamage(int damage, Vector3 attackOrigin)
     {
-        if (isInvincible || currentHealth <= 0) return;
+if (isInvincible || externallyInvincible || currentHealth <= 0) return;
         
         currentHealth -= damage;
         
