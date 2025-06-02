@@ -31011,6 +31011,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PutaDeitaTutorialFix 1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 723d945dce285ed4e95d4e066736dfde, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -43321,6 +43325,7 @@ MonoBehaviour:
     healthSprite: {fileID: 21300000, guid: fc9d8b7590198424e9f8452cc7284af0, type: 3}
     iconSize: {x: 100, y: 100}
     spacing: 5
+    damageEffect: {fileID: 0}
   healthContainer: {fileID: 186370266}
   flashDuration: 0.1
   damageColor: {r: 1, g: 0, b: 0, a: 1}
