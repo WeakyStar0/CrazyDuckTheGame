@@ -566,7 +566,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 52547f97e1e70e349b1a970a3fad23ac, type: 3}
   - {fileID: 21300000, guid: da574c92338f66a4e833ddf3458a0152, type: 3}
   - {fileID: 21300000, guid: 36ef2a9524ea1f5468860af4a2996583, type: 3}
-  - {fileID: 2061588943, guid: d1708c2e1ed5b2c48b97a53e3b811139, type: 3}
+  - {fileID: 21300000, guid: 2344db05d6e219441b7bdaee533ea740, type: 3}
   texts:
   - 
   - 
@@ -574,8 +574,8 @@ MonoBehaviour:
   - 
   audioClips:
   - {fileID: 8300000, guid: 49861e94bc3b379489f55f5110a4cab3, type: 3}
-  - {fileID: 8300000, guid: 359616b01b9b8374f99837c748944e9a, type: 3}
-  - {fileID: 8300000, guid: ff0e55ba477ac41478c3316a6e331d96, type: 3}
+  - {fileID: 8300000, guid: 5762cf6b18922304ca5fc493f3bba491, type: 3}
+  - {fileID: 8300000, guid: f0cf26fa98a93e943976c301f6f94ebf, type: 3}
   - {fileID: 8300000, guid: 5762cf6b18922304ca5fc493f3bba491, type: 3}
   typingSpeed: 0.05
   fadeDuration: 1
