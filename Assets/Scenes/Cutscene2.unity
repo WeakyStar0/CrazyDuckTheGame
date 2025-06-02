@@ -563,15 +563,11 @@ MonoBehaviour:
   cutsceneImage: {fileID: 566382744}
   cutsceneText: {fileID: 1510141861}
   images:
-  - {fileID: -1254407539, guid: 7c7f76d7a1a9c214eb9190ea8f3bcb97, type: 3}
-  - {fileID: 21300000, guid: d2169f8b4223903418be7a968b03c44c, type: 3}
-  - {fileID: 21300000, guid: c60e1b41152e07a4a9d627b18f702216, type: 3}
-  - {fileID: 21300000, guid: cf341db4d14bfea418c996d5b576bf63, type: 3}
-  - {fileID: 21300000, guid: 5e406e5186f139a46bd090c1cc1a9052, type: 3}
-  - {fileID: -1410671034, guid: 3ad6f03e4d9a2f14dbdfff0894a0ff30, type: 3}
+  - {fileID: 21300000, guid: 52547f97e1e70e349b1a970a3fad23ac, type: 3}
+  - {fileID: 21300000, guid: da574c92338f66a4e833ddf3458a0152, type: 3}
+  - {fileID: 21300000, guid: 36ef2a9524ea1f5468860af4a2996583, type: 3}
+  - {fileID: 2061588943, guid: d1708c2e1ed5b2c48b97a53e3b811139, type: 3}
   texts:
-  - 
-  - 
   - 
   - 
   - 
@@ -581,12 +577,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 359616b01b9b8374f99837c748944e9a, type: 3}
   - {fileID: 8300000, guid: ff0e55ba477ac41478c3316a6e331d96, type: 3}
   - {fileID: 8300000, guid: 5762cf6b18922304ca5fc493f3bba491, type: 3}
-  - {fileID: 8300000, guid: f0cf26fa98a93e943976c301f6f94ebf, type: 3}
-  - {fileID: 8300000, guid: 4425671dc0005174bb655f247da1b02d, type: 3}
   typingSpeed: 0.05
   fadeDuration: 1
   autoAdvanceTime: 1
-  nextSceneName: Tutorial
+  nextSceneName: Hub 1
   typingAudioSource: {fileID: 0}
   audioSource: {fileID: 39463467}
 --- !u!4 &726821321
