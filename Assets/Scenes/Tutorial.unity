@@ -45297,6 +45297,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d6f8aaeb264dc4ebf64ba8eddee28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundSwingSounds:
+  - {fileID: 8300000, guid: c8ef8e7173cd48b4fb34f7bacbca2ed5, type: 3}
+  - {fileID: 8300000, guid: ad572303e836a8b4c88638109879ddfe, type: 3}
+  - {fileID: 8300000, guid: 22c0beeaa9bb4854dbe653c92931831a, type: 3}
+  airSwingSounds:
+  - {fileID: 8300000, guid: c8ef8e7173cd48b4fb34f7bacbca2ed5, type: 3}
+  - {fileID: 8300000, guid: ad572303e836a8b4c88638109879ddfe, type: 3}
+  - {fileID: 8300000, guid: 22c0beeaa9bb4854dbe653c92931831a, type: 3}
+  volume: 1
   slashRange: 30
   slashAngle: 90
   slashDamage: 1
@@ -45305,9 +45314,8 @@ MonoBehaviour:
   airSlashPrefab: {fileID: 3600389243222657682, guid: 3fee2e03e4bdc854bb38f7bcbca7c75d, type: 3}
   effectOffset: {x: 0, y: 10, z: 0.5}
   effectDuration: 1
-  swingSound: {fileID: 8300000, guid: b27eb33bd8eca1b4e8638ff987f739dd, type: 3}
-  airSwingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
-  volume: 1
+  swingSound: {fileID: 0}
+  airSwingSound: {fileID: 0}
   groundCooldown: 1
   airCooldown: 1
   slashKey: 323
