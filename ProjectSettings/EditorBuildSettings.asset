@@ -32,6 +32,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu2.unity
     guid: 97ffc6c7fe593174b9c17404b9a809d7
+  - enabled: 1
+    path: Assets/Scenes/TUTORIAL - SAVE!!!.unity
+    guid: fb5c898f28e57584bae342014a566c8c
+  - enabled: 1
+    path: Assets/Scenes/City.unity
+    guid: f394ce953ff79c44bbbfdab2b76c03ec
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
