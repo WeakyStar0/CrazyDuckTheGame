@@ -19,6 +19,7 @@ public class SwordSlash : MonoBehaviour
     public AudioClip swingSound;
     public AudioClip airSwingSound;
     [Range(0,1)] public float volume = 0.7f;
+    public AudioSource audioSource;
     
     [Header("Cooldowns")]
     public float groundCooldown = 0.5f;
@@ -34,7 +35,6 @@ public class SwordSlash : MonoBehaviour
     public string airSlashTrigger = "AirSlash";
     
     private float lastSlashTime;
-    private AudioSource audioSource;
     private PlayerController playerController;
     private CharacterController characterController;
     private bool isDashing = false;
@@ -43,12 +43,21 @@ public class SwordSlash : MonoBehaviour
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        // Configuração do AudioSource
         if (audioSource == null)
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
-            Debug.Log("AudioSource adicionado automaticamente ao Player");
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+                Debug.Log("AudioSource adicionado automaticamente ao Player");
+            }
         }
+        
+        // Configurações recomendadas
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0; // Som 2D
+        audioSource.loop = false;
         
         playerController = GetComponent<PlayerController>();
         characterController = GetComponent<CharacterController>();
@@ -79,19 +88,11 @@ public class SwordSlash : MonoBehaviour
     {
         bool isGrounded = characterController != null && characterController.isGrounded;
         
-        // Trigger da animação
         TriggerSlashAnimation(isGrounded);
-        
-        // Criar efeito visual
         CreateSlashEffect(isGrounded);
-        
-        // Tocar som
         PlaySlashSound(isGrounded);
-        
-        // Aplicar lógica de dano
         ApplySlashDamage(isGrounded);
         
-        // Movimento especial no ar
         if (!isGrounded)
         {
             StartCoroutine(AirDash());
@@ -133,16 +134,21 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-    void PlaySlashSound(bool isGrounded)
+   void PlaySlashSound(bool isGrounded)
+{
+    AudioClip sound = isGrounded ? swingSound : airSwingSound;
+    if (sound != null)
     {
-        if (audioSource == null) return;
-        
-        AudioClip sound = isGrounded ? swingSound : airSwingSound;
-        if (sound != null)
-        {
-            audioSource.PlayOneShot(sound, volume);
-        }
+        // Cria um AudioSource temporário que se auto-destroi
+        GameObject soundObj = new GameObject("TempAudio");
+        AudioSource tempSource = soundObj.AddComponent<AudioSource>();
+        tempSource.clip = sound;
+        tempSource.volume = volume;
+        tempSource.pitch = Random.Range(0.95f, 1.05f);
+        tempSource.Play();
+        Destroy(soundObj, sound.length);
     }
+}
 
     void ApplySlashDamage(bool isGrounded)
     {
