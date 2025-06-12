@@ -13,6 +13,12 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Damage Settings")]
     public int damageAmount = 1;
+
+    [Header("Stun Settings")]
+    public float stunDuration = 0.5f;
+    private bool isStunned = false;
+    private float stunTimer = 0f;
+    
     
     private Transform player;
     private EnemyPatrol patrolScript;
@@ -35,6 +41,16 @@ public class EnemyAI : MonoBehaviour
     
     void Update()
     {
+
+         if (isStunned)
+        {
+            stunTimer -= Time.deltaTime;
+            if (stunTimer <= 0)
+            {
+                isStunned = false;
+            }
+            return; // Não faz nada enquanto está stunnado
+        }
         // Atualiza cooldown do ataque
         if (!canAttack)
         {
@@ -124,22 +140,28 @@ public class EnemyAI : MonoBehaviour
         }
     }
     
+        public void Stun()
+    {
+        isStunned = true;
+        stunTimer = stunDuration;
+        patrolScript.enabled = false;
+    }
 
     public void ResetEnemy()
-{
-    isChasing = false;
-    canAttack = true;
-    attackTimer = 0f;
-    
-    if (patrolScript != null)
     {
-        patrolScript.enabled = true;
-        patrolScript.ResetPatrol();
+        isChasing = false;
+        canAttack = true;
+        attackTimer = 0f;
+
+        if (patrolScript != null)
+        {
+            patrolScript.enabled = true;
+            patrolScript.ResetPatrol();
+        }
+
+        // Reseta a posição se necessário
+        // (adicione lógica específica se seus inimigos precisarem voltar para posições iniciais)
     }
-    
-    // Reseta a posição se necessário
-    // (adicione lógica específica se seus inimigos precisarem voltar para posições iniciais)
-}
     
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {

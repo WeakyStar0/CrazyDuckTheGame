@@ -56,28 +56,35 @@ public class EnemyHealth : MonoBehaviour
     }
 
     public void TakeDamage(int damage, Vector3 attackOrigin)
+{
+    if (isInvincible || currentHealth <= 0) return;
+    
+    currentHealth -= damage;
+    
+    // Tocar som de hit
+    if (hitSound != null)
     {
-        if (isInvincible || currentHealth <= 0) return;
-        
-        currentHealth -= damage;
-        
-        // Tocar som de hit
-        if (hitSound != null)
-        {
-            audioSource.PlayOneShot(hitSound, volume);
-        }
-        
-        // Ativar invencibilidade
-        StartInvincibility();
-        
-        // Feedback visual
-        StartCoroutine(FlashEffect());
-        
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        audioSource.PlayOneShot(hitSound, volume);
     }
+    
+    // Ativar invencibilidade
+    StartInvincibility();
+    
+    // Feedback visual
+    StartCoroutine(FlashEffect());
+    
+    // Aplicar stun
+    var enemyAI = GetComponent<EnemyAI>();
+    if (enemyAI != null)
+    {
+        enemyAI.Stun();
+    }
+    
+    if (currentHealth <= 0)
+    {
+        Die();
+    }
+}
 
     void StartInvincibility()
     {
@@ -115,39 +122,56 @@ public class EnemyHealth : MonoBehaviour
         renderer.material.color = originalColor;
     }
 
-    void Die()
+   void Die()
+{
+    // Desativar renderers e colliders imediatamente
+    foreach (var renderer in GetComponentsInChildren<Renderer>())
     {
-        // Tocar som de morte
-        if (deathSound != null)
-        {
-            audioSource.PlayOneShot(deathSound, volume);
-        }
-        
-        // Criar explosão
-        if (explosionEffect != null)
-        {
-            Instantiate(explosionEffect, transform.position, Quaternion.identity);
-        }
-        
-        // Aplicar dano na área
-        Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius, damageLayers);
-        foreach (Collider hit in hitObjects)
-        {
-            PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(explosionDamage, transform.position);
-            }
-            
-            Rigidbody rb = hit.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
-            }
-        }
-        
-        Destroy(gameObject, deathSound != null ? deathSound.length : 0.1f);
+        renderer.enabled = false;
     }
+    foreach (var collider in GetComponentsInChildren<Collider>())
+    {
+        collider.enabled = false;
+    }
+    
+    // Desativar scripts de movimento
+    var ai = GetComponent<EnemyAI>();
+    if (ai != null) ai.enabled = false;
+    var patrol = GetComponent<EnemyPatrol>();
+    if (patrol != null) patrol.enabled = false;
+    
+    // Tocar som de morte
+    if (deathSound != null)
+    {
+        audioSource.PlayOneShot(deathSound, volume);
+    }
+    
+    // Criar explosão
+    if (explosionEffect != null)
+    {
+        Instantiate(explosionEffect, transform.position, Quaternion.identity);
+    }
+    
+    // Aplicar dano na área
+    Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius, damageLayers);
+    foreach (Collider hit in hitObjects)
+    {
+        PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(explosionDamage, transform.position);
+        }
+        
+        Rigidbody rb = hit.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+        }
+    }
+    
+    // Destruir o objeto depois que o som terminar
+    Destroy(gameObject, deathSound != null ? deathSound.length : 0.1f);
+}
 
     
 
