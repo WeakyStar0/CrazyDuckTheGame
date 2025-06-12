@@ -24,7 +24,10 @@ public class SwordSlash : MonoBehaviour
     [Header("Cooldowns")]
     public float groundCooldown = 0.5f;
     public float airCooldown = 1f;
-    public KeyCode slashKey = KeyCode.Mouse0;
+    
+    [Header("Input Settings")]
+    public KeyCode groundSlashKey = KeyCode.Mouse0; // Botão esquerdo do mouse
+    public KeyCode airSlashKey = KeyCode.Mouse1; // Botão direito do mouse
     
     [Header("Air Dash")]
     public float airDashForce = 10f;
@@ -34,7 +37,8 @@ public class SwordSlash : MonoBehaviour
     public string groundSlashTrigger = "GroundSlash";
     public string airSlashTrigger = "AirSlash";
     
-    private float lastSlashTime;
+    private float lastGroundSlashTime;
+    private float lastAirSlashTime;
     private PlayerController playerController;
     private CharacterController characterController;
     private bool isDashing = false;
@@ -66,46 +70,67 @@ public class SwordSlash : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(slashKey) && CanSlash())
+        bool isGrounded = characterController != null && characterController.isGrounded;
+
+        // Verifica input para ground slash
+        if (Input.GetKeyDown(groundSlashKey))
         {
-            ExecuteSlash();
+            if (CanSlash(true) && isGrounded)
+            {
+                ExecuteSlash(true);
+            }
+        }
+
+        // Verifica input para air slash
+        if (Input.GetKeyDown(airSlashKey))
+        {
+            if (CanSlash(false) && !isGrounded)
+            {
+                ExecuteSlash(false);
+            }
         }
 
         UpdateSlashEffectPosition();
     }
 
-    bool CanSlash()
+    bool CanSlash(bool isGroundSlash)
     {
-        bool isGrounded = characterController != null && characterController.isGrounded;
-        float cooldown = isGrounded ? groundCooldown : airCooldown;
+        float cooldown = isGroundSlash ? groundCooldown : airCooldown;
+        float lastSlashTime = isGroundSlash ? lastGroundSlashTime : lastAirSlashTime;
 
         bool isDashing = playerController != null && playerController.IsDashing();
 
         return Time.time > lastSlashTime + cooldown && !isDashing;
     }
 
-    void ExecuteSlash()
+    void ExecuteSlash(bool isGroundSlash)
     {
-        bool isGrounded = characterController != null && characterController.isGrounded;
+        TriggerSlashAnimation(isGroundSlash);
+        CreateSlashEffect(isGroundSlash);
+        PlaySlashSound(isGroundSlash);
+        ApplySlashDamage(isGroundSlash);
         
-        TriggerSlashAnimation(isGrounded);
-        CreateSlashEffect(isGrounded);
-        PlaySlashSound(isGrounded);
-        ApplySlashDamage(isGrounded);
-        
-        if (!isGrounded)
+        if (!isGroundSlash)
         {
             StartCoroutine(AirDash());
         }
         
-        lastSlashTime = Time.time;
+        // Atualiza o tempo do último slash
+        if (isGroundSlash)
+        {
+            lastGroundSlashTime = Time.time;
+        }
+        else
+        {
+            lastAirSlashTime = Time.time;
+        }
     }
 
-    void TriggerSlashAnimation(bool isGrounded)
+    void TriggerSlashAnimation(bool isGroundSlash)
     {
         if (animator == null) return;
         
-        if (isGrounded)
+        if (isGroundSlash)
         {
             animator.SetTrigger(groundSlashTrigger);
         }
@@ -115,14 +140,14 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-    void CreateSlashEffect(bool isGrounded)
+    void CreateSlashEffect(bool isGroundSlash)
     {
         if (currentSlashEffect != null)
         {
             Destroy(currentSlashEffect);
         }
         
-        GameObject slashPrefab = isGrounded ? groundSlashPrefab : airSlashPrefab;
+        GameObject slashPrefab = isGroundSlash ? groundSlashPrefab : airSlashPrefab;
         if (slashPrefab != null)
         {
             currentSlashEffect = Instantiate(
@@ -134,23 +159,23 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-   void PlaySlashSound(bool isGrounded)
-{
-    AudioClip sound = isGrounded ? swingSound : airSwingSound;
-    if (sound != null)
+    void PlaySlashSound(bool isGroundSlash)
     {
-        // Cria um AudioSource temporário que se auto-destroi
-        GameObject soundObj = new GameObject("TempAudio");
-        AudioSource tempSource = soundObj.AddComponent<AudioSource>();
-        tempSource.clip = sound;
-        tempSource.volume = volume;
-        tempSource.pitch = Random.Range(0.95f, 1.05f);
-        tempSource.Play();
-        Destroy(soundObj, sound.length);
+        AudioClip sound = isGroundSlash ? swingSound : airSwingSound;
+        if (sound != null)
+        {
+            // Cria um AudioSource temporário que se auto-destroi
+            GameObject soundObj = new GameObject("TempAudio");
+            AudioSource tempSource = soundObj.AddComponent<AudioSource>();
+            tempSource.clip = sound;
+            tempSource.volume = volume;
+            tempSource.pitch = Random.Range(0.95f, 1.05f);
+            tempSource.Play();
+            Destroy(soundObj, sound.length);
+        }
     }
-}
 
-    void ApplySlashDamage(bool isGrounded)
+    void ApplySlashDamage(bool isGroundSlash)
     {
         Vector3 attackPosition = transform.position + transform.forward * slashRange;
         Collider[] hitEnemies = Physics.OverlapSphere(attackPosition, slashRange);

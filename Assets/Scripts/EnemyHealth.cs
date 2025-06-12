@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
+
 public class EnemyHealth : MonoBehaviour
 {
     [Header("Health Settings")]
     public int maxHealth = 3;
     public int currentHealth;
-    public float invincibilityTime = 0.5f; // Tempo de invencibilidade após levar dano
+    public float invincibilityTime = 0.5f;
     
     [Header("Death Explosion")]
     public GameObject explosionEffect;
@@ -13,6 +14,10 @@ public class EnemyHealth : MonoBehaviour
     public int explosionDamage = 1;
     public float explosionForce = 10f;
     public LayerMask damageLayers;
+    
+    [Header("Damage Particles")]
+    public GameObject damageParticlesPrefab;
+    public Vector3 particlesOffset = new Vector3(0, 1f, 0); // Aumentado para Y=1 para melhor visibilidade
     
     [Header("Audio")]
     public AudioClip deathSound;
@@ -34,12 +39,17 @@ public class EnemyHealth : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
         
-        // Guarda o material original para efeito de piscar
         Renderer renderer = GetComponentInChildren<Renderer>();
         if (renderer != null)
         {
             originalMaterial = renderer.material;
             originalColor = renderer.material.color;
+        }
+
+        // Verificação inicial do prefab de partículas
+        if (damageParticlesPrefab != null && damageParticlesPrefab.GetComponent<ParticleSystem>() == null)
+        {
+            Debug.LogError("O prefab de partículas não contém um ParticleSystem!", this);
         }
     }
 
@@ -53,38 +63,99 @@ public class EnemyHealth : MonoBehaviour
                 EndInvincibility();
             }
         }
+
+        // Teste manual - Remova após verificar que está funcionando
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            TestParticles();
+        }
+    }
+
+    // Método de teste - pode remover depois
+    void TestParticles()
+    {
+        Debug.Log("Testando partículas de dano...");
+        ShowDamageParticles(transform.position + Vector3.forward * 2f);
     }
 
     public void TakeDamage(int damage, Vector3 attackOrigin)
-{
-    if (isInvincible || currentHealth <= 0) return;
-    
-    currentHealth -= damage;
-    
-    // Tocar som de hit
-    if (hitSound != null)
     {
-        audioSource.PlayOneShot(hitSound, volume);
+        if (isInvincible || currentHealth <= 0) return;
+        
+        currentHealth -= damage;
+        
+        if (hitSound != null)
+        {
+            audioSource.PlayOneShot(hitSound, volume);
+        }
+        
+        StartInvincibility();
+        StartCoroutine(FlashEffect());
+        ShowDamageParticles(attackOrigin);
+        
+        var enemyAI = GetComponent<EnemyAI>();
+        if (enemyAI != null)
+        {
+            enemyAI.Stun();
+        }
+        
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
-    
-    // Ativar invencibilidade
-    StartInvincibility();
-    
-    // Feedback visual
-    StartCoroutine(FlashEffect());
-    
-    // Aplicar stun
-    var enemyAI = GetComponent<EnemyAI>();
-    if (enemyAI != null)
+
+    void ShowDamageParticles(Vector3 attackOrigin)
     {
-        enemyAI.Stun();
+        if (damageParticlesPrefab == null)
+        {
+            Debug.LogWarning("Damage particles prefab não atribuído!", this);
+            return;
+        }
+
+        // Verificação extra do ParticleSystem
+        ParticleSystem prefabPS = damageParticlesPrefab.GetComponent<ParticleSystem>();
+        if (prefabPS == null)
+        {
+            Debug.LogError("Prefab não contém ParticleSystem!", this);
+            return;
+        }
+
+        Vector3 spawnPosition = transform.position + particlesOffset;
+        Vector3 hitDirection = (spawnPosition - attackOrigin).normalized;
+        
+        // Se a direção for zero (ataque da mesma posição), usa direção padrão
+        if (hitDirection == Vector3.zero) 
+        {
+            hitDirection = Vector3.up;
+        }
+
+        GameObject particles = Instantiate(
+            damageParticlesPrefab, 
+            spawnPosition, 
+            Quaternion.LookRotation(hitDirection)
+        );
+
+        // Configuração automática para garantir que funcione
+        ParticleSystem ps = particles.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            var main = ps.main;
+            main.playOnAwake = true;
+            ps.Play();
+            
+            // Destrói após a duração total das partículas
+            float totalDuration = main.duration + main.startLifetime.constantMax;
+            Destroy(particles, totalDuration);
+            
+            Debug.Log($"Partículas de dano ativadas em {spawnPosition}", this);
+        }
+        else
+        {
+            Debug.LogError("Partículas instanciadas não têm ParticleSystem!", particles);
+            Destroy(particles, 2f);
+        }
     }
-    
-    if (currentHealth <= 0)
-    {
-        Die();
-    }
-}
 
     void StartInvincibility()
     {
@@ -95,7 +166,6 @@ public class EnemyHealth : MonoBehaviour
     void EndInvincibility()
     {
         isInvincible = false;
-        // Restaurar cor original
         if (originalMaterial != null)
         {
             originalMaterial.color = originalColor;
@@ -122,58 +192,50 @@ public class EnemyHealth : MonoBehaviour
         renderer.material.color = originalColor;
     }
 
-   void Die()
-{
-    // Desativar renderers e colliders imediatamente
-    foreach (var renderer in GetComponentsInChildren<Renderer>())
+    void Die()
     {
-        renderer.enabled = false;
-    }
-    foreach (var collider in GetComponentsInChildren<Collider>())
-    {
-        collider.enabled = false;
-    }
-    
-    // Desativar scripts de movimento
-    var ai = GetComponent<EnemyAI>();
-    if (ai != null) ai.enabled = false;
-    var patrol = GetComponent<EnemyPatrol>();
-    if (patrol != null) patrol.enabled = false;
-    
-    // Tocar som de morte
-    if (deathSound != null)
-    {
-        audioSource.PlayOneShot(deathSound, volume);
-    }
-    
-    // Criar explosão
-    if (explosionEffect != null)
-    {
-        Instantiate(explosionEffect, transform.position, Quaternion.identity);
-    }
-    
-    // Aplicar dano na área
-    Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius, damageLayers);
-    foreach (Collider hit in hitObjects)
-    {
-        PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
+        foreach (var renderer in GetComponentsInChildren<Renderer>())
         {
-            playerHealth.TakeDamage(explosionDamage, transform.position);
+            renderer.enabled = false;
+        }
+        foreach (var collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = false;
         }
         
-        Rigidbody rb = hit.GetComponent<Rigidbody>();
-        if (rb != null)
+        var ai = GetComponent<EnemyAI>();
+        if (ai != null) ai.enabled = false;
+        var patrol = GetComponent<EnemyPatrol>();
+        if (patrol != null) patrol.enabled = false;
+        
+        if (deathSound != null)
         {
-            rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+            audioSource.PlayOneShot(deathSound, volume);
         }
+        
+        if (explosionEffect != null)
+        {
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        }
+        
+        Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius, damageLayers);
+        foreach (Collider hit in hitObjects)
+        {
+            PlayerHealth playerHealth = hit.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(explosionDamage, transform.position);
+            }
+            
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+            }
+        }
+        
+        Destroy(gameObject, deathSound != null ? deathSound.length : 0.1f);
     }
-    
-    // Destruir o objeto depois que o som terminar
-    Destroy(gameObject, deathSound != null ? deathSound.length : 0.1f);
-}
-
-    
 
     void OnDrawGizmosSelected()
     {
