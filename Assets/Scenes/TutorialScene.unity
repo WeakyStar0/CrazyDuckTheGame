@@ -4581,6 +4581,13 @@ MonoBehaviour:
   attackCooldown: 2
   damageAmount: 1
   stunDuration: 0.5
+  quackSounds:
+  - {fileID: 8300000, guid: caf392bcadba7a44184a0b4b1f4e4ea9, type: 3}
+  minQuackInterval: 0.3
+  maxQuackInterval: 0.8
+  minPitch: 0.8
+  maxPitch: 1.2
+  maxHearDistance: 300
 --- !u!143 &114108899
 CharacterController:
   m_ObjectHideFlags: 0
@@ -79271,6 +79278,13 @@ MonoBehaviour:
   attackCooldown: 2
   damageAmount: 1
   stunDuration: 0.5
+  quackSounds:
+  - {fileID: 8300000, guid: caf392bcadba7a44184a0b4b1f4e4ea9, type: 3}
+  minQuackInterval: 0.3
+  maxQuackInterval: 0.8
+  minPitch: 0.8
+  maxPitch: 1.2
+  maxHearDistance: 300
 --- !u!143 &1267318685
 CharacterController:
   m_ObjectHideFlags: 0
@@ -82023,6 +82037,13 @@ MonoBehaviour:
   attackCooldown: 2
   damageAmount: 1
   stunDuration: 0.5
+  quackSounds:
+  - {fileID: 8300000, guid: caf392bcadba7a44184a0b4b1f4e4ea9, type: 3}
+  minQuackInterval: 0.3
+  maxQuackInterval: 0.8
+  minPitch: 0.8
+  maxPitch: 1.2
+  maxHearDistance: 300
 --- !u!143 &1323856217
 CharacterController:
   m_ObjectHideFlags: 0
@@ -87781,6 +87802,13 @@ MonoBehaviour:
   attackCooldown: 2
   damageAmount: 1
   stunDuration: 0.5
+  quackSounds:
+  - {fileID: 8300000, guid: caf392bcadba7a44184a0b4b1f4e4ea9, type: 3}
+  minQuackInterval: 0.3
+  maxQuackInterval: 0.8
+  minPitch: 0.8
+  maxPitch: 1.2
+  maxHearDistance: 300
 --- !u!143 &1457364157
 CharacterController:
   m_ObjectHideFlags: 0

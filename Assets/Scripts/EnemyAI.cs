@@ -30,27 +30,58 @@ public class EnemyAI : MonoBehaviour
     private float groundCheckDistance = 0.2f;
     private float attackTimer = 0f;
     private bool canAttack = true;
-    
+
+    [Header("Quack Settings")]
+    public AudioClip[] quackSounds; // Array de sons de quack
+    public float minQuackInterval = 1f;
+    public float maxQuackInterval = 3f;
+    public float minPitch = 0.8f;
+    public float maxPitch = 1.2f;
+    public float maxHearDistance = 10f; // Distância máxima para ouvir o quack
+
+    private AudioSource quackAudioSource;
+    private float nextQuackTime;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         patrolScript = GetComponent<EnemyPatrol>();
         controller = GetComponent<CharacterController>();
         lastPatrolPosition = transform.position;
+
+        // Configurar AudioSource para quacks
+        quackAudioSource = gameObject.AddComponent<AudioSource>();
+        quackAudioSource.spatialBlend = 1f; // 3D sound
+        quackAudioSource.rolloffMode = AudioRolloffMode.Linear;
+        quackAudioSource.minDistance = 1f;
+        quackAudioSource.maxDistance = maxHearDistance;
+
+        SetNextQuackTime();
     }
-    
+
+private void SetNextQuackTime()
+{
+    nextQuackTime = Time.time + Random.Range(minQuackInterval, maxQuackInterval);
+}
     void Update()
     {
 
-         if (isStunned)
+            if (isStunned)
+    {
+        stunTimer -= Time.deltaTime;
+        if (stunTimer <= 0)
         {
-            stunTimer -= Time.deltaTime;
-            if (stunTimer <= 0)
-            {
-                isStunned = false;
-            }
-            return; // Não faz nada enquanto está stunnado
+            isStunned = false;
         }
+        return; // Não faz nada enquanto está stunnado
+    }
+
+if (Time.time >= nextQuackTime && quackSounds.Length > 0 && !isStunned)
+    {
+        PlayRandomQuack();
+        SetNextQuackTime();
+    }
+
         // Atualiza cooldown do ataque
         if (!canAttack)
         {
@@ -139,13 +170,37 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
+
+    private void PlayRandomQuack()
+{
+    if (quackSounds.Length == 0) return;
+
+    // Seleciona um quack aleatório
+    AudioClip randomQuack = quackSounds[Random.Range(0, quackSounds.Length)];
+    
+    // Configura pitch aleatório
+    quackAudioSource.pitch = Random.Range(minPitch, maxPitch);
+    
+    // Calcula volume baseado na distância do jogador
+    float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+    float volume = Mathf.Clamp01(1 - (distanceToPlayer / maxHearDistance));
+    
+    // Toca o som
+    quackAudioSource.PlayOneShot(randomQuack, volume);
+}
     
         public void Stun()
+{
+    isStunned = true;
+    stunTimer = stunDuration;
+    patrolScript.enabled = false;
+    
+    // Para qualquer quack que esteja tocando
+    if (quackAudioSource != null)
     {
-        isStunned = true;
-        stunTimer = stunDuration;
-        patrolScript.enabled = false;
+        quackAudioSource.Stop();
     }
+}
 
     public void ResetEnemy()
     {
