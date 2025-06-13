@@ -79,25 +79,31 @@ public class CameraController : MonoBehaviour
     }
 
     private void LateUpdate()
+{
+    GameStartSequence startSequence = GetComponent<GameStartSequence>();
+    if (startSequence != null && startSequence.IsInSequence())
     {
-        if (!isCameraLocked && shakeCoroutine == null)
-        {
-            cameraPivot.localPosition = new Vector3(0, currentCameraHeight, 0);
+        return; // Não atualiza a câmera durante a sequência
+    }
 
-            if (isDuringDash)
-            {
-                HandleDashCamera();
-            }
-            else
-            {
-                HandleCameraCollision();
-            }
-        }
-        else if (isDuringKnockback)
+    if (!isCameraLocked && shakeCoroutine == null)
+    {
+        cameraPivot.localPosition = new Vector3(0, currentCameraHeight, 0);
+
+        if (isDuringDash)
         {
-            HandleKnockbackCamera();
+            HandleDashCamera();
+        }
+        else
+        {
+            HandleCameraCollision();
         }
     }
+    else if (isDuringKnockback)
+    {
+        HandleKnockbackCamera();
+    }
+}
 
     public void ShakeCamera(float duration, float intensity, float rotationAmount)
     {
@@ -269,4 +275,11 @@ public class CameraController : MonoBehaviour
             }
         }
     }
+
+    public bool IsCameraLocked()
+    {
+        return isCameraLocked;
+    }
+
+
 }

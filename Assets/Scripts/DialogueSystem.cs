@@ -38,17 +38,6 @@ public class DialogueSystem : MonoBehaviour
     private Quaternion characterInitialRotation;
     private Coroutine swingCoroutine;
 
-    [Header("Skip Button Animation")]
-    public float buttonBounceHeight = 10f;
-    public float buttonBounceSpeed = 5f;
-    public float buttonGlowDuration = 0.5f;
-    public Color buttonGlowColor = Color.yellow;
-    private Vector3 skipButtonOriginalPosition;
-    private Color skipButtonOriginalColor;
-    private Image skipButtonImage;
-    private Coroutine buttonBounceCoroutine;
-    private Coroutine buttonGlowCoroutine;
-
     [Header("Settings")]
     public float defaultTypingSpeed = 0.05f;
     public AudioClip typingSound;
@@ -67,7 +56,7 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine autoAdvanceCoroutine;
     private Vector3 playerVelocityBeforeDialogue;
 
-    private void Awake()
+        private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -84,21 +73,24 @@ public class DialogueSystem : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
         
+        // Adicione este listener para detectar mudanças de cena
         SceneManager.sceneLoaded += OnSceneLoaded;
         
         DeactivateAllUIElements();
     }
     
-    private void OnDestroy()
+        private void OnDestroy()
     {
+        // Remova o listener quando o objeto for destruído
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        InstantiateDialogueCanvas();
-        FindUIReferences();
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    InstantiateDialogueCanvas();
+    FindUIReferences();
         
+        // Se o diálogo estava ativo, reative-o com as novas referências
         if (dialogueActive)
         {
             DisplayCurrentMessage();
@@ -106,47 +98,45 @@ public class DialogueSystem : MonoBehaviour
     }
     
     private void InstantiateDialogueCanvas()
+{
+    if (GameObject.FindGameObjectWithTag("DialogueCanvas") == null)
     {
-        if (GameObject.FindGameObjectWithTag("DialogueCanvas") == null)
+        GameObject canvasPrefab = Resources.Load<GameObject>("DialogueCanvas");
+        if (canvasPrefab != null)
         {
-            GameObject canvasPrefab = Resources.Load<GameObject>("DialogueCanvas");
-            if (canvasPrefab != null)
-            {
-                Instantiate(canvasPrefab);
-            }
+            Instantiate(canvasPrefab);
         }
     }
+}
 
-    private void FindUIReferences()
+
+  private void FindUIReferences()
+{
+    // Encontra o Canvas primeiro
+    GameObject canvasObj = GameObject.FindGameObjectWithTag("DialogueCanvas");
+    if (canvasObj == null)
     {
-        GameObject canvasObj = GameObject.FindGameObjectWithTag("DialogueCanvas");
-        if (canvasObj == null)
-        {
-            Debug.LogError("DialogueCanvas not found in scene! Make sure it's instantiated and tagged.");
-            return;
-        }
-
-        dialoguePanel = FindChildByTag(canvasObj.transform, "DialoguePanel")?.gameObject;
-        characterImage = FindChildByTag(canvasObj.transform, "CharacterImage")?.GetComponent<Image>();
-        characterNameText = FindChildByTag(canvasObj.transform, "CharacterNameText")?.GetComponent<TMP_Text>();
-        dialogueText = FindChildByTag(canvasObj.transform, "DialogueText")?.GetComponent<TMP_Text>();
-        namePanel = FindChildByTag(canvasObj.transform, "NamePanel")?.gameObject;
-        skipButton = FindChildByTag(canvasObj.transform, "SkipButton")?.GetComponent<Button>();
-
-        if (skipButton != null)
-        {
-            skipButton.onClick.RemoveAllListeners();
-            skipButton.onClick.AddListener(SkipDialogue);
-            skipButtonOriginalPosition = skipButton.transform.localPosition;
-            skipButtonImage = skipButton.GetComponent<Image>();
-            if (skipButtonImage != null)
-            {
-                skipButtonOriginalColor = skipButtonImage.color;
-            }
-        }
-
-        playerController = FindFirstObjectByType<PlayerController>();
+        Debug.LogError("DialogueCanvas not found in scene! Make sure it's instantiated and tagged.");
+        return;
     }
+
+    // Busca recursiva pelos elementos
+    dialoguePanel = FindChildByTag(canvasObj.transform, "DialoguePanel")?.gameObject;
+    characterImage = FindChildByTag(canvasObj.transform, "CharacterImage")?.GetComponent<Image>();
+    characterNameText = FindChildByTag(canvasObj.transform, "CharacterNameText")?.GetComponent<TMP_Text>();
+    dialogueText = FindChildByTag(canvasObj.transform, "DialogueText")?.GetComponent<TMP_Text>();
+    namePanel = FindChildByTag(canvasObj.transform, "NamePanel")?.gameObject;
+    skipButton = FindChildByTag(canvasObj.transform, "SkipButton")?.GetComponent<Button>();
+
+    // Configuração adicional
+    if (skipButton != null)
+    {
+        skipButton.onClick.RemoveAllListeners();
+        skipButton.onClick.AddListener(SkipDialogue);
+    }
+
+    playerController = FindFirstObjectByType<PlayerController>();
+}
 
     private void Start()
     {
@@ -160,28 +150,21 @@ public class DialogueSystem : MonoBehaviour
 
         if (skipButton != null)
         {
-            skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(SkipDialogue);
             skipButton.gameObject.SetActive(false);
-            skipButtonOriginalPosition = skipButton.transform.localPosition;
-            skipButtonImage = skipButton.GetComponent<Image>();
-            if (skipButtonImage != null)
-            {
-                skipButtonOriginalColor = skipButtonImage.color;
-            }
         }
     }
 
     private Transform FindChildByTag(Transform parent, string tag)
+{
+    foreach (Transform child in parent)
     {
-        foreach (Transform child in parent)
-        {
-            if (child.CompareTag(tag)) return child;
-            var result = FindChildByTag(child, tag);
-            if (result != null) return result;
-        }
-        return null;
+        if (child.CompareTag(tag)) return child;
+        var result = FindChildByTag(child, tag);
+        if (result != null) return result;
     }
+    return null;
+}
 
     private void DeactivateAllUIElements()
     {
@@ -197,6 +180,7 @@ public class DialogueSystem : MonoBehaviour
     {
         if (!dialogueActive) return;
 
+        // Verifica tanto a tecla global quanto a tecla específica da mensagem
         bool skipPressed = Input.GetKeyDown(globalSkipKey) || 
                           (currentMessageIndex < currentDialogue.Length && 
                            currentDialogue[currentMessageIndex].skipKey != KeyCode.None && 
@@ -224,33 +208,30 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public void StartDialogue(DialogueMessage[] dialogue)
-    {
-        if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
+ public void StartDialogue(DialogueMessage[] dialogue)
+{
+    if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
 
-        currentDialogue = dialogue;
-        currentMessageIndex = 0;
-        dialogueActive = true;
+    currentDialogue = dialogue;
+    currentMessageIndex = 0;
+    dialogueActive = true;
+    
+    if (playerController != null)
+    {
+        // Salva apenas a velocidade horizontal
+        Vector3 horizontalVelocity = playerController.GetVelocity();
+        horizontalVelocity.y = 0; // Ignora a componente vertical
+        playerVelocityBeforeDialogue = horizontalVelocity;
         
-        if (playerController != null)
-        {
-            Vector3 horizontalVelocity = playerController.GetVelocity();
-            horizontalVelocity.y = 0;
-            playerVelocityBeforeDialogue = horizontalVelocity;
-            
-            playerController.SetControlEnabled(false);
-            playerController.ForceIdleAnimation();
-        }
-        
-        if (dialoguePanel != null) dialoguePanel.SetActive(true);
-        if (skipButton != null) 
-        {
-            skipButton.gameObject.SetActive(true);
-            StartButtonBounce();
-        }
-        
-        DisplayCurrentMessage();
+        playerController.SetControlEnabled(false);
+        playerController.ForceIdleAnimation();
     }
+    
+    if (dialoguePanel != null) dialoguePanel.SetActive(true);
+    if (skipButton != null) skipButton.gameObject.SetActive(true);
+    
+    DisplayCurrentMessage();
+}
 
     private void DisplayCurrentMessage()
     {
@@ -418,106 +399,33 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public void EndDialogue()
+ public void EndDialogue()
+{
+    if (!dialogueActive) return;
+    
+    if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+    if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
+    StopSwingAnimation();
+    
+    DeactivateAllUIElements();
+    
+    if (playerController != null)
     {
-        if (!dialogueActive) return;
+        playerController.SetControlEnabled(true);
         
-        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-        if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
-        if (buttonBounceCoroutine != null) StopCoroutine(buttonBounceCoroutine);
-        if (buttonGlowCoroutine != null) StopCoroutine(buttonGlowCoroutine);
-        
-        StopSwingAnimation();
-        
-        if (skipButton != null)
-        {
-            skipButton.transform.localPosition = skipButtonOriginalPosition;
-            if (skipButtonImage != null)
-            {
-                skipButtonImage.color = skipButtonOriginalColor;
-            }
-            skipButton.gameObject.SetActive(false);
-        }
-        
-        DeactivateAllUIElements();
-        
-        if (playerController != null)
-        {
-            playerController.SetControlEnabled(true);
-            
-            Vector3 currentVelocity = playerController.GetVelocity();
-            Vector3 newVelocity = playerVelocityBeforeDialogue;
-            newVelocity.y = currentVelocity.y;
-            playerController.SetVelocity(newVelocity);
-        }
-        
-        dialogueActive = false;
+        // Restaura apenas a velocidade horizontal
+        Vector3 currentVelocity = playerController.GetVelocity();
+        Vector3 newVelocity = playerVelocityBeforeDialogue;
+        newVelocity.y = currentVelocity.y; // Mantém a velocidade vertical atual
+        playerController.SetVelocity(newVelocity);
     }
+    
+    dialogueActive = false;
+}
 
     public void SkipDialogue()
     {
-        StartButtonGlow();
-        StartCoroutine(EndDialogueAfterDelay(0.2f));
-    }
-
-    private IEnumerator EndDialogueAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
         EndDialogue();
     }
 
-    private void StartButtonBounce()
-    {
-        if (buttonBounceCoroutine != null)
-        {
-            StopCoroutine(buttonBounceCoroutine);
-        }
-        buttonBounceCoroutine = StartCoroutine(ButtonBounceAnimation());
-    }
-
-    private IEnumerator ButtonBounceAnimation()
-    {
-        while (true)
-        {
-            float yOffset = Mathf.Sin(Time.time * buttonBounceSpeed) * buttonBounceHeight;
-            skipButton.transform.localPosition = skipButtonOriginalPosition + new Vector3(0, yOffset, 0);
-            yield return null;
-        }
-    }
-
-    private void StartButtonGlow()
-    {
-        if (buttonGlowCoroutine != null)
-        {
-            StopCoroutine(buttonGlowCoroutine);
-        }
-        buttonGlowCoroutine = StartCoroutine(ButtonGlowEffect());
-    }
-
-    private IEnumerator ButtonGlowEffect()
-    {
-        if (skipButtonImage == null) yield break;
-        
-        float elapsedTime = 0f;
-        Color startColor = skipButtonImage.color;
-        
-        while (elapsedTime < buttonGlowDuration / 2)
-        {
-            elapsedTime += Time.deltaTime;
-            skipButtonImage.color = Color.Lerp(startColor, buttonGlowColor, elapsedTime / (buttonGlowDuration / 2));
-            yield return null;
-        }
-        
-        elapsedTime = 0f;
-        startColor = skipButtonImage.color;
-        
-        while (elapsedTime < buttonGlowDuration / 2)
-        {
-            elapsedTime += Time.deltaTime;
-            skipButtonImage.color = Color.Lerp(startColor, skipButtonOriginalColor, elapsedTime / (buttonGlowDuration / 2));
-            yield return null;
-        }
-        
-        skipButtonImage.color = skipButtonOriginalColor;
-    }
 }

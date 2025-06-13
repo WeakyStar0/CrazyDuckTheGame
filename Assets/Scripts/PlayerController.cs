@@ -71,56 +71,77 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
-    private void Start()
-    {
-        currentSpeed = walkSpeed;
-        Cursor.lockState = CursorLockMode.Locked;
-        jumpsRemaining = maxJumps;
+private void Start()
+{
+    currentSpeed = walkSpeed;
+    Cursor.lockState = CursorLockMode.Locked;
+    jumpsRemaining = maxJumps;
 
-        originalHeight = characterController.height;
-        originalCenter = characterController.center;
+    originalHeight = characterController.height;
+    originalCenter = characterController.center;
+    
+    // Reseta todas as animações
+    if (animator != null)
+    {
+        animator.Play("Idle");
+        animator.SetFloat(SpeedHash, 0);
+        animator.SetBool(IsGroundedHash, true);
+        animator.SetBool(CrouchHash, false);
+        animator.ResetTrigger(JumpHash);
+        animator.ResetTrigger(CrouchJumpHash);
+        animator.ResetTrigger(DashHash);
+        animator.SetBool(IsDashingHash, false);
     }
+    
+    // Garante que a rotação está correta
+    transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+}
 
     private void Update()
-{
-    if (!enabled)
     {
-        // Apenas atualiza a gravidade e animações quando desativado
+        if (transform.eulerAngles != Vector3.zero)
+        {
+            // Corrige a rotação se necessário
+            transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+        }
+        if (!enabled)
+        {
+            // Apenas atualiza a gravidade e animações quando desativado
+            HandleGravity();
+            UpdateAnimator();
+            return;
+        }
+
         HandleGravity();
+        HandleCrouch();
+        HandleDashInput();
         UpdateAnimator();
-        return;
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
+            {
+                jumpInput = true;
+                lastJumpTime = Time.time;
+                jumpConsumed = false;
+                jumpWasBlocked = false;
+            }
+            else
+            {
+                jumpWasBlocked = true;
+            }
+        }
     }
 
-    HandleGravity();
-    HandleCrouch();
-    HandleDashInput();
-    UpdateAnimator();
-
-    if (Input.GetButtonDown("Jump"))
+    private void FixedUpdate()
     {
-        if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
-        {
-            jumpInput = true;
-            lastJumpTime = Time.time;
-            jumpConsumed = false;
-            jumpWasBlocked = false;
-        }
-        else
-        {
-            jumpWasBlocked = true;
-        }
-    }
-}
+        // Sempre aplica gravidade, mesmo quando o controle está desativado
+        HandleGravity();
 
-private void FixedUpdate()
-{
-    // Sempre aplica gravidade, mesmo quando o controle está desativado
-    HandleGravity();
-    
-    Vector3 movement = enabled ? HandleMovement() : Vector3.zero;
-    movement += HandleJump();
-    characterController.Move(movement * Time.fixedDeltaTime);
-}
+        Vector3 movement = enabled ? HandleMovement() : Vector3.zero;
+        movement += HandleJump();
+        characterController.Move(movement * Time.fixedDeltaTime);
+    }
 
 
 
@@ -136,13 +157,20 @@ private void FixedUpdate()
     {
         return !isDashing && Time.time > lastDashTime + dashCooldown;
     }
-public void SetControlEnabled(bool enabled)
+    public void SetControlEnabled(bool enabled)
 {
     this.enabled = enabled;
     
-    // Se estiver desativando, força uma atualização da gravidade
     if (!enabled)
     {
+        // Reseta os parâmetros do animador
+        animator.SetFloat(SpeedHash, 0);
+        animator.SetBool(IsGroundedHash, true);
+        animator.ResetTrigger(JumpHash);
+        animator.ResetTrigger(CrouchJumpHash);
+        animator.SetBool(CrouchHash, false);
+        
+        // Força uma atualização da gravidade
         HandleGravity();
         characterController.Move(velocity * Time.fixedDeltaTime);
     }
@@ -381,23 +409,31 @@ public void SetControlEnabled(bool enabled)
         animator.SetBool(IsDashingHash, false);
     }
 
-public Vector3 GetVelocity()
-{
-    return velocity;
-}
+    public Vector3 GetVelocity()
+    {
+        return velocity;
+    }
 
-public void SetVelocity(Vector3 newVelocity)
-{
-    velocity = newVelocity;
-}
+    public void SetVelocity(Vector3 newVelocity)
+    {
+        velocity = newVelocity;
+    }
 
-public void ForceIdleAnimation()
+    public void ForceIdleAnimation()
+    {
+        if (animator != null)
+        {
+            animator.SetFloat(SpeedHash, 0);
+            animator.SetBool(IsGroundedHash, true);
+            animator.SetBool(CrouchHash, false);
+        }
+    }
+
+public void PlayAnimation(string animationName, float transitionTime = 0.1f)
 {
     if (animator != null)
     {
-        animator.SetFloat(SpeedHash, 0);
-        animator.SetBool(IsGroundedHash, true);
-        animator.SetBool(CrouchHash, false);
+        animator.CrossFade(animationName, transitionTime);
     }
 }
 
