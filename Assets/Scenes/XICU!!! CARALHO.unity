@@ -4580,6 +4580,20 @@ MonoBehaviour:
   gravity: 9.81
   attackCooldown: 2
   damageAmount: 1
+  stunDuration: 0.5
+  patrolSounds: []
+  minPatrolInterval: 1
+  maxPatrolInterval: 3
+  patrolMinPitch: 0.8
+  patrolMaxPitch: 1.2
+  chaseSounds: []
+  minChaseInterval: 0.5
+  maxChaseInterval: 1.5
+  chaseMinPitch: 1
+  chaseMaxPitch: 1.5
+  maxHearDistance: 10
+  maxVolume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!143 &114108899
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4627,9 +4641,12 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  damageParticlesPrefab: {fileID: 0}
+  particlesOffset: {x: 0, y: 1, z: 0}
   deathSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   hitSound: {fileID: 0}
   volume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!95 &114108901
 Animator:
   serializedVersion: 7
@@ -27785,19 +27802,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.69779044
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.716302
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -27805,7 +27822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 91.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -28022,6 +28039,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 679692770}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1244169273}
     - targetCorrespondingSourceObject: {fileID: 4580310256082202182, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1392559635}
@@ -28116,9 +28136,11 @@ MonoBehaviour:
   swingSound: {fileID: 8300000, guid: b27eb33bd8eca1b4e8638ff987f739dd, type: 3}
   airSwingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   volume: 1
+  audioSource: {fileID: 0}
   groundCooldown: 1
   airCooldown: 1
-  slashKey: 323
+  groundSlashKey: 323
+  airSlashKey: 324
   airDashForce: 300
   airDashDuration: 0.3
   groundSlashTrigger: GroundSlash
@@ -72445,6 +72467,83 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!95 &1244169272 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
+  m_PrefabInstance: {fileID: 679692766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1244169273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 679692767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d24cbc189dd49488850dd4179275f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 679692778}
+  cameraTransform: {fileID: 669377630}
+  playerAnimator: {fileID: 1244169272}
+  playerTransform: {fileID: 679692768}
+  swordSlash: {fileID: 679692773}
+  wakeUpAnimationName: get up
+  initialCameraDistance: 50
+  cameraOrbitDuration: 3
+  cameraOrbitDistance: 75
+  cameraOrbitHeight: 1
+  cameraReturnDuration: 1
+  wakeUpDelay: 0
+  orbitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &1244732333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -79273,6 +79372,20 @@ MonoBehaviour:
   gravity: 9.81
   attackCooldown: 2
   damageAmount: 1
+  stunDuration: 0.5
+  patrolSounds: []
+  minPatrolInterval: 1
+  maxPatrolInterval: 3
+  patrolMinPitch: 0.8
+  patrolMaxPitch: 1.2
+  chaseSounds: []
+  minChaseInterval: 0.5
+  maxChaseInterval: 1.5
+  chaseMinPitch: 1
+  chaseMaxPitch: 1.5
+  maxHearDistance: 10
+  maxVolume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!143 &1267318685
 CharacterController:
   m_ObjectHideFlags: 0
@@ -79320,9 +79433,12 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  damageParticlesPrefab: {fileID: 0}
+  particlesOffset: {x: 0, y: 1, z: 0}
   deathSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   hitSound: {fileID: 0}
   volume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!95 &1267318687
 Animator:
   serializedVersion: 7
@@ -82024,6 +82140,20 @@ MonoBehaviour:
   gravity: 9.81
   attackCooldown: 2
   damageAmount: 1
+  stunDuration: 0.5
+  patrolSounds: []
+  minPatrolInterval: 1
+  maxPatrolInterval: 3
+  patrolMinPitch: 0.8
+  patrolMaxPitch: 1.2
+  chaseSounds: []
+  minChaseInterval: 0.5
+  maxChaseInterval: 1.5
+  chaseMinPitch: 1
+  chaseMaxPitch: 1.5
+  maxHearDistance: 10
+  maxVolume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!143 &1323856217
 CharacterController:
   m_ObjectHideFlags: 0
@@ -82071,9 +82201,12 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 192
+  damageParticlesPrefab: {fileID: 0}
+  particlesOffset: {x: 0, y: 1, z: 0}
   deathSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   hitSound: {fileID: 0}
   volume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!95 &1323856219
 Animator:
   serializedVersion: 7
@@ -87781,6 +87914,20 @@ MonoBehaviour:
   gravity: 9.81
   attackCooldown: 2
   damageAmount: 1
+  stunDuration: 0.5
+  patrolSounds: []
+  minPatrolInterval: 1
+  maxPatrolInterval: 3
+  patrolMinPitch: 0.8
+  patrolMaxPitch: 1.2
+  chaseSounds: []
+  minChaseInterval: 0.5
+  maxChaseInterval: 1.5
+  chaseMinPitch: 1
+  chaseMaxPitch: 1.5
+  maxHearDistance: 10
+  maxVolume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!143 &1457364157
 CharacterController:
   m_ObjectHideFlags: 0
@@ -87828,9 +87975,12 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  damageParticlesPrefab: {fileID: 0}
+  particlesOffset: {x: 0, y: 1, z: 0}
   deathSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   hitSound: {fileID: 0}
   volume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!95 &1457364159
 Animator:
   serializedVersion: 7

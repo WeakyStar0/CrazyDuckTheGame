@@ -59,7 +59,7 @@ AnimatorStateMachine:
     m_Position: {x: 590, y: -100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1919185674420564827}
-    m_Position: {x: 670.6169, y: 0.71029663, z: 0}
+    m_Position: {x: 670, y: 0, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6911964288602472665}
     m_Position: {x: 10, y: 0, z: 0}
@@ -808,7 +808,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GetUp
+  m_Name: get up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

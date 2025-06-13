@@ -28052,6 +28052,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2016502834}
     m_Modifications:
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 41.2506
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40.5325
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -199.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 36.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2587076413082272240, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4014216494743458607, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_Name
       value: DialogueUI
@@ -28060,6 +28080,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: DialogueCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6162745849187744443, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6162745849187744443, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d67db8aeecabd5c498777a4dffc2cb04, type: 3}
     - target: {fileID: 8186830186707428301, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -703.5307
@@ -28101,7 +28129,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2448891812031810630, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
@@ -29563,9 +29592,11 @@ MonoBehaviour:
   swingSound: {fileID: 8300000, guid: b27eb33bd8eca1b4e8638ff987f739dd, type: 3}
   airSwingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   volume: 1
+  audioSource: {fileID: 0}
   groundCooldown: 1
   airCooldown: 1
-  slashKey: 323
+  groundSlashKey: 323
+  airSlashKey: 324
   airDashForce: 300
   airDashDuration: 0.3
   groundSlashTrigger: GroundSlash
@@ -95067,6 +95098,10 @@ PrefabInstance:
       propertyPath: skipButton
       value: 
       objectReference: {fileID: 598724112}
+    - target: {fileID: 1777420404701406229, guid: 2940415db2387664eacfd8dc78c3f7c8, type: 3}
+      propertyPath: advanceSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 343f4e0b9dea7d647be6c158dca9ba21, type: 3}
     - target: {fileID: 1777420404701406229, guid: 2940415db2387664eacfd8dc78c3f7c8, type: 3}
       propertyPath: dialogueText
       value: 
