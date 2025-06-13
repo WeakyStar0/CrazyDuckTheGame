@@ -17,12 +17,15 @@ public class EnemyHealth : MonoBehaviour
     
     [Header("Damage Particles")]
     public GameObject damageParticlesPrefab;
-    public Vector3 particlesOffset = new Vector3(0, 1f, 0); // Aumentado para Y=1 para melhor visibilidade
+    public Vector3 particlesOffset = new Vector3(0, 1f, 0);
     
     [Header("Audio")]
     public AudioClip deathSound;
     public AudioClip hitSound;
     [Range(0,1)] public float volume = 0.7f;
+
+    [Header("Animation Settings")]
+    public Animator enemyAnimator;
 
     private AudioSource audioSource;
     private bool isInvincible = false;
@@ -46,7 +49,6 @@ public class EnemyHealth : MonoBehaviour
             originalColor = renderer.material.color;
         }
 
-        // Verificação inicial do prefab de partículas
         if (damageParticlesPrefab != null && damageParticlesPrefab.GetComponent<ParticleSystem>() == null)
         {
             Debug.LogError("O prefab de partículas não contém um ParticleSystem!", this);
@@ -63,19 +65,6 @@ public class EnemyHealth : MonoBehaviour
                 EndInvincibility();
             }
         }
-
-        // Teste manual - Remova após verificar que está funcionando
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            TestParticles();
-        }
-    }
-
-    // Método de teste - pode remover depois
-    void TestParticles()
-    {
-        Debug.Log("Testando partículas de dano...");
-        ShowDamageParticles(transform.position + Vector3.forward * 2f);
     }
 
     public void TakeDamage(int damage, Vector3 attackOrigin)
@@ -87,6 +76,12 @@ public class EnemyHealth : MonoBehaviour
         if (hitSound != null)
         {
             audioSource.PlayOneShot(hitSound, volume);
+        }
+        
+        if (enemyAnimator != null)
+        {
+            enemyAnimator.SetTrigger("TakeDamage");
+            enemyAnimator.SetBool("IsStunned", true);
         }
         
         StartInvincibility();
@@ -107,24 +102,11 @@ public class EnemyHealth : MonoBehaviour
 
     void ShowDamageParticles(Vector3 attackOrigin)
     {
-        if (damageParticlesPrefab == null)
-        {
-            Debug.LogWarning("Damage particles prefab não atribuído!", this);
-            return;
-        }
-
-        // Verificação extra do ParticleSystem
-        ParticleSystem prefabPS = damageParticlesPrefab.GetComponent<ParticleSystem>();
-        if (prefabPS == null)
-        {
-            Debug.LogError("Prefab não contém ParticleSystem!", this);
-            return;
-        }
+        if (damageParticlesPrefab == null) return;
 
         Vector3 spawnPosition = transform.position + particlesOffset;
         Vector3 hitDirection = (spawnPosition - attackOrigin).normalized;
         
-        // Se a direção for zero (ataque da mesma posição), usa direção padrão
         if (hitDirection == Vector3.zero) 
         {
             hitDirection = Vector3.up;
@@ -136,7 +118,6 @@ public class EnemyHealth : MonoBehaviour
             Quaternion.LookRotation(hitDirection)
         );
 
-        // Configuração automática para garantir que funcione
         ParticleSystem ps = particles.GetComponent<ParticleSystem>();
         if (ps != null)
         {
@@ -144,15 +125,11 @@ public class EnemyHealth : MonoBehaviour
             main.playOnAwake = true;
             ps.Play();
             
-            // Destrói após a duração total das partículas
             float totalDuration = main.duration + main.startLifetime.constantMax;
             Destroy(particles, totalDuration);
-            
-            Debug.Log($"Partículas de dano ativadas em {spawnPosition}", this);
         }
         else
         {
-            Debug.LogError("Partículas instanciadas não têm ParticleSystem!", particles);
             Destroy(particles, 2f);
         }
     }
@@ -169,6 +146,11 @@ public class EnemyHealth : MonoBehaviour
         if (originalMaterial != null)
         {
             originalMaterial.color = originalColor;
+        }
+        
+        if (enemyAnimator != null)
+        {
+            enemyAnimator.SetBool("IsStunned", false);
         }
     }
 

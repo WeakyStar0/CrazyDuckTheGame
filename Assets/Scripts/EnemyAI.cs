@@ -10,8 +10,6 @@ public class EnemyAI : MonoBehaviour
     
     [Header("Attack Settings")]
     public float attackCooldown = 2f;
-
-    [Header("Damage Settings")]
     public int damageAmount = 1;
 
     [Header("Stun Settings")]
@@ -19,7 +17,27 @@ public class EnemyAI : MonoBehaviour
     private bool isStunned = false;
     private float stunTimer = 0f;
     
+    [Header("Patrol Sounds")]
+    public AudioClip[] patrolSounds;
+    public float minPatrolInterval = 1f;
+    public float maxPatrolInterval = 3f;
+    public float patrolMinPitch = 0.8f;
+    public float patrolMaxPitch = 1.2f;
     
+    [Header("Chase Sounds")]
+    public AudioClip[] chaseSounds;
+    public float minChaseInterval = 0.5f;
+    public float maxChaseInterval = 1.5f;
+    public float chaseMinPitch = 1f;
+    public float chaseMaxPitch = 1.5f;
+    
+    [Header("Audio Settings")]
+    public float maxHearDistance = 10f;
+    [Range(0, 1)] public float maxVolume = 0.7f;
+
+    [Header("Animation Settings")]
+    public Animator enemyAnimator;
+
     private Transform player;
     private EnemyPatrol patrolScript;
     private Vector3 lastPatrolPosition;
@@ -30,17 +48,8 @@ public class EnemyAI : MonoBehaviour
     private float groundCheckDistance = 0.2f;
     private float attackTimer = 0f;
     private bool canAttack = true;
-
-    [Header("Quack Settings")]
-    public AudioClip[] quackSounds; // Array de sons de quack
-    public float minQuackInterval = 1f;
-    public float maxQuackInterval = 3f;
-    public float minPitch = 0.8f;
-    public float maxPitch = 1.2f;
-    public float maxHearDistance = 10f; // Distância máxima para ouvir o quack
-
-    private AudioSource quackAudioSource;
-    private float nextQuackTime;
+    private AudioSource audioSource;
+    private float nextSoundTime;
 
     void Start()
     {
@@ -49,40 +58,46 @@ public class EnemyAI : MonoBehaviour
         controller = GetComponent<CharacterController>();
         lastPatrolPosition = transform.position;
 
-        // Configurar AudioSource para quacks
-        quackAudioSource = gameObject.AddComponent<AudioSource>();
-        quackAudioSource.spatialBlend = 1f; // 3D sound
-        quackAudioSource.rolloffMode = AudioRolloffMode.Linear;
-        quackAudioSource.minDistance = 1f;
-        quackAudioSource.maxDistance = maxHearDistance;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f;
+        audioSource.rolloffMode = AudioRolloffMode.Linear;
+        audioSource.minDistance = 1f;
+        audioSource.maxDistance = maxHearDistance;
 
-        SetNextQuackTime();
+        SetNextSoundTime();
     }
 
-private void SetNextQuackTime()
-{
-    nextQuackTime = Time.time + Random.Range(minQuackInterval, maxQuackInterval);
-}
+    void SetNextSoundTime()
+    {
+        if (isChasing)
+        {
+            nextSoundTime = Time.time + Random.Range(minChaseInterval, maxChaseInterval);
+        }
+        else
+        {
+            nextSoundTime = Time.time + Random.Range(minPatrolInterval, maxPatrolInterval);
+        }
+    }
+
     void Update()
     {
-
-            if (isStunned)
-    {
-        stunTimer -= Time.deltaTime;
-        if (stunTimer <= 0)
+        if (isStunned)
         {
-            isStunned = false;
+            stunTimer -= Time.deltaTime;
+            UpdateAnimation(true, false);
+            if (stunTimer <= 0)
+            {
+                isStunned = false;
+            }
+            return;
         }
-        return; // Não faz nada enquanto está stunnado
-    }
 
-if (Time.time >= nextQuackTime && quackSounds.Length > 0 && !isStunned)
-    {
-        PlayRandomQuack();
-        SetNextQuackTime();
-    }
+        if (Time.time >= nextSoundTime && !isStunned)
+        {
+            PlayStateSound();
+            SetNextSoundTime();
+        }
 
-        // Atualiza cooldown do ataque
         if (!canAttack)
         {
             attackTimer += Time.deltaTime;
@@ -94,10 +109,8 @@ if (Time.time >= nextQuackTime && quackSounds.Length > 0 && !isStunned)
             }
         }
 
-        // Verifica se está no chão
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
         
-        // Aplica gravidade
         if (!isGrounded)
         {
             velocity.y -= gravity * Time.deltaTime;
@@ -109,98 +122,123 @@ if (Time.time >= nextQuackTime && quackSounds.Length > 0 && !isStunned)
         
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         
-        if (distanceToPlayer <= detectionRadius || (isChasing && distanceToPlayer <= chaseRadius))
+        bool wasChasing = isChasing;
+        isChasing = distanceToPlayer <= detectionRadius || (isChasing && distanceToPlayer <= chaseRadius);
+        
+        if (wasChasing != isChasing)
         {
-            // Persegue jogador
-            isChasing = true;
-            patrolScript.enabled = false;
-            
-            Vector3 direction = (player.position - transform.position).normalized;
+            SetNextSoundTime();
+        }
+
+        if (isChasing)
+        {
+            ChasePlayer();
+        }
+        else if (wasChasing)
+        {
+            ReturnToPatrol();
+        }
+
+        UpdateAnimation(false, isChasing || (patrolScript != null && patrolScript.IsMoving()));
+    }
+
+    void ChasePlayer()
+    {
+        patrolScript.enabled = false;
+        
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0;
+        
+        Vector3 move = direction * chaseSpeed * Time.deltaTime;
+        move += velocity * Time.deltaTime;
+        
+        if (canAttack)
+        {
+            controller.Move(move);
+        }
+        
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, 
+                Quaternion.LookRotation(direction), 0.1f);
+        }
+        
+        lastPatrolPosition = transform.position;
+    }
+
+    void ReturnToPatrol()
+    {
+        if (Vector3.Distance(transform.position, lastPatrolPosition) < 0.5f)
+        {
+            patrolScript.enabled = true;
+            patrolScript.ResetPatrol();
+        }
+        else
+        {
+            Vector3 direction = (lastPatrolPosition - transform.position).normalized;
             direction.y = 0;
             
-            // Movimento horizontal
-            Vector3 move = direction * chaseSpeed * Time.deltaTime;
-            
-            // Combina com gravidade
+            Vector3 move = direction * patrolScript.moveSpeed * Time.deltaTime;
             move += velocity * Time.deltaTime;
+            controller.Move(move);
             
-            // Aplica movimento
-            if (canAttack) // Só se move se puder atacar
-            {
-                controller.Move(move);
-            }
-            
-            // Rotaciona para olhar na direção do jogador
             if (direction != Vector3.zero)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, 
                     Quaternion.LookRotation(direction), 0.1f);
             }
-            
-            // Atualiza última posição conhecida
-            if (!isChasing)
-            {
-                lastPatrolPosition = transform.position;
-            }
-        }
-       else if (isChasing)
-{
-            // Volta para patrulha
-            if (Vector3.Distance(transform.position, lastPatrolPosition) < 0.5f)
-            {
-                isChasing = false;
-                patrolScript.enabled = true;
-                patrolScript.ResetPatrol(); // Adicione esta linha
-            }
-            else
-            {
-                // Retorna para posição de patrulha
-                Vector3 direction = (lastPatrolPosition - transform.position).normalized;
-                direction.y = 0;
-                
-                Vector3 move = direction * patrolScript.moveSpeed * Time.deltaTime;
-                move += velocity * Time.deltaTime;
-                controller.Move(move);
-                
-                if (direction != Vector3.zero)
-                {
-                    transform.rotation = Quaternion.Slerp(transform.rotation, 
-                        Quaternion.LookRotation(direction), 0.1f);
-                }
-            }
         }
     }
 
-    private void PlayRandomQuack()
-{
-    if (quackSounds.Length == 0) return;
-
-    // Seleciona um quack aleatório
-    AudioClip randomQuack = quackSounds[Random.Range(0, quackSounds.Length)];
-    
-    // Configura pitch aleatório
-    quackAudioSource.pitch = Random.Range(minPitch, maxPitch);
-    
-    // Calcula volume baseado na distância do jogador
-    float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-    float volume = Mathf.Clamp01(1 - (distanceToPlayer / maxHearDistance));
-    
-    // Toca o som
-    quackAudioSource.PlayOneShot(randomQuack, volume);
-}
-    
-        public void Stun()
-{
-    isStunned = true;
-    stunTimer = stunDuration;
-    patrolScript.enabled = false;
-    
-    // Para qualquer quack que esteja tocando
-    if (quackAudioSource != null)
+    void PlayStateSound()
     {
-        quackAudioSource.Stop();
+        AudioClip[] currentSounds;
+        float minPitch, maxPitch;
+        
+        if (isChasing)
+        {
+            currentSounds = chaseSounds;
+            minPitch = chaseMinPitch;
+            maxPitch = chaseMaxPitch;
+        }
+        else
+        {
+            currentSounds = patrolSounds;
+            minPitch = patrolMinPitch;
+            maxPitch = patrolMaxPitch;
+        }
+
+        if (currentSounds.Length == 0) return;
+
+        AudioClip randomSound = currentSounds[Random.Range(0, currentSounds.Length)];
+        audioSource.pitch = Random.Range(minPitch, maxPitch);
+        
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        float volume = Mathf.Clamp01(1 - (distanceToPlayer / maxHearDistance)) * maxVolume;
+        
+        audioSource.PlayOneShot(randomSound, volume);
     }
-}
+
+    void UpdateAnimation(bool stunned, bool walking)
+    {
+        if (enemyAnimator != null)
+        {
+            enemyAnimator.SetBool("IsStunned", stunned);
+            enemyAnimator.SetBool("IsWalking", walking);
+        }
+    }
+    
+    public void Stun()
+    {
+        isStunned = true;
+        stunTimer = stunDuration;
+        patrolScript.enabled = false;
+        
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
+    }
 
     public void ResetEnemy()
     {
@@ -213,9 +251,6 @@ if (Time.time >= nextQuackTime && quackSounds.Length > 0 && !isStunned)
             patrolScript.enabled = true;
             patrolScript.ResetPatrol();
         }
-
-        // Reseta a posição se necessário
-        // (adicione lógica específica se seus inimigos precisarem voltar para posições iniciais)
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit)

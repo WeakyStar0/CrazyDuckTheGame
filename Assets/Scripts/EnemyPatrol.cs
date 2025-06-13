@@ -15,6 +15,11 @@ public class EnemyPatrol : MonoBehaviour
     private CharacterController controller;
     private Vector3 velocity;
     private bool isGrounded;
+
+    public bool IsMoving()
+    {
+        return !isWaiting;
+    }
     
     void Start()
     {
@@ -24,7 +29,6 @@ public class EnemyPatrol : MonoBehaviour
             Debug.LogError("CharacterController não encontrado no inimigo!");
         }
         
-        // Garante que há pelo menos 2 pontos de patrulha
         if (patrolPoints.Count < 2)
         {
             Debug.LogError("Precisa de pelo menos 2 pontos de patrulha!");
@@ -36,17 +40,15 @@ public class EnemyPatrol : MonoBehaviour
     {
         if (patrolPoints.Count == 0) return;
         
-        // Verifica se está no chão
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
         
-        // Aplica gravidade apenas se não estiver no chão
         if (!isGrounded)
         {
             velocity.y -= gravity * Time.deltaTime;
         }
         else
         {
-            velocity.y = -0.5f; // Pequena força para manter no chão
+            velocity.y = -0.5f;
         }
         
         if (isWaiting)
@@ -63,27 +65,20 @@ public class EnemyPatrol : MonoBehaviour
         
         Transform targetPoint = patrolPoints[currentPointIndex];
         
-        // Calcula direção horizontal (ignora diferença de altura)
         Vector3 direction = (targetPoint.position - transform.position).normalized;
-        direction.y = 0; // Remove componente vertical
+        direction.y = 0;
         
-        // Movimento horizontal
         Vector3 move = direction * moveSpeed * Time.deltaTime;
-        
-        // Combina movimento horizontal com gravidade
         move += velocity * Time.deltaTime;
         
-        // Aplica movimento
         controller.Move(move);
         
-        // Rotaciona para olhar na direção do movimento
         if (direction != Vector3.zero)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, 
                 Quaternion.LookRotation(direction), 0.1f);
         }
         
-        // Verifica distância apenas no eixo XZ (ignora altura)
         Vector2 flatPosition = new Vector2(transform.position.x, transform.position.z);
         Vector2 flatTarget = new Vector2(targetPoint.position.x, targetPoint.position.z);
         if (Vector2.Distance(flatPosition, flatTarget) < 0.5f)
@@ -93,10 +88,8 @@ public class EnemyPatrol : MonoBehaviour
         }
     }
     
-    // Adicione este método para ser chamado pelo EnemyAI
     public void ResetPatrol()
     {
-        // Volta para o ponto mais próximo quando retomar a patrulha
         float minDist = float.MaxValue;
         for (int i = 0; i < patrolPoints.Count; i++)
         {
@@ -124,7 +117,6 @@ public class EnemyPatrol : MonoBehaviour
         if (patrolPoints.Count > 2 && patrolPoints[0] != null && patrolPoints[patrolPoints.Count-1] != null)
             Gizmos.DrawLine(patrolPoints[patrolPoints.Count-1].position, patrolPoints[0].position);
         
-        // Desenha linha para verificar chão
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
     }

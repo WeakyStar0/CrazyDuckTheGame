@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d8301965a72bbde4eb9a67c79229d2d8
+guid: 8de43d9e752aacc4c9ff473f9bb24a9e
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: inimigo andar
-      takeName: metarig|metarigAction.003
-      internalID: -4544823380048006326
+      name: metarig|metarigAction
+      takeName: metarig|metarigAction
+      internalID: -887982601649841707
       firstFrame: 0
-      lastFrame: 28
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
