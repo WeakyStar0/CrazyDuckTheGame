@@ -35,7 +35,12 @@ public class GroundSlamAttack : MonoBehaviour
     [SerializeField] private float shakeIntensity = 5f;
     [SerializeField] private float shakeRotationAmount = 5f;
 
+    [Header("Warning Lights")]
+    [SerializeField] private Light[] warningLights;
+    [SerializeField] private float lightFlashSpeed = 10f;
+
     private Coroutine _attackRoutine;
+    private Coroutine _lightFlashRoutine;
     private bool _isAttacking;
 
     private void Awake()
@@ -45,7 +50,7 @@ public class GroundSlamAttack : MonoBehaviour
             cameraController = FindObjectOfType<CameraController>();
             if (cameraController == null)
             {
-                Debug.LogWarning("No CameraController found - screen shake won't work");
+                Debug.LogWarning("No CameraController found - screen shake won't work.");
             }
         }
 
@@ -53,17 +58,20 @@ public class GroundSlamAttack : MonoBehaviour
         {
             damageCollider.enabled = false;
         }
-
+        
         if (warningRenderer != null)
         {
             SetMaterialAlpha(warningRenderer.material, 0);
         }
-
+        
         if (impactRenderer != null)
         {
             SetMaterialAlpha(impactRenderer.material, 0);
         }
-
+        
+        // Keep all warning lights ON by default
+        SetAllLights(true);
+        
         if (explosionParticles != null)
         {
             explosionParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -73,28 +81,41 @@ public class GroundSlamAttack : MonoBehaviour
     public void TriggerAttack()
     {
         if (_isAttacking) return;
-        _attackRoutine = StartCoroutine(AttackSequence());
+        _attackRoutine = StartCoroutine(AttackSequence()); 
     }
 
     private IEnumerator AttackSequence()
     {
         _isAttacking = true;
 
-        // Phase 1: Warning flash
+        // Phase 1: Warning
         if (audioSource != null && warningSound != null)
         {
             audioSource.PlayOneShot(warningSound, warningVolume);
         }
-
+        
+        if (warningLights.Length > 0)
+        {
+            _lightFlashRoutine = StartCoroutine(FlashLightsDuringWarning()); 
+        }
+        
         if (warningRenderer != null)
         {
-            yield return StartCoroutine(FadeMaterial(warningRenderer.material, 0, 0.8f, warningFadeInDuration));
+            yield return StartCoroutine(FadeMaterial(warningRenderer.material, 0, 0.8f, warningFadeInDuration)); 
             yield return new WaitForSeconds(warningDuration - warningFadeInDuration);
         }
         else
         {
             yield return new WaitForSeconds(warningDuration);
         }
+        
+        // Stop flashing and revert back to normal (always on) immediately after warning
+        if (_lightFlashRoutine != null)
+        {
+            StopCoroutine(_lightFlashRoutine);
+            _lightFlashRoutine = null;
+        }
+        SetAllLights(true);
 
         // Phase 2: Pause
         yield return new WaitForSeconds(postWarningPause);
@@ -104,27 +125,27 @@ public class GroundSlamAttack : MonoBehaviour
         {
             audioSource.PlayOneShot(impactSound, impactVolume);
         }
-
+        
         if (warningRenderer != null)
         {
             SetMaterialAlpha(warningRenderer.material, 0);
         }
-
+        
         if (impactRenderer != null)
         {
-            StartCoroutine(FadeMaterial(impactRenderer.material, 0, 1f, 0.1f));
+            StartCoroutine(FadeMaterial(impactRenderer.material, 0, 1f, 0.1f)); 
         }
-
+        
         if (damageCollider != null)
         {
             damageCollider.enabled = true;
         }
-
+        
         if (cameraController != null)
         {
             cameraController.ShakeCamera(shakeDuration, shakeIntensity, shakeRotationAmount);
         }
-
+        
         PlayExplosionEffect();
         CheckForPlayerHit();
 
@@ -135,18 +156,18 @@ public class GroundSlamAttack : MonoBehaviour
         if (impactRenderer != null)
         {
             float startAlpha = impactRenderer.material.color.a;
-            yield return StartCoroutine(FadeMaterial(impactRenderer.material, startAlpha, 0, fadeOutDuration));
+            yield return StartCoroutine(FadeMaterial(impactRenderer.material, startAlpha, 0, fadeOutDuration)); 
         }
         else
         {
             yield return new WaitForSeconds(fadeOutDuration);
         }
-
+        
         if (damageCollider != null)
         {
             damageCollider.enabled = false;
         }
-
+        
         _isAttacking = false;
     }
 
@@ -174,7 +195,6 @@ public class GroundSlamAttack : MonoBehaviour
             material.color = color;
             yield return null;
         }
-
         color.a = toAlpha;
         material.color = color;
     }
@@ -187,7 +207,28 @@ public class GroundSlamAttack : MonoBehaviour
         color.a = alpha;
         material.color = color;
     }
-
+    
+    private IEnumerator FlashLightsDuringWarning()
+    {
+        while (true)
+        {
+            bool state = (Mathf.FloorToInt(Time.time * lightFlashSpeed) % 2 == 0);
+            SetAllLights(state);
+            yield return null;
+        }
+    }
+  
+    private void SetAllLights(bool on)
+    {
+        foreach (Light light in warningLights)
+        {
+            if (light != null)
+            {
+                light.enabled = on;
+            }
+        }
+    }
+  
     private bool IsPlayerInSafeZone(Transform playerTransform)
     {
         Collider[] safeZones = Physics.OverlapSphere(
@@ -223,7 +264,7 @@ public class GroundSlamAttack : MonoBehaviour
                     Debug.Log("Player is in safe zone. No damage applied.");
                     continue;
                 }
-
+                
                 Debug.Log("PlayerHealth found and not in safe zone!");
                 player.TakeDamage(damage, transform.position);
             }
@@ -233,7 +274,7 @@ public class GroundSlamAttack : MonoBehaviour
             }
         }
     }
-
+  
     private void OnDisable()
     {
         if (_attackRoutine != null)
@@ -241,20 +282,29 @@ public class GroundSlamAttack : MonoBehaviour
             StopCoroutine(_attackRoutine);
             _attackRoutine = null;
         }
-
+        
+        if (_lightFlashRoutine != null)
+        {
+            StopCoroutine(_lightFlashRoutine);
+            _lightFlashRoutine = null;
+        }
+        
         if (damageCollider != null)
         {
             damageCollider.enabled = false;
         }
-
+        
         if (warningRenderer != null)
         {
             SetMaterialAlpha(warningRenderer.material, 0);
         }
-
+        
         if (impactRenderer != null)
         {
             SetMaterialAlpha(impactRenderer.material, 0);
         }
+        
+        // revert back to normal state
+        SetAllLights(true);
     }
 }

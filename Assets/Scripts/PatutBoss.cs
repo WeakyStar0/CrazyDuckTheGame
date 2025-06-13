@@ -15,9 +15,8 @@ public class PatutBoss : MonoBehaviour
     [SerializeField] private GroundSlamAttack groundSlamAttack;
     [SerializeField] private float groundSlamCooldown = 5f;
     [SerializeField] private float timeBetweenAttacks = 1f;
-[SerializeField] private ParticleSystem smallExplosionEffect;
-[SerializeField] private Transform smallExplosionSpawnPoint;
-
+    [SerializeField] private ParticleSystem smallExplosionEffect;
+    [SerializeField] private Transform smallExplosionSpawnPoint;
 
     [Header("Spawn Enemies Attack")]
     [SerializeField] private SpawnEnemiesAttack spawnEnemiesAttack;
@@ -35,6 +34,19 @@ public class PatutBoss : MonoBehaviour
     [Header("Phase 50% GameObject")]
     [SerializeField] private GameObject phase50Object;
 
+    [Header("Activate On Death")]
+    [SerializeField] private GameObject objectToActivateOnDeath;
+
+    [Header("Boss Start Trigger Collider")]
+    [Tooltip("Assign the collider used to trigger boss activation.")]
+    [SerializeField] private Collider bossStartTriggerCollider;
+
+    [Header("Death Explosion")]
+    [SerializeField] private ParticleSystem deathExplosionEffectPrefab;  // Assign a prefab here
+    [SerializeField] private AudioClip deathExplosionSound;
+
+    private AudioSource _audioSource;
+
     private float _projectileCooldownTimer;
     private float _groundSlamCooldownTimer;
     private bool _isPerformingGroundSlam;
@@ -44,6 +56,9 @@ public class PatutBoss : MonoBehaviour
     private Material _originalMaterial;
     private Color _originalColor;
     private Coroutine _blinkCoroutine;
+
+    private bool bossActivated = false;
+    private bool deathEventTriggered = false;
 
     private void Start()
     {
@@ -56,23 +71,51 @@ public class PatutBoss : MonoBehaviour
             _originalColor = _originalMaterial.color;
         }
 
-        // Make sure the phase50Object starts inactive
         if (phase50Object != null)
         {
             phase50Object.SetActive(false);
+        }
+
+        if (bossStartTriggerCollider != null)
+        {
+            if (!bossStartTriggerCollider.isTrigger)
+            {
+                Debug.LogWarning("Assigned bossStartTriggerCollider is NOT set as Trigger! Setting isTrigger = true automatically.");
+                bossStartTriggerCollider.isTrigger = true;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No bossStartTriggerCollider assigned! Boss will never activate.");
+        }
+
+        // Get or add AudioSource for playing sounds
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            _audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
 
     private void Update()
     {
+        if (!bossActivated) return;
+
         float healthPercent = (float)patutHealth.currentHealth / patutHealth.maxHealth;
 
         UpdateCooldowns();
 
         UpdatePhase50ObjectState();
 
-        if (_isPerformingGroundSlam || patutHealth.currentHealth <= 0)
+        if (_isPerformingGroundSlam || deathEventTriggered) return;
+
+        if (patutHealth.currentHealth <= 0 && !deathEventTriggered)
+        {
+            Debug.Log("Boss health zero or less. Triggering OnBossDefeated.");
+            deathEventTriggered = true;
+            OnBossDefeated();
             return;
+        }
 
         if (healthPercent > 0.5f)
         {
@@ -88,13 +131,60 @@ public class PatutBoss : MonoBehaviour
         }
     }
 
+    private void OnBossDefeated()
+    {
+        // Play death explosion particles (instantiated as separate GameObject)
+        if (deathExplosionEffectPrefab != null)
+        {
+            ParticleSystem explosionInstance = Instantiate(deathExplosionEffectPrefab, transform.position, Quaternion.identity);
+            explosionInstance.Play(true);
+            Destroy(explosionInstance.gameObject, explosionInstance.main.duration + explosionInstance.main.startLifetime.constantMax);
+        }
+
+        // Play death explosion sound on a temporary GameObject to avoid cutting off when boss is destroyed
+        if (deathExplosionSound != null)
+        {
+            GameObject soundObj = new GameObject("DeathExplosionSound");
+            soundObj.transform.position = transform.position;
+            AudioSource soundSource = soundObj.AddComponent<AudioSource>();
+            soundSource.PlayOneShot(deathExplosionSound);
+            Destroy(soundObj, deathExplosionSound.length + 0.1f);
+        }
+
+        if (objectToActivateOnDeath != null)
+        {
+            objectToActivateOnDeath.SetActive(true);
+        }
+
+        Debug.Log("Boss defeated!");
+
+        // Disable boss visuals and logic immediately
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        if (patutAnimator != null) patutAnimator.enabled = false;
+
+        this.enabled = false;
+
+        // Destroy boss after a delay to let effects finish (3 seconds)
+        Destroy(gameObject, 3f);
+    }
+
+    public void BossStartTrigger_OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && !bossActivated)
+        {
+            bossActivated = true;
+            Debug.Log("Boss activated!");
+        }
+    }
+
     private void UpdatePhase50ObjectState()
     {
         if (phase50Object == null) return;
 
         float healthPercent = (float)patutHealth.currentHealth / patutHealth.maxHealth;
 
-        // Active only if health is between 25% and 50%
         if (healthPercent <= 0.5f && healthPercent > 0.25f)
         {
             if (!phase50Object.activeSelf)
@@ -132,35 +222,33 @@ public class PatutBoss : MonoBehaviour
         }
     }
 
-private IEnumerator PerformGroundSlamSequence()
-{
-    _isPerformingGroundSlam = true;
-
-    patutAnimator?.SetTrigger("PatutGroundSlam");
-    yield return new WaitForSeconds(3.5f);
-
-    StartCoroutine(PlayExplosionWithDelay(0f));
-
-    groundSlamAttack.TriggerAttack();
-
-    yield return new WaitForSeconds(2f);
-    yield return new WaitForSeconds(timeBetweenAttacks);
-
-    _isPerformingGroundSlam = false;
-}
-
-private IEnumerator PlayExplosionWithDelay(float delay)
-{
-    yield return new WaitForSeconds(delay);
-
-    if (smallExplosionEffect != null && smallExplosionSpawnPoint != null)
+    private IEnumerator PerformGroundSlamSequence()
     {
-        smallExplosionEffect.transform.position = smallExplosionSpawnPoint.position;
-        smallExplosionEffect.Play(true);
+        _isPerformingGroundSlam = true;
+
+        patutAnimator?.SetTrigger("PatutGroundSlam");
+        yield return new WaitForSeconds(3.5f);
+
+        StartCoroutine(PlayExplosionWithDelay(0f));
+
+        groundSlamAttack.TriggerAttack();
+
+        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(timeBetweenAttacks);
+
+        _isPerformingGroundSlam = false;
     }
-}
 
+    private IEnumerator PlayExplosionWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
 
+        if (smallExplosionEffect != null && smallExplosionSpawnPoint != null)
+        {
+            smallExplosionEffect.transform.position = smallExplosionSpawnPoint.position;
+            smallExplosionEffect.Play(true);
+        }
+    }
 
     private void HandleSpawnPhase()
     {
@@ -172,14 +260,7 @@ private IEnumerator PlayExplosionWithDelay(float delay)
 
         bool shouldBeInvincible = spawnEnemiesAttack.EnemiesAlive;
 
-        if (spawnEnemiesAttack.EnemiesAlive)
-        {
-            patutAnimator?.SetBool("PatutInvulnerable", true);
-        }
-        else
-        {
-            patutAnimator?.SetBool("PatutInvulnerable", false);
-        }
+        patutAnimator?.SetBool("PatutInvulnerable", shouldBeInvincible);
 
         if (shouldBeInvincible)
         {
