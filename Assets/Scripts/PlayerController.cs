@@ -63,6 +63,8 @@ public class PlayerController : MonoBehaviour
     private bool isJumping;
     private bool jumpConsumed;
     private bool jumpWasBlocked;
+    [Header("Start Settings")]
+[SerializeField] private float startRotationY = 0f;
 
     private void Awake()
     {
@@ -80,7 +82,9 @@ private void Start()
     originalHeight = characterController.height;
     originalCenter = characterController.center;
     
-    // Reseta todas as animações
+    // Garante a rotação inicial correta
+    transform.rotation = Quaternion.Euler(0, startRotationY, 0);
+    
     if (animator != null)
     {
         animator.Play("Idle");
@@ -92,9 +96,6 @@ private void Start()
         animator.ResetTrigger(DashHash);
         animator.SetBool(IsDashingHash, false);
     }
-    
-    // Garante que a rotação está correta
-    transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
 }
 
     private void Update()

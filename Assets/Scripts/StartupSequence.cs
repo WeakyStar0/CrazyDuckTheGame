@@ -8,122 +8,183 @@ public class GameStartSequence : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Animator playerAnimator;
     [SerializeField] private Transform playerTransform;
-    [SerializeField] private SwordSlash swordSlash; // Referência ao SwordSlash
+    [SerializeField] private SwordSlash swordSlash;
+    [SerializeField] private CameraController cameraController;
 
-    [Header("Camera Settings")]
+    [Header("Settings")]
     [SerializeField] private string wakeUpAnimationName = "WakeUp";
-    [SerializeField] private float initialCameraDistance = 10f; // Distância inicial maior
+    [SerializeField] private float initialCameraDistance = 10f;
     [SerializeField] private float cameraOrbitDuration = 3f;
     [SerializeField] private float cameraOrbitDistance = 5f;
     [SerializeField] private float cameraOrbitHeight = 1.5f;
     [SerializeField] private float cameraReturnDuration = 1f;
     [SerializeField] private float wakeUpDelay = 0.5f;
-    [SerializeField] private AnimationCurve orbitCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-    [SerializeField] private AnimationCurve returnCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    [SerializeField] private float playerStartRotationY = 0f;
 
-    private Vector3 originalCameraPosition;
-    private Quaternion originalCameraRotation;
+    private Vector3 originalCameraLocalPosition;
+    private Quaternion originalCameraLocalRotation;
     private bool isInSequence = false;
     private bool wasSwordSlashEnabled;
+    private Transform temporaryCameraParent;
 
     private void Start()
     {
-        // Garante que o jogador comece na rotação correta
-        playerTransform.rotation = Quaternion.Euler(0, 90, 0);
+        // Armazena a posição local original da câmera
+        originalCameraLocalPosition = cameraTransform.localPosition;
+        originalCameraLocalRotation = cameraTransform.localRotation;
         
-        // Armazena a posição original da câmera
-        originalCameraPosition = cameraTransform.position;
-        originalCameraRotation = cameraTransform.rotation;
+        // Configuração inicial do jogador
+        playerTransform.rotation = Quaternion.Euler(0, playerStartRotationY, 0);
         
-        // Posiciona a câmera mais longe inicialmente
-        cameraTransform.position = playerTransform.position + 
-                                 Vector3.back * initialCameraDistance + 
-                                 Vector3.up * cameraOrbitHeight;
-        cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
+        // Prepara a câmera
+        SetupInitialCameraPosition();
         
         StartCoroutine(StartSequence());
+    }
+
+    private void SetupInitialCameraPosition()
+    {
+        // Cria um parent temporário para a câmera
+        temporaryCameraParent = new GameObject("TempCameraParent").transform;
+        temporaryCameraParent.position = playerTransform.position;
+        temporaryCameraParent.rotation = playerTransform.rotation;
+        
+        // Posiciona a câmera inicialmente
+        cameraTransform.SetParent(temporaryCameraParent);
+        cameraTransform.localPosition = new Vector3(0, cameraOrbitHeight, -initialCameraDistance);
+        cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
     }
 
     private IEnumerator StartSequence()
     {
         isInSequence = true;
         
-        // Desativa controles
+        // Desativa componentes
+        DisablePlayerComponents();
+        
+        // Reseta todos os triggers do animator
+        ResetAllAnimatorTriggers();
+
+        // Toca animação de wake up
+        playerAnimator.Play(wakeUpAnimationName, 0, 0f);
+        
+        yield return new WaitForSeconds(wakeUpDelay);
+
+        // Fase 1: Órbita da câmera
+        yield return OrbitCamera();
+
+        // Fase 2: Retorno da câmera
+        yield return ReturnCamera();
+
+        // Finalização
+        RestorePlayerComponents();
+        isInSequence = false;
+    }
+
+    private void DisablePlayerComponents()
+    {
         playerController.SetControlEnabled(false);
         playerController.ForceIdleAnimation();
         
-        // Desativa o SwordSlash
         if (swordSlash != null)
         {
             wasSwordSlashEnabled = swordSlash.enabled;
             swordSlash.enabled = false;
         }
         
-        // Desativa o CharacterController temporariamente
+        if (cameraController != null)
+        {
+            cameraController.enabled = false;
+        }
+
         CharacterController charController = playerController.GetComponent<CharacterController>();
-        bool wasCharControllerEnabled = charController.enabled;
-        charController.enabled = false;
+        if (charController != null)
+        {
+            charController.enabled = false;
+        }
+    }
 
-        // Toca a animação de levantar
-        playerAnimator.Play(wakeUpAnimationName);
-        
-        // Espera um pouco antes de começar a orbitar
-        yield return new WaitForSeconds(wakeUpDelay);
+    private void ResetAllAnimatorTriggers()
+    {
+        foreach (var param in playerAnimator.parameters)
+        {
+            if (param.type == AnimatorControllerParameterType.Trigger)
+            {
+                playerAnimator.ResetTrigger(param.name);
+            }
+        }
+    }
 
-        // Fase 1: Órbita da câmera
+    private IEnumerator OrbitCamera()
+    {
         float timer = 0f;
-        Vector3 startOrbitPos = cameraTransform.position;
-        Quaternion startOrbitRot = cameraTransform.rotation;
+        Vector3 startOrbitPos = cameraTransform.localPosition;
+        Quaternion startOrbitRot = cameraTransform.localRotation;
 
         while (timer < cameraOrbitDuration)
         {
             timer += Time.deltaTime;
-            float progress = orbitCurve.Evaluate(timer / cameraOrbitDuration);
+            float progress = timer / cameraOrbitDuration;
             float angle = Mathf.Lerp(0, 360f, progress);
             
-            // Calcula posição orbital (em torno do jogador)
-            Vector3 orbitPos = playerTransform.position + 
-                             Quaternion.Euler(0, angle, 0) * Vector3.forward * cameraOrbitDistance;
-            orbitPos.y = playerTransform.position.y + cameraOrbitHeight;
+            Vector3 orbitPos = Quaternion.Euler(0, angle, 0) * Vector3.forward * cameraOrbitDistance;
+            orbitPos.y = cameraOrbitHeight;
             
-            // Interpola suavemente da posição inicial para a órbita
-            cameraTransform.position = Vector3.Lerp(startOrbitPos, orbitPos, progress);
+            cameraTransform.localPosition = Vector3.Lerp(startOrbitPos, orbitPos, progress);
             cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
             
             yield return null;
         }
+    }
 
-        // Fase 2: Retorno suave à posição original
-        timer = 0f;
-        Vector3 startReturnPos = cameraTransform.position;
-        Quaternion startReturnRot = cameraTransform.rotation;
+    private IEnumerator ReturnCamera()
+    {
+        float timer = 0f;
+        Vector3 startReturnPos = cameraTransform.localPosition;
+        Quaternion startReturnRot = cameraTransform.localRotation;
 
         while (timer < cameraReturnDuration)
         {
             timer += Time.deltaTime;
-            float progress = returnCurve.Evaluate(timer / cameraReturnDuration);
+            float progress = timer / cameraReturnDuration;
             
-            cameraTransform.position = Vector3.Lerp(startReturnPos, originalCameraPosition, progress);
-            cameraTransform.rotation = Quaternion.Slerp(startReturnRot, originalCameraRotation, progress);
+            cameraTransform.localPosition = Vector3.Lerp(startReturnPos, originalCameraLocalPosition, progress);
+            cameraTransform.localRotation = Quaternion.Slerp(startReturnRot, originalCameraLocalRotation, progress);
             
             yield return null;
         }
 
-        // Garante posição exata no final
-        cameraTransform.position = originalCameraPosition;
-        cameraTransform.rotation = originalCameraRotation;
-
-        // Restaura estado original
-        charController.enabled = wasCharControllerEnabled;
+        // Restaura a câmera ao jogador
+        cameraTransform.SetParent(playerTransform);
+        cameraTransform.localPosition = originalCameraLocalPosition;
+        cameraTransform.localRotation = originalCameraLocalRotation;
         
-        // Reativa o SwordSlash se estava ativado antes
+        // Destroi o parent temporário
+        if (temporaryCameraParent != null)
+        {
+            Destroy(temporaryCameraParent.gameObject);
+        }
+    }
+
+    private void RestorePlayerComponents()
+    {
+        CharacterController charController = playerController.GetComponent<CharacterController>();
+        if (charController != null)
+        {
+            charController.enabled = true;
+        }
+        
         if (swordSlash != null && wasSwordSlashEnabled)
         {
             swordSlash.enabled = true;
         }
         
+        if (cameraController != null)
+        {
+            cameraController.enabled = true;
+        }
+        
         playerController.SetControlEnabled(true);
-        isInSequence = false;
     }
 
     public bool IsInSequence()

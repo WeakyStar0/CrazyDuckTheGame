@@ -27126,13 +27126,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669377629}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.00000040417598, y: 0.9894248, z: -0.14504701, w: 0.0000027570493}
+  m_LocalRotation: {x: 0.102563724, y: -0.699629, z: 0.102563724, w: 0.699629}
   m_LocalPosition: {x: -0.00023982198, y: 29.17818, z: 43.03257}
   m_LocalScale: {x: 3.4985826, y: 3.498583, z: 3.4985836}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 354059463}
-  m_LocalEulerAnglesHint: {x: 16.68, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 16.68, y: -90, z: 0}
 --- !u!114 &669377631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28113,6 +28113,10 @@ MonoBehaviour:
   getUpTrigger: GetUp
   getUpToIdleBlendTime: 0.3
   getUpAnimationLength: 1
+  postProcessingController: {fileID: 0}
+  heartbeatSound: {fileID: 0}
+  heartbeatVolume: 0.7
+  audioSource: {fileID: 0}
 --- !u!114 &679692773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28274,6 +28278,7 @@ MonoBehaviour:
   coyoteTime: 0.1
   doubleJumpMultiplier: 0.7
   turnSmoothTime: 0.1
+  startRotationY: 0
 --- !u!143 &679692779
 CharacterController:
   m_ObjectHideFlags: 0
@@ -72489,61 +72494,15 @@ MonoBehaviour:
   playerAnimator: {fileID: 1244169272}
   playerTransform: {fileID: 679692768}
   swordSlash: {fileID: 679692773}
-  wakeUpAnimationName: get up
-  initialCameraDistance: 50
+  cameraController: {fileID: 679692774}
+  wakeUpAnimationName: wake up
+  initialCameraDistance: 75
   cameraOrbitDuration: 3
   cameraOrbitDistance: 75
   cameraOrbitHeight: 1
-  cameraReturnDuration: 1
+  cameraReturnDuration: 3
   wakeUpDelay: 0
-  orbitCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  returnCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  playerStartRotationY: -90
 --- !u!1001 &1244732333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84466,6 +84425,10 @@ MonoBehaviour:
   blinkColor: {r: 0.4, g: 0.7, b: 1, a: 1}
   blinkSpeed: 4
   phase50Object: {fileID: 902148314}
+  objectToActivateOnDeath: {fileID: 0}
+  bossStartTriggerCollider: {fileID: 0}
+  deathExplosionEffectPrefab: {fileID: 0}
+  deathExplosionSound: {fileID: 0}
 --- !u!1 &1375942025
 GameObject:
   m_ObjectHideFlags: 0
@@ -102453,6 +102416,8 @@ MonoBehaviour:
   shakeDuration: 1
   shakeIntensity: 2
   shakeRotationAmount: 2
+  warningLights: []
+  lightFlashSpeed: 10
 --- !u!65 &1790466732
 BoxCollider:
   m_ObjectHideFlags: 0
