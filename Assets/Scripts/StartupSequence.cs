@@ -43,17 +43,17 @@ public class GameStartSequence : MonoBehaviour
     }
 
     private void SetupInitialCameraPosition()
-    {
-        // Cria um parent temporário para a câmera
-        temporaryCameraParent = new GameObject("TempCameraParent").transform;
-        temporaryCameraParent.position = playerTransform.position;
-        temporaryCameraParent.rotation = playerTransform.rotation;
-        
-        // Posiciona a câmera inicialmente
-        cameraTransform.SetParent(temporaryCameraParent);
-        cameraTransform.localPosition = new Vector3(0, cameraOrbitHeight, -initialCameraDistance);
-        cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
-    }
+{
+    // Cria um parent temporário para a câmera
+    temporaryCameraParent = new GameObject("TempCameraParent").transform;
+    temporaryCameraParent.position = playerTransform.position;
+    temporaryCameraParent.rotation = playerTransform.rotation;
+    
+    // Posiciona a câmera inicialmente atrás do jogador
+    cameraTransform.SetParent(temporaryCameraParent);
+    cameraTransform.localPosition = new Vector3(0, cameraOrbitHeight, -initialCameraDistance);
+    cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
+}
 
     private IEnumerator StartSequence()
     {
@@ -115,56 +115,87 @@ public class GameStartSequence : MonoBehaviour
         }
     }
 
-    private IEnumerator OrbitCamera()
+ private IEnumerator OrbitCamera()
+{
+    float timer = 0f;
+    
+    // Calcula o centro da órbita (na altura desejada)
+    Vector3 orbitCenter = playerTransform.position + Vector3.up * cameraOrbitHeight;
+    
+    // Posição inicial já está correta (definida no SetupInitialCameraPosition)
+    
+    while (timer < cameraOrbitDuration)
     {
-        float timer = 0f;
-        Vector3 startOrbitPos = cameraTransform.localPosition;
-        Quaternion startOrbitRot = cameraTransform.localRotation;
-
-        while (timer < cameraOrbitDuration)
-        {
-            timer += Time.deltaTime;
-            float progress = timer / cameraOrbitDuration;
-            float angle = Mathf.Lerp(0, 360f, progress);
-            
-            Vector3 orbitPos = Quaternion.Euler(0, angle, 0) * Vector3.forward * cameraOrbitDistance;
-            orbitPos.y = cameraOrbitHeight;
-            
-            cameraTransform.localPosition = Vector3.Lerp(startOrbitPos, orbitPos, progress);
-            cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
-            
-            yield return null;
-        }
+        timer += Time.deltaTime;
+        float progress = timer / cameraOrbitDuration;
+        
+        // Usa SmoothStep para movimento mais suave
+        float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+        
+        // Ângulo completo de 0 a 540 graus (1 volta e meia)
+        float angle = 540f * smoothProgress;
+        
+        // Calcula a posição na órbita circular perfeita
+        Vector3 orbitPos = orbitCenter;
+        orbitPos += Quaternion.Euler(0, angle, 0) * Vector3.forward * cameraOrbitDistance;
+        
+        // Mantém a altura exata
+        orbitPos.y = orbitCenter.y;
+        
+        // Atualiza a posição da câmera
+        cameraTransform.position = orbitPos;
+        
+        // Faz a câmera sempre olhar para o centro da órbita
+        cameraTransform.LookAt(orbitCenter);
+        
+        yield return null;
     }
+    
+    // Não precisa reposicionar manualmente, a câmera já estará na posição correta
+}
+
+
 
     private IEnumerator ReturnCamera()
+{
+    float timer = 0f;
+    
+    // Começa da posição atual (final da órbita)
+    Vector3 startReturnPos = cameraTransform.position;
+    Quaternion startReturnRot = cameraTransform.rotation;
+    
+    // Posição final desejada (atrás do jogador na altura correta)
+    Vector3 targetPosition = playerTransform.position + 
+                           (playerTransform.forward * -initialCameraDistance) + 
+                           (Vector3.up * cameraOrbitHeight);
+    
+    while (timer < cameraReturnDuration)
     {
-        float timer = 0f;
-        Vector3 startReturnPos = cameraTransform.localPosition;
-        Quaternion startReturnRot = cameraTransform.localRotation;
-
-        while (timer < cameraReturnDuration)
-        {
-            timer += Time.deltaTime;
-            float progress = timer / cameraReturnDuration;
-            
-            cameraTransform.localPosition = Vector3.Lerp(startReturnPos, originalCameraLocalPosition, progress);
-            cameraTransform.localRotation = Quaternion.Slerp(startReturnRot, originalCameraLocalRotation, progress);
-            
-            yield return null;
-        }
-
-        // Restaura a câmera ao jogador
-        cameraTransform.SetParent(playerTransform);
-        cameraTransform.localPosition = originalCameraLocalPosition;
-        cameraTransform.localRotation = originalCameraLocalRotation;
+        timer += Time.deltaTime;
+        float progress = timer / cameraReturnDuration;
         
-        // Destroi o parent temporário
-        if (temporaryCameraParent != null)
-        {
-            Destroy(temporaryCameraParent.gameObject);
-        }
+        // Movimento suave para a posição final
+        cameraTransform.position = Vector3.Lerp(startReturnPos, targetPosition, progress);
+        cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
+        
+        yield return null;
     }
+    
+    // Garante posição final exata
+    cameraTransform.position = targetPosition;
+    cameraTransform.LookAt(playerTransform.position + Vector3.up * cameraOrbitHeight);
+    
+    // Restaura a hierarquia original
+    cameraTransform.SetParent(playerTransform);
+    cameraTransform.localPosition = originalCameraLocalPosition;
+    cameraTransform.localRotation = originalCameraLocalRotation;
+    
+    // Destroi o parent temporário
+    if (temporaryCameraParent != null)
+    {
+        Destroy(temporaryCameraParent.gameObject);
+    }
+}
 
     private void RestorePlayerComponents()
     {
