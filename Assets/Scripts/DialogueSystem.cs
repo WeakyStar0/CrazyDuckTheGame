@@ -62,8 +62,6 @@ public class DialogueSystem : MonoBehaviour
     
     private Coroutine skipButtonBobCoroutine;
     private Vector2 skipButtonInitialPosition;
-    
-    // Guarda uma referência ao trigger que iniciou o diálogo
     private DialogueTrigger activeTrigger;
 
     private void Awake()
@@ -136,7 +134,10 @@ public class DialogueSystem : MonoBehaviour
         {
             skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(AdvanceDialogue);
-            skipButtonInitialPosition = skipButton.GetComponent<RectTransform>().anchoredPosition;
+            if (skipButton.GetComponent<RectTransform>() != null)
+            {
+                 skipButtonInitialPosition = skipButton.GetComponent<RectTransform>().anchoredPosition;
+            }
         }
 
         playerController = FindFirstObjectByType<PlayerController>();
@@ -213,23 +214,20 @@ public class DialogueSystem : MonoBehaviour
         if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
         
         this.activeTrigger = trigger;
-
         currentDialogue = dialogue;
         currentMessageIndex = 0;
         dialogueActive = true;
     
         if (playerController != null)
         {
-            Vector3 horizontalVelocity = playerController.GetVelocity();
-            horizontalVelocity.y = 0;
-            playerVelocityBeforeDialogue = horizontalVelocity;
+            playerVelocityBeforeDialogue = playerController.GetVelocity();
+            playerVelocityBeforeDialogue.y = 0;
         
             playerController.SetControlEnabled(false);
             playerController.ForceIdleAnimation();
         }
     
         if (dialoguePanel != null) dialoguePanel.SetActive(true);
-        
         DisplayCurrentMessage();
     }
     
@@ -406,7 +404,6 @@ public class DialogueSystem : MonoBehaviour
     private void StartSkipButtonAnimation()
     {
         if (skipButton == null) return;
-        
         if (skipButtonBobCoroutine != null) return;
 
         skipButton.gameObject.SetActive(true);
@@ -419,11 +416,10 @@ public class DialogueSystem : MonoBehaviour
         {
             StopCoroutine(skipButtonBobCoroutine);
             skipButtonBobCoroutine = null;
-
-            if (skipButton != null)
-            {
-                skipButton.GetComponent<RectTransform>().anchoredPosition = skipButtonInitialPosition;
-            }
+        }
+        if (skipButton != null && skipButton.GetComponent<RectTransform>() != null)
+        {
+            skipButton.GetComponent<RectTransform>().anchoredPosition = skipButtonInitialPosition;
         }
     }
 
@@ -433,8 +429,10 @@ public class DialogueSystem : MonoBehaviour
         {
             float yOffset = Mathf.Sin(Time.time * skipButtonBobSpeed) * skipButtonBobHeight;
             
-            RectTransform rt = skipButton.GetComponent<RectTransform>();
-            rt.anchoredPosition = skipButtonInitialPosition + new Vector2(0, yOffset);
+            if (skipButton != null && skipButton.GetComponent<RectTransform>() != null)
+            {
+                skipButton.GetComponent<RectTransform>().anchoredPosition = skipButtonInitialPosition + new Vector2(0, yOffset);
+            }
             
             yield return null;
         }
@@ -459,21 +457,18 @@ public class DialogueSystem : MonoBehaviour
         {
             playerController.SetControlEnabled(true);
             
-            Vector3 currentVelocity = playerController.GetVelocity();
             Vector3 newVelocity = playerVelocityBeforeDialogue;
-            newVelocity.y = currentVelocity.y;
+            newVelocity.y = playerController.GetVelocity().y; 
             playerController.SetVelocity(newVelocity);
         }
     
         dialogueActive = false;
         
-        // Verifica se o trigger que iniciou o diálogo é repetível
         if (activeTrigger != null && activeTrigger.isRepeatable)
         {
             activeTrigger.ResetTrigger();
         }
         
-        // Limpa a referência para o próximo diálogo
         activeTrigger = null;
     }
 }

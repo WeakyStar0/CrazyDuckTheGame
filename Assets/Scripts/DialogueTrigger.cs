@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections; 
 
 public class DialogueTrigger : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class DialogueTrigger : MonoBehaviour
     public bool triggerOnEnter = true;
     public bool triggerOnInteract = false;
     public KeyCode interactKey = KeyCode.E;
-    
     
     [Tooltip("Se marcado, o diálogo poderá ser ativado novamente após terminar.")]
     public bool isRepeatable = false;
@@ -26,6 +26,9 @@ public class DialogueTrigger : MonoBehaviour
     private bool playerInRange = false;
     private bool alreadyTriggered = false;
     private Camera mainCamera;
+  
+    private Coroutine resetCoroutine;
+    private const float RESET_COOLDOWN = 0.2f; // Pequeno atraso de 0.2 segundos
 
     private void Start()
     {
@@ -46,7 +49,6 @@ public class DialogueTrigger : MonoBehaviour
 
     private void Update()
     {
-        // A flag 'alreadyTriggered' agora funciona como um "bloqueio" temporário
         if (triggerOnInteract && playerInRange && Input.GetKeyDown(interactKey) && !alreadyTriggered)
         {
             TriggerDialogue();
@@ -84,7 +86,8 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (alreadyTriggered || (!requireTag || !other.CompareTag(requiredTag))) return;
+      
+        if ((!requireTag || !other.CompareTag(requiredTag))) return;
         
         if (triggerOnInteract)
         {
@@ -107,13 +110,10 @@ public class DialogueTrigger : MonoBehaviour
                 interactPrompt.gameObject.SetActive(false);
             }
             
-           
             DialogueSystem.Instance.StartDialogue(messages, this);
             
-            // Bloqueia o trigger para não ser reativado imediatamente
             alreadyTriggered = true; 
             
-            // Destrói o objeto se não for repetível
             if (destroyAfterTrigger && !isRepeatable)
             {
                 Destroy(gameObject);
@@ -125,14 +125,33 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
     
-  
+ 
     public void ResetTrigger()
     {
+        // Garante que não iniciamos várias corrotinas de reset ao mesmo tempo
+        if (resetCoroutine != null)
+        {
+            StopCoroutine(resetCoroutine);
+        }
+        resetCoroutine = StartCoroutine(ResetTriggerCoroutine());
+    }
+
+ 
+    private IEnumerator ResetTriggerCoroutine()
+    {
+        // Espera um curto período de tempo
+        yield return new WaitForSeconds(RESET_COOLDOWN);
+
+        // Agora sim, reativa o trigger
         alreadyTriggered = false;
-        // Se o jogador ainda estiver no alcance quando o diálogo terminar, mostra o prompt de novo
+        
+        // E mostra o prompt novamente se o jogador ainda estiver no alcance
         if (playerInRange && triggerOnInteract && interactPrompt != null)
         {
             interactPrompt.gameObject.SetActive(true);
         }
+        
+        // Liberta a referência da corrotina
+        resetCoroutine = null;
     }
 }
