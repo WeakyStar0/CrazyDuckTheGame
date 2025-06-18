@@ -92,7 +92,7 @@ public class CameraController : MonoBehaviour
         }
     }
     
-    // <<< ALTERAÇÃO PRINCIPAL E CORREÇÃO ESTÁ AQUI
+  
     private void HandleRotation()
     {
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
@@ -112,13 +112,12 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            // MODO DE ÓRBITA (PARADO): O corpo do jogador NÃO roda.
-            // A rotação total (vertical e horizontal) é aplicada diretamente ao pivô da câmara.
+           
             cameraPivot.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         }
     }
     
-    // Todo o resto do teu código permanece exatamente igual. Ele já funciona bem.
+   
     #region Funções Sem Alterações
     private void LateUpdate()
     {

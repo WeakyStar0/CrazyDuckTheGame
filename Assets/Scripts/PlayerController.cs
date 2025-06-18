@@ -69,13 +69,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float startRotationY = 0f;
     #endregion
 
-    // <<< ALTERAÇÃO: Propriedade para comunicar com o CameraController
+
     public bool IsMoving { get; private set; }
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        // <<< ALTERAÇÃO: É melhor encontrar o CameraController no próprio objeto ou nos filhos, se for essa a tua estrutura.
+     
         cameraController = GetComponentInChildren<CameraController>();
         animator = GetComponentInChildren<Animator>();
     }
@@ -93,10 +93,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // <<< ALTERAÇÃO: Simplifica a lógica de rotação e input
-        // A rotação do jogador agora é controlada pelo CameraController, por isso removemos a verificação de rotação aqui.
-
-        // <<< ALTERAÇÃO: Atualiza a flag IsMoving
+   
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         IsMoving = new Vector2(horizontalInput, verticalInput).magnitude >= 0.1f;
@@ -129,9 +126,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // O resto do script PlayerController.cs pode permanecer exatamente como está,
-    // pois a lógica de movimento ("HandleMovement") já usa `transform.right` e `transform.forward`,
-    // que é o que queremos. A chave é que o `CameraController` só vai rodar o transform quando for suposto.
 
     #region Funções Sem Alterações
     private void FixedUpdate()

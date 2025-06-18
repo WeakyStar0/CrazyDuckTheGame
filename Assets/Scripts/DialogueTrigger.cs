@@ -9,7 +9,7 @@ public class DialogueTrigger : MonoBehaviour
     public bool triggerOnInteract = false;
     public KeyCode interactKey = KeyCode.E;
     
-    // <<< ALTERAÇÃO: Novas opções para repetição e destruição
+    
     [Tooltip("Se marcado, o diálogo poderá ser ativado novamente após terminar.")]
     public bool isRepeatable = false;
     [Tooltip("Se marcado, o objeto será destruído após a primeira ativação (ignorado se for repetível).")]
@@ -107,7 +107,7 @@ public class DialogueTrigger : MonoBehaviour
                 interactPrompt.gameObject.SetActive(false);
             }
             
-            // <<< ALTERAÇÃO: Passa 'this' (a própria instância do trigger) para o sistema de diálogo
+           
             DialogueSystem.Instance.StartDialogue(messages, this);
             
             // Bloqueia o trigger para não ser reativado imediatamente
@@ -125,10 +125,7 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
     
-    // <<< ALTERAÇÃO: Novo método público que o DialogueSystem pode chamar
-    /// <summary>
-    /// Reseta o estado do trigger para que possa ser ativado novamente.
-    /// </summary>
+  
     public void ResetTrigger()
     {
         alreadyTriggered = false;
