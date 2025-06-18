@@ -11997,6 +11997,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: ad74727c5d539bc4a8660001b912ea13, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ad74727c5d539bc4a8660001b912ea13, type: 3}
       propertyPath: m_Name
       value: DeitaTutorial
@@ -120404,6 +120408,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1242323773}
     m_Modifications:
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 32.796
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 32.225
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -187.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1545262300981223382, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 28.7
+      objectReference: {fileID: 0}
     - target: {fileID: 4014216494743458607, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_Name
       value: DialogueUI
@@ -120412,13 +120432,21 @@ PrefabInstance:
       propertyPath: m_TagString
       value: DialogueCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6162745849187744443, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6162745849187744443, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d67db8aeecabd5c498777a4dffc2cb04, type: 3}
     - target: {fileID: 8186830186707428301, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -703.5307
       objectReference: {fileID: 0}
     - target: {fileID: 8186830186707428301, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -567
+      value: -494
       objectReference: {fileID: 0}
     - target: {fileID: 8186830186707428301, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -120453,7 +120481,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2448891812031810630, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}

@@ -64,7 +64,10 @@ public class PlayerController : MonoBehaviour
     private bool jumpConsumed;
     private bool jumpWasBlocked;
     [Header("Start Settings")]
-[SerializeField] private float startRotationY = 0f;
+    [SerializeField] private float startRotationY = 0f;
+
+    // <<< ALTERAÇÃO: Nova variável para controlar o movimento separadamente
+    private bool movementControlsEnabled = true;
 
     private void Awake()
     {
@@ -73,78 +76,75 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
-private void Start()
-{
-    currentSpeed = walkSpeed;
-    Cursor.lockState = CursorLockMode.Locked;
-    jumpsRemaining = maxJumps;
-
-    originalHeight = characterController.height;
-    originalCenter = characterController.center;
-    
-    // Garante a rotação inicial correta
-    transform.rotation = Quaternion.Euler(0, startRotationY, 0);
-    
-    if (animator != null)
+    private void Start()
     {
-        animator.Play("Idle");
-        animator.SetFloat(SpeedHash, 0);
-        animator.SetBool(IsGroundedHash, true);
-        animator.SetBool(CrouchHash, false);
-        animator.ResetTrigger(JumpHash);
-        animator.ResetTrigger(CrouchJumpHash);
-        animator.ResetTrigger(DashHash);
-        animator.SetBool(IsDashingHash, false);
+        currentSpeed = walkSpeed;
+        Cursor.lockState = CursorLockMode.Locked;
+        jumpsRemaining = maxJumps;
+
+        originalHeight = characterController.height;
+        originalCenter = characterController.center;
+        
+        transform.rotation = Quaternion.Euler(0, startRotationY, 0);
+        
+        if (animator != null)
+        {
+            animator.Play("Idle");
+            animator.SetFloat(SpeedHash, 0);
+            animator.SetBool(IsGroundedHash, true);
+            animator.SetBool(CrouchHash, false);
+            animator.ResetTrigger(JumpHash);
+            animator.ResetTrigger(CrouchJumpHash);
+            animator.ResetTrigger(DashHash);
+            animator.SetBool(IsDashingHash, false);
+        }
     }
-}
 
     private void Update()
     {
         if (transform.eulerAngles != Vector3.zero)
         {
-            // Corrige a rotação se necessário
             transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
         }
-        if (!enabled)
+        
+        // <<< ALTERAÇÃO: Processa o input de movimento apenas se os controlos estiverem ativos
+        if (movementControlsEnabled)
         {
-            // Apenas atualiza a gravidade e animações quando desativado
-            HandleGravity();
-            UpdateAnimator();
-            return;
+            HandleCrouch();
+            HandleDashInput();
+            
+            if (Input.GetButtonDown("Jump"))
+            {
+                if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
+                {
+                    jumpInput = true;
+                    lastJumpTime = Time.time;
+                    jumpConsumed = false;
+                    jumpWasBlocked = false;
+                }
+                else
+                {
+                    jumpWasBlocked = true;
+                }
+            }
         }
-
-        HandleGravity();
-        HandleCrouch();
-        HandleDashInput();
+        
+        // <<< ALTERAÇÃO: Estas funções correm sempre para manter a física e as animações corretas
         UpdateAnimator();
-
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
-            {
-                jumpInput = true;
-                lastJumpTime = Time.time;
-                jumpConsumed = false;
-                jumpWasBlocked = false;
-            }
-            else
-            {
-                jumpWasBlocked = true;
-            }
-        }
     }
 
     private void FixedUpdate()
     {
-        // Sempre aplica gravidade, mesmo quando o controle está desativado
+        // <<< ALTERAÇÃO: A gravidade é sempre processada
         HandleGravity();
-
-        Vector3 movement = enabled ? HandleMovement() : Vector3.zero;
+        
+        // <<< ALTERAÇÃO: O movimento horizontal é zero se os controlos estiverem desativados
+        Vector3 movement = movementControlsEnabled ? HandleMovement() : Vector3.zero;
+        
+        // O pulo e a gravidade são aplicados independentemente
         movement += HandleJump();
         characterController.Move(movement * Time.fixedDeltaTime);
     }
-
-
 
     private void HandleDashInput()
     {
@@ -158,32 +158,20 @@ private void Start()
     {
         return !isDashing && Time.time > lastDashTime + dashCooldown;
     }
-    public void SetControlEnabled(bool enabled)
-{
-    this.enabled = enabled;
     
-    if (!enabled)
+    // <<< ALTERAÇÃO: Este método agora controla a variável `movementControlsEnabled`
+    public void SetControlEnabled(bool enabled)
     {
-        // Reseta os parâmetros do animador
-        animator.SetFloat(SpeedHash, 0);
-        animator.SetBool(IsGroundedHash, true);
-        animator.ResetTrigger(JumpHash);
-        animator.ResetTrigger(CrouchJumpHash);
-        animator.SetBool(CrouchHash, false);
-        
-        // Força uma atualização da gravidade
-        HandleGravity();
-        characterController.Move(velocity * Time.fixedDeltaTime);
-    }
-    else
-    {
-        // Reseta a velocidade vertical quando o controle é reativado
-        if (isGrounded)
+        movementControlsEnabled = enabled;
+
+        // Se estamos a desativar os controlos, garante que a animação de movimento para
+        if (!enabled)
         {
-            velocity.y = -2f;
+            directionX = 0;
+            directionY = 0;
+            animator.SetFloat(SpeedHash, 0);
         }
     }
-}
 
     private void StartDash()
     {
@@ -233,6 +221,9 @@ private void Start()
     {
         bool wasGrounded = isGrounded;
         isGrounded = CheckGrounded();
+        
+        // Aplica a gravidade continuamente
+        velocity.y += gravity * Time.fixedDeltaTime; 
 
         if (isGrounded)
         {
@@ -240,7 +231,7 @@ private void Start()
 
             if (velocity.y < 0)
             {
-                velocity.y = -2f;
+                velocity.y = -2f; // Força uma pequena gravidade para manter o jogador no chão
                 jumpsRemaining = maxJumps;
                 isJumping = false;
 
@@ -258,9 +249,8 @@ private void Start()
 
     private bool CheckGrounded()
     {
-        bool raycastGrounded = Physics.Raycast(transform.position, Vector3.down,
-                             groundCheckDistance + characterController.skinWidth, groundLayer);
-        return characterController.isGrounded || raycastGrounded;
+        // Usar o isGrounded do CharacterController é mais fiável quando a gravidade é bem aplicada
+        return characterController.isGrounded;
     }
 
     private Vector3 HandleMovement()
@@ -292,16 +282,13 @@ private void Start()
             if (isGrounded)
                 canCrouchJump = true;
 
-            // Shrink collider
             characterController.height = originalHeight / 2f;
             characterController.center = originalCenter / 2f;
         }
         else
         {
-            // Reset collider
             characterController.height = originalHeight;
             characterController.center = originalCenter;
-
             canCrouchJump = false;
         }
     }
@@ -317,7 +304,8 @@ private void Start()
         bool canNormalJump = !isJumping && (jumpsRemaining == maxJumps) && (isGrounded || canCoyoteJump);
         bool canDoubleJump = jumpsRemaining > 0 && jumpsRemaining < maxJumps;
 
-        if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump))
+        // <<< ALTERAÇÃO: Verifica se os controlos de movimento estão ativos para permitir o pulo
+        if (movementControlsEnabled && (jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump))
         {
             float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight;
 
@@ -330,7 +318,6 @@ private void Start()
             jumpsRemaining--;
             canCrouchJump = false;
 
-            // Usa animação diferente para crouch jump
             if (Input.GetKey(KeyCode.LeftControl))
             {
                 animator.SetTrigger(CrouchJumpHash);
@@ -345,30 +332,30 @@ private void Start()
             jumpConsumed = true;
             jumpWasBlocked = false;
         }
-
-        velocity.y += gravity * Time.fixedDeltaTime;
+        
         jumpVector.y = velocity.y;
-
         return jumpVector;
     }
 
     private void UpdateAnimator()
     {
-        float currentSpeedValue = Mathf.Clamp01(new Vector2(directionX, directionY).magnitude);
+        // <<< ALTERAÇÃO: Se os controlos estiverem desativados, a velocidade será 0
+        float currentSpeedValue = movementControlsEnabled ? 
+            Mathf.Clamp01(new Vector2(directionX, directionY).magnitude) : 0f;
 
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (movementControlsEnabled && Input.GetKey(KeyCode.LeftControl))
         {
             currentSpeedValue *= 0.5f;
         }
-
-
 
         animator.SetFloat(SpeedHash, currentSpeedValue, 0.1f, Time.deltaTime);
         animator.SetFloat(DirectionXHash, directionX, 0.1f, Time.deltaTime);
         animator.SetFloat(DirectionYHash, directionY, 0.1f, Time.deltaTime);
         animator.SetBool(IsGroundedHash, isGrounded);
-        animator.SetBool(CrouchHash, Input.GetKey(KeyCode.LeftControl));
+        animator.SetBool(CrouchHash, movementControlsEnabled && Input.GetKey(KeyCode.LeftControl));
     }
+    
+    // ... (restante do código permanece igual)
 
     public float GetCurrentSpeed()
     {
@@ -403,8 +390,6 @@ private void Start()
         characterController.enabled = false;
         transform.position = newPosition;
         characterController.enabled = true;
-
-        // Reseta estados de movimento
         velocity = Vector3.zero;
         isDashing = false;
         animator.SetBool(IsDashingHash, false);
@@ -412,32 +397,34 @@ private void Start()
 
     public Vector3 GetVelocity()
     {
+        // Retorna a velocidade calculada pelo CharacterController
+        // Se não estiver no chão, a velocidade do CharacterController é mais precisa
+        if (!isGrounded) return characterController.velocity;
+        
+        // Se estiver no chão, retorna a nossa variável velocity, que está mais controlada
         return velocity;
     }
-
+    
     public void SetVelocity(Vector3 newVelocity)
     {
         velocity = newVelocity;
     }
-
+    
     public void ForceIdleAnimation()
     {
         if (animator != null)
         {
             animator.SetFloat(SpeedHash, 0);
-            animator.SetBool(IsGroundedHash, true);
+            // Não forçar IsGrounded para true, para permitir a animação de queda
             animator.SetBool(CrouchHash, false);
         }
     }
-
-public void PlayAnimation(string animationName, float transitionTime = 0.1f)
-{
-    if (animator != null)
+    
+    public void PlayAnimation(string animationName, float transitionTime = 0.1f)
     {
-        animator.CrossFade(animationName, transitionTime);
+        if (animator != null)
+        {
+            animator.CrossFade(animationName, transitionTime);
+        }
     }
-}
-
-
-
 }

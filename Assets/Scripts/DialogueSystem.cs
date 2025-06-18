@@ -38,6 +38,11 @@ public class DialogueSystem : MonoBehaviour
     private Quaternion characterInitialRotation;
     private Coroutine swingCoroutine;
 
+    // <<< ALTERAÇÃO: Novas variáveis para a animação do botão
+    [Header("Skip Button Animation")]
+    public float skipButtonBobHeight = 10f;
+    public float skipButtonBobSpeed = 2.5f;
+
     [Header("Settings")]
     public float defaultTypingSpeed = 0.05f;
     public AudioClip typingSound;
@@ -55,42 +60,43 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine typingCoroutine;
     private Coroutine autoAdvanceCoroutine;
     private Vector3 playerVelocityBeforeDialogue;
+    
+    // <<< ALTERAÇÃO: Variáveis para controlar a animação do botão
+    private Coroutine skipButtonBobCoroutine;
+    private Vector2 skipButtonInitialPosition;
 
-        private void Awake()
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
-        
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
+
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
         
-        // Adicione este listener para detectar mudanças de cena
         SceneManager.sceneLoaded += OnSceneLoaded;
         
         DeactivateAllUIElements();
     }
-    
-        private void OnDestroy()
+
+    private void OnDestroy()
     {
-        // Remova o listener quando o objeto for destruído
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    InstantiateDialogueCanvas();
-    FindUIReferences();
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        InstantiateDialogueCanvas();
+        FindUIReferences();
         
-        // Se o diálogo estava ativo, reative-o com as novas referências
         if (dialogueActive)
         {
             DisplayCurrentMessage();
@@ -98,45 +104,43 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     }
     
     private void InstantiateDialogueCanvas()
-{
-    if (GameObject.FindGameObjectWithTag("DialogueCanvas") == null)
     {
-        GameObject canvasPrefab = Resources.Load<GameObject>("DialogueCanvas");
-        if (canvasPrefab != null)
+        if (GameObject.FindGameObjectWithTag("DialogueCanvas") == null)
         {
-            Instantiate(canvasPrefab);
+            GameObject canvasPrefab = Resources.Load<GameObject>("DialogueCanvas");
+            if (canvasPrefab != null)
+            {
+                Instantiate(canvasPrefab);
+            }
         }
     }
-}
 
-
-  private void FindUIReferences()
-{
-    // Encontra o Canvas primeiro
-    GameObject canvasObj = GameObject.FindGameObjectWithTag("DialogueCanvas");
-    if (canvasObj == null)
+    private void FindUIReferences()
     {
-        Debug.LogError("DialogueCanvas not found in scene! Make sure it's instantiated and tagged.");
-        return;
+        GameObject canvasObj = GameObject.FindGameObjectWithTag("DialogueCanvas");
+        if (canvasObj == null)
+        {
+            Debug.LogError("DialogueCanvas not found in scene! Make sure it's instantiated and tagged.");
+            return;
+        }
+
+        dialoguePanel = FindChildByTag(canvasObj.transform, "DialoguePanel")?.gameObject;
+        characterImage = FindChildByTag(canvasObj.transform, "CharacterImage")?.GetComponent<Image>();
+        characterNameText = FindChildByTag(canvasObj.transform, "CharacterNameText")?.GetComponent<TMP_Text>();
+        dialogueText = FindChildByTag(canvasObj.transform, "DialogueText")?.GetComponent<TMP_Text>();
+        namePanel = FindChildByTag(canvasObj.transform, "NamePanel")?.gameObject;
+        skipButton = FindChildByTag(canvasObj.transform, "SkipButton")?.GetComponent<Button>();
+
+        if (skipButton != null)
+        {
+            skipButton.onClick.RemoveAllListeners();
+            skipButton.onClick.AddListener(AdvanceDialogue);
+            // <<< ALTERAÇÃO: Guarda a posição inicial do botão para a animação
+            skipButtonInitialPosition = skipButton.GetComponent<RectTransform>().anchoredPosition;
+        }
+
+        playerController = FindFirstObjectByType<PlayerController>();
     }
-
-    // Busca recursiva pelos elementos
-    dialoguePanel = FindChildByTag(canvasObj.transform, "DialoguePanel")?.gameObject;
-    characterImage = FindChildByTag(canvasObj.transform, "CharacterImage")?.GetComponent<Image>();
-    characterNameText = FindChildByTag(canvasObj.transform, "CharacterNameText")?.GetComponent<TMP_Text>();
-    dialogueText = FindChildByTag(canvasObj.transform, "DialogueText")?.GetComponent<TMP_Text>();
-    namePanel = FindChildByTag(canvasObj.transform, "NamePanel")?.gameObject;
-    skipButton = FindChildByTag(canvasObj.transform, "SkipButton")?.GetComponent<Button>();
-
-    // Configuração adicional
-    if (skipButton != null)
-    {
-        skipButton.onClick.RemoveAllListeners();
-        skipButton.onClick.AddListener(SkipDialogue);
-    }
-
-    playerController = FindFirstObjectByType<PlayerController>();
-}
 
     private void Start()
     {
@@ -145,26 +149,21 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         if (characterImage != null)
         {
             characterInitialRotation = characterImage.transform.rotation;
-            characterImage.gameObject.SetActive(false);
         }
-
-        if (skipButton != null)
-        {
-            skipButton.onClick.AddListener(SkipDialogue);
-            skipButton.gameObject.SetActive(false);
-        }
+        
+        DeactivateAllUIElements();
     }
 
     private Transform FindChildByTag(Transform parent, string tag)
-{
-    foreach (Transform child in parent)
     {
-        if (child.CompareTag(tag)) return child;
-        var result = FindChildByTag(child, tag);
-        if (result != null) return result;
+        foreach (Transform child in parent)
+        {
+            if (child.CompareTag(tag)) return child;
+            var result = FindChildByTag(child, tag);
+            if (result != null) return result;
+        }
+        return null;
     }
-    return null;
-}
 
     private void DeactivateAllUIElements()
     {
@@ -173,14 +172,16 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         if (dialogueText != null) dialogueText.gameObject.SetActive(false);
         if (characterNameText != null) characterNameText.gameObject.SetActive(false);
         if (characterImage != null) characterImage.gameObject.SetActive(false);
+        
+        // <<< ALTERAÇÃO: Pára a animação do botão e esconde-o
+        StopSkipButtonAnimation();
         if (skipButton != null) skipButton.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         if (!dialogueActive) return;
-
-        // Verifica tanto a tecla global quanto a tecla específica da mensagem
+        
         bool skipPressed = Input.GetKeyDown(globalSkipKey) || 
                           (currentMessageIndex < currentDialogue.Length && 
                            currentDialogue[currentMessageIndex].skipKey != KeyCode.None && 
@@ -208,36 +209,41 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         }
     }
 
- public void StartDialogue(DialogueMessage[] dialogue)
-{
-    if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
-
-    currentDialogue = dialogue;
-    currentMessageIndex = 0;
-    dialogueActive = true;
-    
-    if (playerController != null)
+    public void StartDialogue(DialogueMessage[] dialogue)
     {
-        // Salva apenas a velocidade horizontal
-        Vector3 horizontalVelocity = playerController.GetVelocity();
-        horizontalVelocity.y = 0; // Ignora a componente vertical
-        playerVelocityBeforeDialogue = horizontalVelocity;
+        if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
+
+        currentDialogue = dialogue;
+        currentMessageIndex = 0;
+        dialogueActive = true;
+    
+        if (playerController != null)
+        {
+            Vector3 horizontalVelocity = playerController.GetVelocity();
+            horizontalVelocity.y = 0;
+            playerVelocityBeforeDialogue = horizontalVelocity;
         
-        playerController.SetControlEnabled(false);
-        playerController.ForceIdleAnimation();
+            playerController.SetControlEnabled(false);
+            playerController.ForceIdleAnimation();
+        }
+    
+        if (dialoguePanel != null) dialoguePanel.SetActive(true);
+        
+        DisplayCurrentMessage();
     }
-    
-    if (dialoguePanel != null) dialoguePanel.SetActive(true);
-    if (skipButton != null) skipButton.gameObject.SetActive(true);
-    
-    DisplayCurrentMessage();
-}
 
     private void DisplayCurrentMessage()
     {
         if (currentMessageIndex >= currentDialogue.Length) return;
 
         DialogueMessage message = currentDialogue[currentMessageIndex];
+        
+        // <<< ALTERAÇÃO: Pára a animação do botão e esconde-o ao iniciar nova mensagem
+        StopSkipButtonAnimation();
+        if (skipButton != null)
+        {
+            skipButton.gameObject.SetActive(false);
+        }
         
         StopSwingAnimation();
         SetupCharacterImage(message);
@@ -269,18 +275,17 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         
         SetupAutoAdvance(message.autoAdvanceDelay);
     }
+    
+    // ... (os métodos SetupCharacterImage, SetupCharacterName, SwingCharacterAnimation, etc. continuam iguais) ...
 
     private void SetupCharacterImage(DialogueMessage message)
     {
         if (characterImage == null) return;
-
         bool shouldShow = message.showCharacter && message.characterSprite != null;
         characterImage.gameObject.SetActive(shouldShow);
-        
         if (shouldShow)
         {
             characterImage.sprite = message.characterSprite;
-            
             if (characterSwingAngle > 0 && characterSwingSpeed > 0)
             {
                 swingCoroutine = StartCoroutine(SwingCharacterAnimation());
@@ -291,11 +296,9 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     private void SetupCharacterName(DialogueMessage message)
     {
         if (namePanel == null || characterNameText == null) return;
-
         bool shouldShowName = !string.IsNullOrEmpty(message.characterName);
         namePanel.SetActive(shouldShowName);
         characterNameText.gameObject.SetActive(shouldShowName);
-        
         if (shouldShowName)
         {
             characterNameText.text = message.characterName;
@@ -319,7 +322,6 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             StopCoroutine(swingCoroutine);
             swingCoroutine = null;
         }
-        
         if (characterImage != null)
         {
             characterImage.transform.rotation = characterInitialRotation;
@@ -351,7 +353,12 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         }
         
         isTyping = false;
+        
+        // <<< ALTERAÇÃO: Inicia a animação do botão quando o texto termina
+        StartSkipButtonAnimation();
     }
+    
+    // ... (os métodos SetupAutoAdvance, AutoAdvance continuam iguais) ...
 
     private void SetupAutoAdvance(float delay)
     {
@@ -386,6 +393,9 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             audioSource.PlayOneShot(advanceSound, soundVolume);
         }
+        
+        // <<< ALTERAÇÃO: Inicia a animação do botão quando o texto é completado à força
+        StartSkipButtonAnimation();
     }
 
     private void NextMessage()
@@ -399,33 +409,84 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         }
     }
 
- public void EndDialogue()
-{
-    if (!dialogueActive) return;
-    
-    if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-    if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
-    StopSwingAnimation();
-    
-    DeactivateAllUIElements();
-    
-    if (playerController != null)
+    public void EndDialogue()
     {
-        playerController.SetControlEnabled(true);
-        
-        // Restaura apenas a velocidade horizontal
-        Vector3 currentVelocity = playerController.GetVelocity();
-        Vector3 newVelocity = playerVelocityBeforeDialogue;
-        newVelocity.y = currentVelocity.y; // Mantém a velocidade vertical atual
-        playerController.SetVelocity(newVelocity);
-    }
+        if (!dialogueActive) return;
     
-    dialogueActive = false;
-}
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
+        StopSwingAnimation();
+    
+        DeactivateAllUIElements();
+    
+        if (playerController != null)
+        {
+            playerController.SetControlEnabled(true);
+            
+            Vector3 currentVelocity = playerController.GetVelocity();
+            Vector3 newVelocity = playerVelocityBeforeDialogue;
+            newVelocity.y = currentVelocity.y;
+            playerController.SetVelocity(newVelocity);
+        }
+    
+        dialogueActive = false;
+    }
 
     public void SkipDialogue()
     {
         EndDialogue();
     }
 
+    // <<< ALTERAÇÃO: Novos métodos para controlar a animação do botão
+
+    /// <summary>
+    /// Mostra o botão de 'skip' e inicia a sua animação de 'bobbing'.
+    /// </summary>
+    private void StartSkipButtonAnimation()
+    {
+        if (skipButton == null) return;
+        
+        // Se a animação já estiver a correr, não faz nada
+        if (skipButtonBobCoroutine != null) return;
+
+        skipButton.gameObject.SetActive(true);
+        skipButtonBobCoroutine = StartCoroutine(BobSkipButton());
+    }
+
+    /// <summary>
+    /// Pára a animação do botão e repõe a sua posição original.
+    /// </summary>
+    private void StopSkipButtonAnimation()
+    {
+        if (skipButtonBobCoroutine != null)
+        {
+            StopCoroutine(skipButtonBobCoroutine);
+            skipButtonBobCoroutine = null;
+
+            // Repõe a posição original para o caso de a animação ter parado a meio
+            if (skipButton != null)
+            {
+                skipButton.GetComponent<RectTransform>().anchoredPosition = skipButtonInitialPosition;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Corrotina que anima o botão para cima e para baixo.
+    /// </summary>
+    private IEnumerator BobSkipButton()
+    {
+        // Loop infinito que só é interrompido quando a corrotina é parada
+        while (true)
+        {
+            // Usa uma função seno para criar um movimento suave e oscilante
+            float yOffset = Mathf.Sin(Time.time * skipButtonBobSpeed) * skipButtonBobHeight;
+            
+            RectTransform rt = skipButton.GetComponent<RectTransform>();
+            rt.anchoredPosition = skipButtonInitialPosition + new Vector2(0, yOffset);
+            
+            // Espera pelo próximo frame antes de continuar o loop
+            yield return null;
+        }
+    }
 }
