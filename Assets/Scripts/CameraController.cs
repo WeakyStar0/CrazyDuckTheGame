@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
+    #region Variáveis
     [Header("References")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Camera playerCamera;
@@ -30,7 +31,6 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform cameraRoot; // what you move/rotate normally
     [SerializeField] private Transform shakeContainer; // this is where shake gets applied
 
-
     private float currentCameraDistance;
     private float cameraDistanceSmoothVelocity;
     private float xRotation;
@@ -40,20 +40,33 @@ public class CameraController : MonoBehaviour
     private float currentCameraHeight;
     private bool isDuringKnockback = false;
     private bool isDuringDash = false;
-    private Vector3 dashCameraOffset;
     private Vector3 preDashCameraPosition;
     private Quaternion preDashCameraRotation;
     private Coroutine shakeCoroutine;
     private Vector3 originalCamPos;
     private Quaternion originalCamRot;
+    #endregion
+    
+    // Referência para o PlayerController para saber se está a mover-se
+    private PlayerController playerController;
 
     private void Start()
     {
+        // Encontrar o PlayerController
+        playerController = playerTransform.GetComponent<PlayerController>();
+        if (playerController == null)
+        {
+            Debug.LogError("CameraController não encontrou o PlayerController no 'playerTransform'!");
+            this.enabled = false;
+            return;
+        }
+
         currentCameraDistance = cameraDistance;
         currentCameraHeight = standingCameraHeight;
         Cursor.lockState = CursorLockMode.Locked;
 
-        if (cameraPivot == null)
+        // Se o pivô não for atribuído, cria um. Esta parte está correta.
+        if (cameraPivot == null && playerTransform != null)
         {
             cameraPivot = new GameObject("CameraPivot").transform;
             cameraPivot.SetParent(playerTransform);
@@ -61,7 +74,8 @@ public class CameraController : MonoBehaviour
             cameraPivot.localRotation = Quaternion.identity;
         }
 
-        if (playerCamera != null)
+        // Atribui a câmara ao pivô. Esta parte também está correta.
+        if (playerCamera != null && cameraPivot != null)
         {
             playerCamera.transform.SetParent(cameraPivot);
             playerCamera.transform.localPosition = Vector3.zero;
@@ -77,33 +91,61 @@ public class CameraController : MonoBehaviour
             UpdateCameraHeight();
         }
     }
-
-    private void LateUpdate()
-{
-    GameStartSequence startSequence = GetComponent<GameStartSequence>();
-    if (startSequence != null && startSequence.IsInSequence())
+    
+    // <<< ALTERAÇÃO PRINCIPAL E CORREÇÃO ESTÁ AQUI
+    private void HandleRotation()
     {
-        return; // Não atualiza a câmera durante a sequência
-    }
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
 
-    if (!isCameraLocked && shakeCoroutine == null)
-    {
-        cameraPivot.localPosition = new Vector3(0, currentCameraHeight, 0);
+        // Acumula sempre os valores de rotação com base no input do rato
+        yRotation += mouseX;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, maxLookDownAngle, maxLookUpAngle);
 
-        if (isDuringDash)
+        // A lógica agora é dividida:
+        if (playerController.IsMoving)
         {
-            HandleDashCamera();
+            // MODO DE MOVIMENTO: Roda o corpo do jogador e o pivô da câmara segue-o.
+            playerTransform.rotation = Quaternion.Euler(0, yRotation, 0);
+            cameraPivot.localRotation = Quaternion.Euler(xRotation, 0, 0);
         }
         else
         {
-            HandleCameraCollision();
+            // MODO DE ÓRBITA (PARADO): O corpo do jogador NÃO roda.
+            // A rotação total (vertical e horizontal) é aplicada diretamente ao pivô da câmara.
+            cameraPivot.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         }
     }
-    else if (isDuringKnockback)
+    
+    // Todo o resto do teu código permanece exatamente igual. Ele já funciona bem.
+    #region Funções Sem Alterações
+    private void LateUpdate()
     {
-        HandleKnockbackCamera();
+        GameStartSequence startSequence = GetComponent<GameStartSequence>();
+        if (startSequence != null && startSequence.IsInSequence())
+        {
+            return; // Não atualiza a câmera durante a sequência
+        }
+
+        if (!isCameraLocked && shakeCoroutine == null)
+        {
+            cameraPivot.localPosition = new Vector3(0, currentCameraHeight, 0);
+
+            if (isDuringDash)
+            {
+                HandleDashCamera();
+            }
+            else
+            {
+                HandleCameraCollision();
+            }
+        }
+        else if (isDuringKnockback)
+        {
+            HandleKnockbackCamera();
+        }
     }
-}
 
     public void ShakeCamera(float duration, float intensity, float rotationAmount)
     {
@@ -214,19 +256,6 @@ public class CameraController : MonoBehaviour
             knockbackCameraFollowSpeed * Time.deltaTime);
     }
 
-    private void HandleRotation()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
-
-        yRotation += mouseX;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, maxLookDownAngle, maxLookUpAngle);
-
-        playerTransform.rotation = Quaternion.Euler(0, yRotation, 0);
-        cameraPivot.localRotation = Quaternion.Euler(xRotation, 0, 0);
-    }
-
     private void UpdateCameraHeight()
     {
         if (Input.GetKey(KeyCode.LeftControl))
@@ -280,6 +309,5 @@ public class CameraController : MonoBehaviour
     {
         return isCameraLocked;
     }
-
-
+    #endregion
 }
