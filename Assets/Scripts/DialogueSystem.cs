@@ -17,7 +17,7 @@ public class DialogueMessage
     public float autoAdvanceDelay = 0f;
     public float typingSpeed = 0.05f;
     public int fontSize = 36;
-    public KeyCode skipKey = KeyCode.None; // Tecla para pular o diálogo
+    public KeyCode skipKey = KeyCode.None;
 }
 
 public class DialogueSystem : MonoBehaviour
@@ -37,7 +37,6 @@ public class DialogueSystem : MonoBehaviour
     public float characterSwingSpeed = 1f;
     private Quaternion characterInitialRotation;
     private Coroutine swingCoroutine;
-
     
     [Header("Skip Button Animation")]
     public float skipButtonBobHeight = 10f;
@@ -49,7 +48,7 @@ public class DialogueSystem : MonoBehaviour
     public AudioClip advanceSound;
     [Range(0, 1)] public float soundVolume = 0.5f;
     public bool freezePlayerDuringDialogue = true;
-    public KeyCode globalSkipKey = KeyCode.Space; // Tecla global para pular
+    public KeyCode globalSkipKey = KeyCode.Space;
 
     private AudioSource audioSource;
     private PlayerController playerController;
@@ -61,9 +60,11 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine autoAdvanceCoroutine;
     private Vector3 playerVelocityBeforeDialogue;
     
-  
     private Coroutine skipButtonBobCoroutine;
     private Vector2 skipButtonInitialPosition;
+    
+    // Guarda uma referência ao trigger que iniciou o diálogo
+    private DialogueTrigger activeTrigger;
 
     private void Awake()
     {
@@ -135,7 +136,6 @@ public class DialogueSystem : MonoBehaviour
         {
             skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(AdvanceDialogue);
-           
             skipButtonInitialPosition = skipButton.GetComponent<RectTransform>().anchoredPosition;
         }
 
@@ -173,11 +173,10 @@ public class DialogueSystem : MonoBehaviour
         if (characterNameText != null) characterNameText.gameObject.SetActive(false);
         if (characterImage != null) characterImage.gameObject.SetActive(false);
         
-       
         StopSkipButtonAnimation();
         if (skipButton != null) skipButton.gameObject.SetActive(false);
     }
-
+    
     private void Update()
     {
         if (!dialogueActive) return;
@@ -209,9 +208,11 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public void StartDialogue(DialogueMessage[] dialogue)
+    public void StartDialogue(DialogueMessage[] dialogue, DialogueTrigger trigger)
     {
         if (dialogueActive || dialogue == null || dialogue.Length == 0) return;
+        
+        this.activeTrigger = trigger;
 
         currentDialogue = dialogue;
         currentMessageIndex = 0;
@@ -231,14 +232,13 @@ public class DialogueSystem : MonoBehaviour
         
         DisplayCurrentMessage();
     }
-
+    
     private void DisplayCurrentMessage()
     {
         if (currentMessageIndex >= currentDialogue.Length) return;
 
         DialogueMessage message = currentDialogue[currentMessageIndex];
         
-      
         StopSkipButtonAnimation();
         if (skipButton != null)
         {
@@ -276,8 +276,6 @@ public class DialogueSystem : MonoBehaviour
         SetupAutoAdvance(message.autoAdvanceDelay);
     }
     
-    
-
     private void SetupCharacterImage(DialogueMessage message)
     {
         if (characterImage == null) return;
@@ -354,11 +352,8 @@ public class DialogueSystem : MonoBehaviour
         
         isTyping = false;
         
-       
         StartSkipButtonAnimation();
     }
-    
-    
 
     private void SetupAutoAdvance(float delay)
     {
@@ -394,7 +389,6 @@ public class DialogueSystem : MonoBehaviour
             audioSource.PlayOneShot(advanceSound, soundVolume);
         }
         
-        // <<< ALTERAÇÃO: Inicia a animação do botão quando o texto é completado à força
         StartSkipButtonAnimation();
     }
 
@@ -407,6 +401,48 @@ public class DialogueSystem : MonoBehaviour
         {
             audioSource.PlayOneShot(advanceSound, soundVolume);
         }
+    }
+
+    private void StartSkipButtonAnimation()
+    {
+        if (skipButton == null) return;
+        
+        if (skipButtonBobCoroutine != null) return;
+
+        skipButton.gameObject.SetActive(true);
+        skipButtonBobCoroutine = StartCoroutine(BobSkipButton());
+    }
+
+    private void StopSkipButtonAnimation()
+    {
+        if (skipButtonBobCoroutine != null)
+        {
+            StopCoroutine(skipButtonBobCoroutine);
+            skipButtonBobCoroutine = null;
+
+            if (skipButton != null)
+            {
+                skipButton.GetComponent<RectTransform>().anchoredPosition = skipButtonInitialPosition;
+            }
+        }
+    }
+
+    private IEnumerator BobSkipButton()
+    {
+        while (true)
+        {
+            float yOffset = Mathf.Sin(Time.time * skipButtonBobSpeed) * skipButtonBobHeight;
+            
+            RectTransform rt = skipButton.GetComponent<RectTransform>();
+            rt.anchoredPosition = skipButtonInitialPosition + new Vector2(0, yOffset);
+            
+            yield return null;
+        }
+    }
+
+    public void SkipDialogue()
+    {
+        EndDialogue();
     }
 
     public void EndDialogue()
@@ -430,55 +466,14 @@ public class DialogueSystem : MonoBehaviour
         }
     
         dialogueActive = false;
-    }
-
-    public void SkipDialogue()
-    {
-        EndDialogue();
-    }
-
-  
-    private void StartSkipButtonAnimation()
-    {
-        if (skipButton == null) return;
         
-        // Se a animação já estiver a correr, não faz nada
-        if (skipButtonBobCoroutine != null) return;
-
-        skipButton.gameObject.SetActive(true);
-        skipButtonBobCoroutine = StartCoroutine(BobSkipButton());
-    }
-
-  
-    private void StopSkipButtonAnimation()
-    {
-        if (skipButtonBobCoroutine != null)
+        // Verifica se o trigger que iniciou o diálogo é repetível
+        if (activeTrigger != null && activeTrigger.isRepeatable)
         {
-            StopCoroutine(skipButtonBobCoroutine);
-            skipButtonBobCoroutine = null;
-
-            // Repõe a posição original para o caso de a animação ter parado a meio
-            if (skipButton != null)
-            {
-                skipButton.GetComponent<RectTransform>().anchoredPosition = skipButtonInitialPosition;
-            }
+            activeTrigger.ResetTrigger();
         }
-    }
-
-
-    private IEnumerator BobSkipButton()
-    {
-        // Loop infinito que só é interrompido quando a corrotina é parada
-        while (true)
-        {
-            // Usa uma função seno para criar um movimento suave e oscilante
-            float yOffset = Mathf.Sin(Time.time * skipButtonBobSpeed) * skipButtonBobHeight;
-            
-            RectTransform rt = skipButton.GetComponent<RectTransform>();
-            rt.anchoredPosition = skipButtonInitialPosition + new Vector2(0, yOffset);
-            
-            // Espera pelo próximo frame antes de continuar o loop
-            yield return null;
-        }
+        
+        // Limpa a referência para o próximo diálogo
+        activeTrigger = null;
     }
 }
