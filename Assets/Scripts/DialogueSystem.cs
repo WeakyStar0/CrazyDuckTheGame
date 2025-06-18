@@ -38,7 +38,7 @@ public class DialogueSystem : MonoBehaviour
     private Quaternion characterInitialRotation;
     private Coroutine swingCoroutine;
 
-    // <<< ALTERAÇÃO: Novas variáveis para a animação do botão
+    
     [Header("Skip Button Animation")]
     public float skipButtonBobHeight = 10f;
     public float skipButtonBobSpeed = 2.5f;
@@ -61,7 +61,7 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine autoAdvanceCoroutine;
     private Vector3 playerVelocityBeforeDialogue;
     
-    // <<< ALTERAÇÃO: Variáveis para controlar a animação do botão
+  
     private Coroutine skipButtonBobCoroutine;
     private Vector2 skipButtonInitialPosition;
 
@@ -135,7 +135,7 @@ public class DialogueSystem : MonoBehaviour
         {
             skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(AdvanceDialogue);
-            // <<< ALTERAÇÃO: Guarda a posição inicial do botão para a animação
+           
             skipButtonInitialPosition = skipButton.GetComponent<RectTransform>().anchoredPosition;
         }
 
@@ -173,7 +173,7 @@ public class DialogueSystem : MonoBehaviour
         if (characterNameText != null) characterNameText.gameObject.SetActive(false);
         if (characterImage != null) characterImage.gameObject.SetActive(false);
         
-        // <<< ALTERAÇÃO: Pára a animação do botão e esconde-o
+       
         StopSkipButtonAnimation();
         if (skipButton != null) skipButton.gameObject.SetActive(false);
     }
@@ -238,7 +238,7 @@ public class DialogueSystem : MonoBehaviour
 
         DialogueMessage message = currentDialogue[currentMessageIndex];
         
-        // <<< ALTERAÇÃO: Pára a animação do botão e esconde-o ao iniciar nova mensagem
+      
         StopSkipButtonAnimation();
         if (skipButton != null)
         {
@@ -276,7 +276,7 @@ public class DialogueSystem : MonoBehaviour
         SetupAutoAdvance(message.autoAdvanceDelay);
     }
     
-    // ... (os métodos SetupCharacterImage, SetupCharacterName, SwingCharacterAnimation, etc. continuam iguais) ...
+    
 
     private void SetupCharacterImage(DialogueMessage message)
     {
@@ -354,11 +354,11 @@ public class DialogueSystem : MonoBehaviour
         
         isTyping = false;
         
-        // <<< ALTERAÇÃO: Inicia a animação do botão quando o texto termina
+       
         StartSkipButtonAnimation();
     }
     
-    // ... (os métodos SetupAutoAdvance, AutoAdvance continuam iguais) ...
+    
 
     private void SetupAutoAdvance(float delay)
     {
@@ -437,11 +437,7 @@ public class DialogueSystem : MonoBehaviour
         EndDialogue();
     }
 
-    // <<< ALTERAÇÃO: Novos métodos para controlar a animação do botão
-
-    /// <summary>
-    /// Mostra o botão de 'skip' e inicia a sua animação de 'bobbing'.
-    /// </summary>
+  
     private void StartSkipButtonAnimation()
     {
         if (skipButton == null) return;
@@ -453,9 +449,7 @@ public class DialogueSystem : MonoBehaviour
         skipButtonBobCoroutine = StartCoroutine(BobSkipButton());
     }
 
-    /// <summary>
-    /// Pára a animação do botão e repõe a sua posição original.
-    /// </summary>
+  
     private void StopSkipButtonAnimation()
     {
         if (skipButtonBobCoroutine != null)
@@ -471,9 +465,7 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Corrotina que anima o botão para cima e para baixo.
-    /// </summary>
+
     private IEnumerator BobSkipButton()
     {
         // Loop infinito que só é interrompido quando a corrotina é parada
