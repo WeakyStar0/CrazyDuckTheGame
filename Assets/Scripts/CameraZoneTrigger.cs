@@ -28,7 +28,7 @@ public class CameraZoneTrigger : MonoBehaviour
     private bool playerInside = false;
 
     private Quaternion mainCamOriginalRotation;
-    private Quaternion[] originalObjectRotations;
+    private Quaternion[] lockedObjectRotations; // Now stores the locked rotations (180 on Y)
 
     private void Start()
     {
@@ -46,14 +46,18 @@ public class CameraZoneTrigger : MonoBehaviour
         // Save original main camera rotation
         if (mainCamera) mainCamOriginalRotation = mainCamera.transform.rotation;
 
-        // Save original rotations of objects to lock
+        // Initialize locked rotations for objects (180 on Y axis)
         if (objectsToLockRotation != null && objectsToLockRotation.Length > 0)
         {
-            originalObjectRotations = new Quaternion[objectsToLockRotation.Length];
+            lockedObjectRotations = new Quaternion[objectsToLockRotation.Length];
             for (int i = 0; i < objectsToLockRotation.Length; i++)
             {
                 if (objectsToLockRotation[i] != null)
-                    originalObjectRotations[i] = objectsToLockRotation[i].transform.rotation;
+                {
+                    // Create a rotation with Y at 180 degrees, keeping other axes as they were
+                    Vector3 euler = objectsToLockRotation[i].transform.rotation.eulerAngles;
+                    lockedObjectRotations[i] = Quaternion.Euler(euler.x, 180f, euler.z);
+                }
             }
         }
 
@@ -93,13 +97,6 @@ public class CameraZoneTrigger : MonoBehaviour
             if (spotLightPosition != null)
                 spotLight.transform.position = spotLightPosition.position;
         }
-
-        // Save current rotations of objects on enter
-        for (int i = 0; i < objectsToLockRotation.Length; i++)
-        {
-            if (objectsToLockRotation[i] != null)
-                originalObjectRotations[i] = objectsToLockRotation[i].transform.rotation;
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -126,13 +123,6 @@ public class CameraZoneTrigger : MonoBehaviour
         {
             spotLight.enabled = false;
         }
-
-        // Restore original rotations
-        for (int i = 0; i < objectsToLockRotation.Length; i++)
-        {
-            if (objectsToLockRotation[i] != null)
-                objectsToLockRotation[i].transform.rotation = originalObjectRotations[i];
-        }
     }
 
     private void LateUpdate()
@@ -151,13 +141,15 @@ public class CameraZoneTrigger : MonoBehaviour
             );
         }
 
-        // Lock rotation of other objects
+        // Lock rotation of other objects to 180 on Y axis
         if (playerInside && objectsToLockRotation != null)
         {
             for (int i = 0; i < objectsToLockRotation.Length; i++)
             {
                 if (objectsToLockRotation[i] != null)
-                    objectsToLockRotation[i].transform.rotation = originalObjectRotations[i];
+                {
+                    objectsToLockRotation[i].transform.rotation = lockedObjectRotations[i];
+                }
             }
         }
 

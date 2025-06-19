@@ -3063,6 +3063,63 @@ MonoBehaviour:
   spawnPoint: {fileID: 515081967}
   offset: {x: 0, y: 5, z: 0}
   lifetime: 15
+--- !u!1001 &526921603
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -84.547035
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.788936
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 81.92395
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
+      propertyPath: m_Name
+      value: patoel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 86170f0c600890d4c98b5e4595d0f99d, type: 3}
 --- !u!1 &533147470
 GameObject:
   m_ObjectHideFlags: 0
@@ -4295,8 +4352,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92336afb14825841bdd3dcb32aa25c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectSound: {fileID: 8300000, guid: fc503b2b172e35040acbe506f90fd96d, type: 3}
+  ambienceClip: {fileID: 0}
+  collectClip: {fileID: 0}
+  audioSource: {fileID: 0}
   collectEffect: {fileID: 0}
+  spinSpeed: 360
+  floatUpSpeed: 2
 --- !u!135 &694304302
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6553,6 +6614,8 @@ MonoBehaviour:
   shakeDuration: 1
   shakeIntensity: 2
   shakeRotationAmount: 2
+  warningLights: []
+  lightFlashSpeed: 10
 --- !u!4 &998930574
 Transform:
   m_ObjectHideFlags: 0
@@ -13230,8 +13293,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92336afb14825841bdd3dcb32aa25c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectSound: {fileID: 8300000, guid: fc503b2b172e35040acbe506f90fd96d, type: 3}
+  ambienceClip: {fileID: 0}
+  collectClip: {fileID: 0}
+  audioSource: {fileID: 0}
   collectEffect: {fileID: 0}
+  spinSpeed: 360
+  floatUpSpeed: 2
 --- !u!135 &1234456168
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -19186,6 +19253,20 @@ MonoBehaviour:
   gravity: 9.81
   attackCooldown: 2
   damageAmount: 1
+  stunDuration: 0.5
+  patrolSounds: []
+  minPatrolInterval: 1
+  maxPatrolInterval: 3
+  patrolMinPitch: 0.8
+  patrolMaxPitch: 1.2
+  chaseSounds: []
+  minChaseInterval: 0.5
+  maxChaseInterval: 1.5
+  chaseMinPitch: 1
+  chaseMaxPitch: 1.5
+  maxHearDistance: 10
+  maxVolume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!114 &1261966331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19301,9 +19382,12 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  damageParticlesPrefab: {fileID: 0}
+  particlesOffset: {x: 0, y: 1, z: 0}
   deathSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   hitSound: {fileID: 0}
   volume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!1001 &1263083512
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39195,6 +39279,10 @@ MonoBehaviour:
   blinkColor: {r: 0.4, g: 0.7, b: 1, a: 1}
   blinkSpeed: 4
   phase50Object: {fileID: 704240308}
+  objectToActivateOnDeath: {fileID: 0}
+  bossStartTriggerCollider: {fileID: 0}
+  deathExplosionEffectPrefab: {fileID: 0}
+  deathExplosionSound: {fileID: 0}
 --- !u!65 &1748066261
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -46273,6 +46361,10 @@ MonoBehaviour:
   getUpTrigger: GetUp
   getUpToIdleBlendTime: 0.3
   getUpAnimationLength: 1
+  postProcessingController: {fileID: 0}
+  heartbeatSound: {fileID: 0}
+  heartbeatVolume: 0.7
+  audioSource: {fileID: 0}
 --- !u!114 &2039022161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46296,9 +46388,11 @@ MonoBehaviour:
   swingSound: {fileID: 8300000, guid: b27eb33bd8eca1b4e8638ff987f739dd, type: 3}
   airSwingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   volume: 1
+  audioSource: {fileID: 0}
   groundCooldown: 1
   airCooldown: 1
-  slashKey: 323
+  groundSlashKey: 323
+  airSlashKey: 324
   airDashForce: 300
   airDashDuration: 0.3
   groundSlashTrigger: GroundSlash
@@ -46432,6 +46526,7 @@ MonoBehaviour:
   coyoteTime: 0.1
   doubleJumpMultiplier: 0.7
   turnSmoothTime: 0.1
+  startRotationY: 0
 --- !u!143 &2039022167
 CharacterController:
   m_ObjectHideFlags: 0
@@ -46594,8 +46689,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92336afb14825841bdd3dcb32aa25c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectSound: {fileID: 8300000, guid: fc503b2b172e35040acbe506f90fd96d, type: 3}
+  ambienceClip: {fileID: 0}
+  collectClip: {fileID: 0}
+  audioSource: {fileID: 0}
   collectEffect: {fileID: 0}
+  spinSpeed: 360
+  floatUpSpeed: 2
 --- !u!135 &2073656313
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -47032,3 +47131,4 @@ SceneRoots:
   - {fileID: 1908365819}
   - {fileID: 1993482746}
   - {fileID: 16148082}
+  - {fileID: 526921603}

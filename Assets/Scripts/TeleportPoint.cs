@@ -9,14 +9,14 @@ public class TeleportPoint : MonoBehaviour
     [Tooltip("Player tag")]
     public string playerTag = "Player";
 
-    // Cooldown time in seconds
-    public float teleportCooldown = 1f;
+    [Tooltip("Cooldown time in seconds before player can teleport again")]
+    public float teleportCooldown = 0.5f;
 
-    // Track players currently inside this teleport to avoid repeated teleports
-    private HashSet<int> playersInside = new HashSet<int>();
+    [Tooltip("Specific collider to trigger teleport (optional). If left empty, any collider with the correct tag will work.")]
+    public Collider requiredPlayerCollider;
 
-    // Static dictionary to track last teleport time per player (by instance ID)
-    private static Dictionary<int, float> playerLastTeleportTime = new Dictionary<int, float>();
+    // Track when each player can teleport again
+    private Dictionary<int, float> teleportCooldowns = new Dictionary<int, float>();
 
     private void Start()
     {
@@ -44,16 +44,16 @@ public class TeleportPoint : MonoBehaviour
     {
         if (!other.CompareTag(playerTag)) return;
 
+        // If a specific collider was set, ignore others
+        if (requiredPlayerCollider != null && other != requiredPlayerCollider) return;
+
         int playerID = other.gameObject.GetInstanceID();
 
-        // Check if player is already inside this teleport
-        if (playersInside.Contains(playerID)) return;
-
-        // Check cooldown for player
-        if (playerLastTeleportTime.TryGetValue(playerID, out float lastTeleport))
+        // Check cooldown
+        if (teleportCooldowns.TryGetValue(playerID, out float nextAllowedTime))
         {
-            if (Time.time < lastTeleport + teleportCooldown)
-                return; // Still in cooldown, don't teleport
+            if (Time.time < nextAllowedTime)
+                return;
         }
 
         if (linkedPoint != null)
@@ -61,26 +61,18 @@ public class TeleportPoint : MonoBehaviour
             // Teleport player
             other.transform.position = linkedPoint.position;
 
-            // Record teleport time
-            playerLastTeleportTime[playerID] = Time.time;
+            // Set cooldown on this point and the linked point
+            teleportCooldowns[playerID] = Time.time + teleportCooldown;
 
-            // Mark player as inside this teleport to prevent immediate retrigger
-            playersInside.Add(playerID);
+            TeleportPoint otherPoint = linkedPoint.GetComponent<TeleportPoint>();
+            if (otherPoint != null)
+            {
+                otherPoint.teleportCooldowns[playerID] = Time.time + teleportCooldown;
+            }
         }
         else
         {
             Debug.LogWarning("Linked point not set for TeleportPoint: " + gameObject.name);
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag(playerTag)) return;
-
-        int playerID = other.gameObject.GetInstanceID();
-
-        // Remove from inside set so they can teleport again next time they enter
-        if (playersInside.Contains(playerID))
-            playersInside.Remove(playerID);
     }
 }
