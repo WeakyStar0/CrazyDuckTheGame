@@ -140,7 +140,7 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-    void CreateSlashEffect(bool isGroundSlash)
+    public void CreateSlashEffect(bool isGroundSlash)
     {
         if (currentSlashEffect != null)
         {

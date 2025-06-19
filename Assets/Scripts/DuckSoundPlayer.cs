@@ -36,7 +36,7 @@ public class DuckSoundPlayer : MonoBehaviour
         }
     }
 
-    private void PlayDuckSound()
+    public void PlayDuckSound()
     {
         if (duckSound != null)
         {
