@@ -5,7 +5,7 @@ public class AttachSwordToHand : MonoBehaviour
     public GameObject sword; // Arraste o modelo da espada para cá no Inspector
     private Animator animator;
 
-    void Start()
+    public void Start()
     {
         animator = GetComponent<Animator>();
         if (animator != null && sword != null)

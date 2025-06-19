@@ -3,6 +3,12 @@ using System.Collections;
 
 public class SwordSlash : MonoBehaviour
 {
+    [Header("Ability Toggles")]
+    [Tooltip("Ativa ou desativa a habilidade de ataque no chão.")]
+    public bool isGroundSlashEnabled = true;
+    [Tooltip("Ativa ou desativa a habilidade de ataque no ar.")]
+    public bool isAirSlashEnabled = true;
+
     [Header("Slash Settings")]
     public float slashRange = 1.5f;
     public float slashAngle = 90f;
@@ -72,8 +78,8 @@ public class SwordSlash : MonoBehaviour
     {
         bool isGrounded = characterController != null && characterController.isGrounded;
 
-        // Verifica input para ground slash
-        if (Input.GetKeyDown(groundSlashKey))
+        // Verifica input para ground slash (só se estiver ativado)
+        if (isGroundSlashEnabled && Input.GetKeyDown(groundSlashKey))
         {
             if (CanSlash(true) && isGrounded)
             {
@@ -81,8 +87,8 @@ public class SwordSlash : MonoBehaviour
             }
         }
 
-        // Verifica input para air slash
-        if (Input.GetKeyDown(airSlashKey))
+        // Verifica input para air slash (só se estiver ativado)
+        if (isAirSlashEnabled && Input.GetKeyDown(airSlashKey))
         {
             if (CanSlash(false) && !isGrounded)
             {
@@ -93,14 +99,15 @@ public class SwordSlash : MonoBehaviour
         UpdateSlashEffectPosition();
     }
 
-    bool CanSlash(bool isGroundSlash)
+
+    public bool CanSlash(bool isGroundSlash)
     {
         float cooldown = isGroundSlash ? groundCooldown : airCooldown;
         float lastSlashTime = isGroundSlash ? lastGroundSlashTime : lastAirSlashTime;
 
-        bool isDashing = playerController != null && playerController.IsDashing();
+        bool isPlayerDashing = playerController != null && playerController.IsDashing();
 
-        return Time.time > lastSlashTime + cooldown && !isDashing;
+        return Time.time > lastSlashTime + cooldown && !isPlayerDashing;
     }
 
     void ExecuteSlash(bool isGroundSlash)
@@ -115,7 +122,6 @@ public class SwordSlash : MonoBehaviour
             StartCoroutine(AirDash());
         }
         
-        // Atualiza o tempo do último slash
         if (isGroundSlash)
         {
             lastGroundSlashTime = Time.time;
@@ -130,14 +136,8 @@ public class SwordSlash : MonoBehaviour
     {
         if (animator == null) return;
         
-        if (isGroundSlash)
-        {
-            animator.SetTrigger(groundSlashTrigger);
-        }
-        else
-        {
-            animator.SetTrigger(airSlashTrigger);
-        }
+        string trigger = isGroundSlash ? groundSlashTrigger : airSlashTrigger;
+        animator.SetTrigger(trigger);
     }
 
     public void CreateSlashEffect(bool isGroundSlash)
@@ -164,7 +164,6 @@ public class SwordSlash : MonoBehaviour
         AudioClip sound = isGroundSlash ? swingSound : airSwingSound;
         if (sound != null)
         {
-            // Cria um AudioSource temporário que se auto-destroi
             GameObject soundObj = new GameObject("TempAudio");
             AudioSource tempSource = soundObj.AddComponent<AudioSource>();
             tempSource.clip = sound;
@@ -177,17 +176,21 @@ public class SwordSlash : MonoBehaviour
 
     void ApplySlashDamage(bool isGroundSlash)
     {
-        Vector3 attackPosition = transform.position + transform.forward * slashRange;
-        Collider[] hitEnemies = Physics.OverlapSphere(attackPosition, slashRange);
+        Vector3 attackCenter = transform.position + transform.forward * (slashRange / 2);
+        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, slashRange / 2);
         
         foreach (Collider enemy in hitEnemies)
         {
             if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null || enemy.GetComponent<PatutHealth>() != null)
             {
                 Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
-                float angle = Vector3.Angle(transform.forward, directionToEnemy);
+                directionToEnemy.y = 0; 
+                Vector3 playerForward = transform.forward;
+                playerForward.y = 0;
                 
-                if (angle <= slashAngle/2)
+                float angle = Vector3.Angle(playerForward, directionToEnemy);
+                
+                if (angle <= slashAngle / 2)
                 {
                     EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
                     if (enemyHealth != null)
@@ -214,7 +217,10 @@ public class SwordSlash : MonoBehaviour
         
         while (Time.time < dashEndTime)
         {
-            characterController.Move(dashDirection * airDashForce * Time.deltaTime);
+            if (characterController != null)
+            {
+                characterController.Move(dashDirection * airDashForce * Time.deltaTime);
+            }
             yield return null;
         }
         
@@ -228,5 +234,21 @@ public class SwordSlash : MonoBehaviour
             currentSlashEffect.transform.position = transform.position + transform.TransformDirection(effectOffset);
             currentSlashEffect.transform.rotation = transform.rotation;
         }
+    }
+    
+
+    /// <param name="isEnabled">Marque para ativar, desmarque para desativar.</param>
+    public void SetGroundSlashEnabled(bool isEnabled)
+    {
+        isGroundSlashEnabled = isEnabled;
+        Debug.Log("Ground Slash " + (isEnabled ? "ATIVADO" : "DESATIVADO"));
+    }
+
+
+    /// <param name="isEnabled">Marque para ativar, desmarque para desativar.</param>
+    public void SetAirSlashEnabled(bool isEnabled)
+    {
+        isAirSlashEnabled = isEnabled;
+        Debug.Log("Air Slash " + (isEnabled ? "ATIVADO" : "DESATIVADO"));
     }
 }
