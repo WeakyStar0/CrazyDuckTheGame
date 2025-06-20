@@ -52,7 +52,7 @@ public class Collectible : MonoBehaviour
         }
     }
 
-    void Collect()
+    public void Collect()
     {
         isCollected = true;
 

@@ -29185,6 +29185,7 @@ MonoBehaviour:
   collectEffect: {fileID: 0}
   spinSpeed: 360
   floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!135 &694304302
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -72624,6 +72625,7 @@ MonoBehaviour:
   collectEffect: {fileID: 0}
   spinSpeed: 360
   floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!135 &1234456168
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -96367,7 +96369,7 @@ MonoBehaviour:
     showCharacter: 0
     freezePlayer: 1
     autoAdvanceDelay: 100000
-    typingSpeed: 0.2
+    typingSpeed: 0.02
     fontSize: 50
     skipKey: 0
     hasChoices: 1
@@ -96413,6 +96415,30 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 1
             m_CallState: 2
+          - m_Target: {fileID: 7737407422078004588}
+            m_TargetAssemblyTypeName: Collectible, Assembly-CSharp
+            m_MethodName: Collect
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 1
+            m_CallState: 2
+          - m_Target: {fileID: 2197394319580112416}
+            m_TargetAssemblyTypeName: CoinSpin, Assembly-CSharp
+            m_MethodName: Update
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 1
+            m_CallState: 2
     - choiceText: SIM
       exitDialogue: 1
       onSelectChoice:
@@ -96445,6 +96471,30 @@ MonoBehaviour:
           - m_Target: {fileID: 679692771}
             m_TargetAssemblyTypeName: AttachSwordToHand, Assembly-CSharp
             m_MethodName: Start
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 1
+            m_CallState: 2
+          - m_Target: {fileID: 2197394319580112416}
+            m_TargetAssemblyTypeName: CoinSpin, Assembly-CSharp
+            m_MethodName: Update
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 1
+            m_CallState: 2
+          - m_Target: {fileID: 7737407422078004588}
+            m_TargetAssemblyTypeName: Collectible, Assembly-CSharp
+            m_MethodName: Collect
             m_Mode: 1
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
@@ -118040,6 +118090,7 @@ MonoBehaviour:
   collectEffect: {fileID: 0}
   spinSpeed: 360
   floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!135 &2073656313
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -125904,7 +125955,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 13.717062
   m_Center: {x: 0, y: 0.0000000037252916, z: -3.3772695e-22}
@@ -126112,6 +126163,7 @@ MonoBehaviour:
   collectEffect: {fileID: 0}
   spinSpeed: 360
   floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!1 &8132921026925666080 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4449867338702215489, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
