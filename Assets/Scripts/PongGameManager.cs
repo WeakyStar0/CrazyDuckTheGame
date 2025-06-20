@@ -9,6 +9,7 @@ public class PongGameManager : MonoBehaviour
     public GameObject endPanel;
     public Button startButton;
     public Button restartButton;
+    public Button exitButton;
     public TextMeshProUGUI endGameText;
     public PongGame pongGame;
 
@@ -16,42 +17,60 @@ public class PongGameManager : MonoBehaviour
     public string playerWinMessage = "You Won!";
     public string playerLoseMessage = "You Lost!";
 
+    public GameStateManager gameStateManager;
+
     void Start()
     {
-        // Initialize UI
+        InitializeUI();
+    }
+
+    private void InitializeUI()
+    {
         startPanel.SetActive(true);
         endPanel.SetActive(false);
         
-        // Setup button listeners
-        startButton.onClick.AddListener(StartGame);
-        restartButton.onClick.AddListener(RestartGame);
+        startButton.onClick.RemoveAllListeners();
+        startButton.onClick.AddListener(OnStartButtonClicked);
         
-        // Ensure game starts disabled
+        restartButton.onClick.RemoveAllListeners();
+        restartButton.onClick.AddListener(OnRestartButtonClicked);
+        
+        exitButton.onClick.RemoveAllListeners();
+        exitButton.onClick.AddListener(OnExitButtonClicked);
+        
         pongGame.enabled = false;
+    }
+
+    private void OnStartButtonClicked()
+    {
+        gameStateManager.TransitionToPongGame();
+        StartGame();
+    }
+
+    private void OnRestartButtonClicked()
+    {
+        endPanel.SetActive(false);
+        pongGame.StartNewGame();
+    }
+
+    private void OnExitButtonClicked()
+    {
+        endPanel.SetActive(false);
+        gameStateManager.TransitionFromPongGame();
     }
 
     public void StartGame()
     {
-        // Hide UI panels
         startPanel.SetActive(false);
         endPanel.SetActive(false);
-        
-        // Start the game
         pongGame.StartNewGame();
     }
 
     public void EndGame(bool playerWon)
     {
-        // Show appropriate end message
-        endPanel.SetActive(true);
         endGameText.text = playerWon ? playerWinMessage : playerLoseMessage;
-        
-        // Disable the game
+        endPanel.SetActive(true);
         pongGame.enabled = false;
-    }
-
-    public void RestartGame()
-    {
-        StartGame();
+        pongGame.gameActive = false;
     }
 }

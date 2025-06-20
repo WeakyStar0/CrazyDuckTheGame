@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     private float originalHeight;
     private Vector3 originalCenter;
-    private float crouchHeight = 0.9f;
+    private float crouchHeightMultiplier = 0.5f; // Changed to multiplier for clarity
 
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
     public bool IsDashing() { return isDashing; }
     private void HandleGravity() { bool wasGrounded = isGrounded; isGrounded = CheckGrounded(); if (isGrounded) { lastGroundedTime = Time.time; if (velocity.y < 0) { velocity.y = -2f; jumpsRemaining = maxJumps; isJumping = false; if (!jumpWasBlocked) { jumpConsumed = false; } } } else if (wasGrounded) { lastGroundedTime = Time.time; } }
     private bool CheckGrounded() { bool raycastGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + characterController.skinWidth, groundLayer); return characterController.isGrounded || raycastGrounded; }
-    private void HandleCrouch() { if (Input.GetKey(KeyCode.LeftControl)) { if (isGrounded) canCrouchJump = true; characterController.height = originalHeight / 2f; characterController.center = originalCenter / 2f; } else { characterController.height = originalHeight; characterController.center = originalCenter; canCrouchJump = false; } }
+    private void HandleCrouch() { if (Input.GetKey(KeyCode.LeftControl)) { if (isGrounded) canCrouchJump = true; characterController.height = originalHeight * crouchHeightMultiplier; characterController.center = originalCenter * crouchHeightMultiplier; } else { characterController.height = originalHeight; characterController.center = originalCenter; canCrouchJump = false; } }
     private Vector3 HandleJump() { Vector3 jumpVector = Vector3.zero; bool jumpBuffered = Time.time - lastJumpTime < jumpBufferTime; bool canCoyoteJump = Time.time - lastGroundedTime < coyoteTime; bool canNormalJump = !isJumping && (jumpsRemaining == maxJumps) && (isGrounded || canCoyoteJump); bool canDoubleJump = jumpsRemaining > 0 && jumpsRemaining < maxJumps; if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump)) { float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight; if (jumpsRemaining < maxJumps) { actualJumpHeight *= doubleJumpMultiplier; } velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity); jumpsRemaining--; canCrouchJump = false; if (Input.GetKey(KeyCode.LeftControl)) { animator.SetTrigger(CrouchJumpHash); } else { animator.SetTrigger(JumpHash); } jumpInput = false; isJumping = true; jumpConsumed = true; jumpWasBlocked = false; } velocity.y += gravity * Time.fixedDeltaTime; jumpVector.y = velocity.y; return jumpVector; }
     private void UpdateAnimator() { float currentSpeedValue = Mathf.Clamp01(new Vector2(directionX, directionY).magnitude); if (Input.GetKey(KeyCode.LeftControl)) { currentSpeedValue *= 0.5f; } animator.SetFloat(SpeedHash, currentSpeedValue, 0.1f, Time.deltaTime); animator.SetFloat(DirectionXHash, directionX, 0.1f, Time.deltaTime); animator.SetFloat(DirectionYHash, directionY, 0.1f, Time.deltaTime); animator.SetBool(IsGroundedHash, isGrounded); animator.SetBool(CrouchHash, Input.GetKey(KeyCode.LeftControl)); }
     public float GetCurrentSpeed() { if (isDashing) return dashSpeed; return temporarySpeed > 0 ? temporarySpeed : (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed); }

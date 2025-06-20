@@ -70,7 +70,7 @@ public class PongGame : MonoBehaviour
     private Vector2 ballDirection;
     private float currentBallSpeed;
     private float currentPaddleSpeed;
-    private int playerScore = 0;
+    public int playerScore = 0;
     private int cpuScore = 0;
     private RectTransform canvasRect;
     private bool ballPaused = false;
@@ -80,6 +80,9 @@ public class PongGame : MonoBehaviour
     private int currentTrailIndex = 0;
     private Vector2 previousPlayerPaddlePos;
     private Vector2 previousCpuPaddlePos;
+    public bool gameActive = false;
+    private bool playerWonLastGame = false;
+
 
     void Start()
     {
@@ -103,6 +106,9 @@ public class PongGame : MonoBehaviour
 
         // Start disabled - GameManager will enable when ready
         enabled = true;
+        gameActive = false;
+
+        playerWonLastGame = false;
     }
 
     public void StartNewGame()
@@ -112,7 +118,9 @@ public class PongGame : MonoBehaviour
         currentPaddleSpeed = paddleSpeed;
         UpdateScoreUI();
         ResetBall();
+        gameActive = true;
         enabled = true;
+        playerWonLastGame = false;
     }
 
     void InitializeTrail()
@@ -131,8 +139,11 @@ public class PongGame : MonoBehaviour
 
     void Update()
     {
-        MovePlayer();
-        MoveCPU();
+        if (gameActive)
+        {
+            MovePlayer();
+            MoveCPU();
+        }
         HandleBall();
         UpdateScoreUI();
         UpdateTrail();
@@ -143,6 +154,8 @@ public class PongGame : MonoBehaviour
 
     void MovePlayer()
     {
+        if (!gameActive) return;
+
         float move = Input.GetAxisRaw("Vertical") * currentPaddleSpeed * Time.deltaTime;
         Vector2 newPos = playerPaddle.anchoredPosition + new Vector2(0, move);
         float halfHeight = canvasRect.rect.height / 2f - playerPaddle.rect.height / 2f;
@@ -152,6 +165,8 @@ public class PongGame : MonoBehaviour
 
     void MoveCPU()
     {
+        if (!gameActive) return;
+
         Vector2 cpuPos = cpuPaddle.anchoredPosition;
 
         if (ball.anchoredPosition.y > cpuPos.y + 10)
@@ -164,97 +179,108 @@ public class PongGame : MonoBehaviour
         cpuPaddle.anchoredPosition = cpuPos;
     }
 
-void HandleBall()
-{
-    if (ballPaused)
+    void HandleBall()
     {
-        resetTimer -= Time.deltaTime;
-        if (resetTimer <= 0f)
+        if (ballPaused)
         {
-            ballPaused = false;
-            ResetBall();
+            resetTimer -= Time.deltaTime;
+            if (resetTimer <= 0f)
+            {
+                ballPaused = false;
+                ResetBall();
+                gameActive = true;
+            }
+            return;
         }
-        return;
+
+        if (!gameActive) return;
+
+        ball.anchoredPosition += ballDirection * currentBallSpeed * Time.deltaTime;
+
+        float maxY = canvasRect.rect.height / 2f - ball.rect.height / 2f;
+        
+        if (ball.anchoredPosition.y > maxY)
+        {
+            ballDirection.y *= -1;
+            ball.anchoredPosition = new Vector2(ball.anchoredPosition.x, maxY - 0.1f);
+            PlaySound(wallHitSound);
+        }
+        else if (ball.anchoredPosition.y < -maxY)
+        {
+            ballDirection.y *= -1;
+            ball.anchoredPosition = new Vector2(ball.anchoredPosition.x, -maxY + 0.1f);
+            PlaySound(wallHitSound);
+        }
+
+        float maxVerticalAngle = 0.6f;
+
+        if (RectOverlap(ball, playerPaddle) && ballDirection.x < 0)
+        {
+            float paddleVelocity = (playerPaddle.anchoredPosition.y - previousPlayerPaddlePos.y) / Time.deltaTime;
+            ballDirection.x *= -1;
+            ballDirection.y += paddleVelocity * 0.0025f;
+            ballDirection.y = Mathf.Clamp(ballDirection.y, -maxVerticalAngle, maxVerticalAngle);
+            ballDirection.Normalize();
+            currentBallSpeed += ballSpeedIncrease;
+            currentPaddleSpeed += paddleSpeedIncrease;
+            PlaySound(paddleHitSound);
+        }
+
+        if (RectOverlap(ball, cpuPaddle) && ballDirection.x > 0)
+        {
+            float paddleVelocity = (cpuPaddle.anchoredPosition.y - previousCpuPaddlePos.y) / Time.deltaTime;
+            ballDirection.x *= -1;
+            ballDirection.y += paddleVelocity * 0.0025f;
+            ballDirection.y = Mathf.Clamp(ballDirection.y, -maxVerticalAngle, maxVerticalAngle);
+            ballDirection.Normalize();
+            currentBallSpeed += ballSpeedIncrease;
+            currentPaddleSpeed += paddleSpeedIncrease;
+            PlaySound(paddleHitSound);
+        }
+
+        float halfBallWidth = ball.rect.width / 2f;
+        float halfCanvasWidth = canvasRect.rect.width / 2f;
+
+        if (ball.anchoredPosition.x + halfBallWidth < -halfCanvasWidth)
+        {
+            cpuScore++;
+            FindObjectOfType<PongCelebration>().StartCelebration();
+            PlaySound(cpuScoreSound);
+            FlashScreen(cpuScoreColor);
+            CheckWin();
+            StartBallReset();
+        }
+        else if (ball.anchoredPosition.x - halfBallWidth > halfCanvasWidth)
+        {
+            playerScore++;
+            FindObjectOfType<PongCelebration>().StartCelebration();
+            PlaySound(playerScoreSound);
+            FlashScreen(playerScoreColor);
+            CheckWin();
+            StartBallReset();
+        }
     }
 
-    ball.anchoredPosition += ballDirection * currentBallSpeed * Time.deltaTime;
-
-    float maxY = canvasRect.rect.height / 2f - ball.rect.height / 2f;
-    
-    // Improved wall collision detection and response
-    if (ball.anchoredPosition.y > maxY)
+void CheckWin()
+{
+    if (scoreToWin > 0 && (playerScore >= scoreToWin || cpuScore >= scoreToWin))
     {
-        ballDirection.y *= -1;
-        // Ensure ball is pushed back below the maxY
-        ball.anchoredPosition = new Vector2(ball.anchoredPosition.x, maxY - 0.1f);
-        PlaySound(wallHitSound);
-    }
-    else if (ball.anchoredPosition.y < -maxY)
-    {
-        ballDirection.y *= -1;
-        // Ensure ball is pushed back above the -maxY
-        ball.anchoredPosition = new Vector2(ball.anchoredPosition.x, -maxY + 0.1f);
-        PlaySound(wallHitSound);
-    }
-
-    // Rest of your existing HandleBall code remains exactly the same...
-    float maxVerticalAngle = 0.6f;
-
-    if (RectOverlap(ball, playerPaddle) && ballDirection.x < 0)
-    {
-        float paddleVelocity = (playerPaddle.anchoredPosition.y - previousPlayerPaddlePos.y) / Time.deltaTime;
-        ballDirection.x *= -1;
-        ballDirection.y += paddleVelocity * 0.0025f;
-        ballDirection.y = Mathf.Clamp(ballDirection.y, -maxVerticalAngle, maxVerticalAngle);
-        ballDirection.Normalize();
-        currentBallSpeed += ballSpeedIncrease;
-        currentPaddleSpeed += paddleSpeedIncrease;
-        PlaySound(paddleHitSound);
-    }
-
-    if (RectOverlap(ball, cpuPaddle) && ballDirection.x > 0)
-    {
-        float paddleVelocity = (cpuPaddle.anchoredPosition.y - previousCpuPaddlePos.y) / Time.deltaTime;
-        ballDirection.x *= -1;
-        ballDirection.y += paddleVelocity * 0.0025f;
-        ballDirection.y = Mathf.Clamp(ballDirection.y, -maxVerticalAngle, maxVerticalAngle);
-        ballDirection.Normalize();
-        currentBallSpeed += ballSpeedIncrease;
-        currentPaddleSpeed += paddleSpeedIncrease;
-        PlaySound(paddleHitSound);
-    }
-
-    float halfBallWidth = ball.rect.width / 2f;
-    float halfCanvasWidth = canvasRect.rect.width / 2f;
-
-    if (ball.anchoredPosition.x + halfBallWidth < -halfCanvasWidth)
-    {
-        cpuScore++;
-        FindObjectOfType<PongCelebration>().StartCelebration();
-        PlaySound(cpuScoreSound);
-        FlashScreen(cpuScoreColor);
-        CheckWin();
-        StartBallReset();
-    }
-    else if (ball.anchoredPosition.x - halfBallWidth > halfCanvasWidth)
-    {
-        playerScore++;
-        FindObjectOfType<PongCelebration>().StartCelebration();
-        PlaySound(playerScoreSound);
-        FlashScreen(playerScoreColor);
-        CheckWin();
-        StartBallReset();
+        bool playerWon = playerScore >= scoreToWin;
+        gameActive = false;
+        
+        if (playerWon)
+        {
+            var gameStateManager = FindObjectOfType<GameStateManager>();
+            if (gameStateManager != null)
+            {
+                gameStateManager.HandlePlayerWin();
+            }
+        }
+        
+        FindObjectOfType<PongGameManager>().EndGame(playerWon);
+        enabled = false;
     }
 }
-
-    void CheckWin()
-    {
-        if (scoreToWin > 0 && (playerScore >= scoreToWin || cpuScore >= scoreToWin))
-        {
-            FindObjectOfType<PongGameManager>().EndGame(playerScore >= scoreToWin);
-            enabled = false;
-        }
-    }
 
     void PlaySound(AudioClip clip)
     {
@@ -278,6 +304,7 @@ void HandleBall()
         ball.anchoredPosition = Vector2.zero;
         ballPaused = true;
         resetTimer = ballResetDelay;
+        gameActive = false;
         ClearTrail();
     }
 
@@ -298,11 +325,12 @@ void HandleBall()
         ballDirection = Random.Range(0, 2) == 0 ? Vector2.left : Vector2.right;
         ballDirection += new Vector2(0, Random.Range(-0.5f, 0.5f));
         ballDirection.Normalize();
+        gameActive = false;
     }
 
     void UpdateScoreUI()
     {
-        scoreText.text = $"Player {playerScore} : {cpuScore} CPU";
+        scoreText.text = $"Tu {playerScore} | {cpuScore} Pagarto";
     }
 
     void UpdateTrail()

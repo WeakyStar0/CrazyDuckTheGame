@@ -32,6 +32,8 @@ public class EnemyHealth : MonoBehaviour
     private float invincibilityTimer = 0f;
     private Material originalMaterial;
     private Color originalColor;
+    public delegate void EnemyDeathEvent();
+public event EnemyDeathEvent OnEnemyDeath;
 
     void Start()
     {
@@ -214,6 +216,11 @@ public class EnemyHealth : MonoBehaviour
             {
                 rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
             }
+        }
+        
+        if (OnEnemyDeath != null)
+        {
+            OnEnemyDeath();
         }
         
         Destroy(gameObject, deathSound != null ? deathSound.length : 0.1f);

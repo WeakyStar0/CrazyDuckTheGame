@@ -10,15 +10,20 @@ public class Collectible : MonoBehaviour
     public AudioSource audioSource;  // Single AudioSource used for both sounds
 
     public ParticleSystem collectEffect;
-
     public float spinSpeed = 360f;    // degrees per second
     public float floatUpSpeed = 2f;   // units per second
+    public float fadeOutDuration = 0.5f; // Time for fade out effect
 
     private bool isCollected = false;
     private float destroyDelay = 0f;
+    private Renderer objectRenderer;
+    private Collider objectCollider;
 
     private void Start()
     {
+        objectRenderer = GetComponent<Renderer>();
+        objectCollider = GetComponent<Collider>();
+
         if (audioSource != null && ambienceClip != null)
         {
             audioSource.clip = ambienceClip;
@@ -51,23 +56,32 @@ public class Collectible : MonoBehaviour
     {
         isCollected = true;
 
+        // Disable collider immediately
+        if (objectCollider != null)
+        {
+            objectCollider.enabled = false;
+        }
+
         // Stop ambience loop
         if (audioSource != null)
         {
             audioSource.loop = false;
-            audioSource.clip = null;
+            audioSource.Stop();
         }
 
         // Play collection sound and get its length
-        if (audioSource != null && collectClip != null)
+        if (collectClip != null)
         {
-            audioSource.PlayOneShot(collectClip);
-            destroyDelay = collectClip.length;
-        }
-        else if (collectClip != null)
-        {
-            AudioSource.PlayClipAtPoint(collectClip, transform.position);
-            destroyDelay = collectClip.length;
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(collectClip);
+                destroyDelay = collectClip.length;
+            }
+            else
+            {
+                AudioSource.PlayClipAtPoint(collectClip, transform.position);
+                destroyDelay = collectClip.length;
+            }
         }
 
         // Play particle effect
@@ -77,16 +91,57 @@ public class Collectible : MonoBehaviour
         }
 
         // Notify GameManager
-        GameManager.Instance.CollectItem();
-
-        // Disable collider so it can't be collected again
-        Collider col = GetComponent<Collider>();
-        if (col != null)
+        if (GameManager.Instance != null)
         {
-            col.enabled = false;
+            GameManager.Instance.CollectItem();
         }
 
-        // Destroy after the sound finishes
-        Destroy(gameObject, destroyDelay);
+        // Start fade out effect
+        if (objectRenderer != null)
+        {
+            StartCoroutine(FadeOutAndDestroy());
+        }
+        else
+        {
+            // If no renderer, just destroy after delay
+            Destroy(gameObject, destroyDelay);
+        }
+    }
+
+    private System.Collections.IEnumerator FadeOutAndDestroy()
+    {
+        float timer = 0f;
+        Material[] materials = objectRenderer.materials;
+        Color[] originalColors = new Color[materials.Length];
+
+        // Store original colors
+        for (int i = 0; i < materials.Length; i++)
+        {
+            originalColors[i] = materials[i].color;
+        }
+
+        // Fade out over time
+        while (timer < fadeOutDuration)
+        {
+            timer += Time.deltaTime;
+            float progress = timer / fadeOutDuration;
+
+            for (int i = 0; i < materials.Length; i++)
+            {
+                Color newColor = originalColors[i];
+                newColor.a = Mathf.Lerp(1f, 0f, progress);
+                materials[i].color = newColor;
+            }
+
+            yield return null;
+        }
+
+        // Wait for sound to finish if needed
+        if (destroyDelay > fadeOutDuration)
+        {
+            yield return new WaitForSeconds(destroyDelay - fadeOutDuration);
+        }
+
+        Destroy(gameObject);
     }
 }

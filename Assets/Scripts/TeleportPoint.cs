@@ -15,8 +15,17 @@ public class TeleportPoint : MonoBehaviour
     [Tooltip("Specific collider to trigger teleport (optional). If left empty, any collider with the correct tag will work.")]
     public Collider requiredPlayerCollider;
 
+    [Tooltip("Sound to play when teleporting")]
+    public AudioClip teleportSound;
+
+    [Tooltip("Volume of the teleport sound (0-1)")]
+    [Range(0, 1)]
+    public float teleportVolume = 0.7f;
+
     // Track when each player can teleport again
     private Dictionary<int, float> teleportCooldowns = new Dictionary<int, float>();
+
+    private AudioSource audioSource;
 
     private void Start()
     {
@@ -38,6 +47,11 @@ public class TeleportPoint : MonoBehaviour
             rb.isKinematic = true;
             Debug.Log("Added kinematic Rigidbody to TeleportPoint.");
         }
+
+        // Set up audio source
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1f; // 3D sound
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,6 +72,12 @@ public class TeleportPoint : MonoBehaviour
 
         if (linkedPoint != null)
         {
+            // Play teleport sound if assigned
+            if (teleportSound != null)
+            {
+                audioSource.PlayOneShot(teleportSound, teleportVolume);
+            }
+
             // Teleport player
             other.transform.position = linkedPoint.position;
 
@@ -68,6 +88,12 @@ public class TeleportPoint : MonoBehaviour
             if (otherPoint != null)
             {
                 otherPoint.teleportCooldowns[playerID] = Time.time + teleportCooldown;
+                
+                // Play sound at destination point too
+                if (teleportSound != null)
+                {
+                    otherPoint.audioSource.PlayOneShot(teleportSound, teleportVolume);
+                }
             }
         }
         else
