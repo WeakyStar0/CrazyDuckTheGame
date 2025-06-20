@@ -96440,7 +96440,7 @@ MonoBehaviour:
               m_BoolArgument: 1
             m_CallState: 2
     - choiceText: SIM
-      exitDialogue: 1
+      exitDialogue: 0
       onSelectChoice:
         m_PersistentCalls:
           m_Calls:
@@ -103419,14 +103419,14 @@ RectTransform:
   m_GameObject: {fileID: 1790580585}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 173567873766278215}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 843, y: 156.37}
+  m_AnchoredPosition: {x: 843, y: 182}
   m_SizeDelta: {x: 640.0112, y: 52.8807}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1790580587
