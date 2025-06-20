@@ -17,137 +17,134 @@ public class SwordSlash : MonoBehaviour
     
     [Header("Effects")]
     public GameObject groundSlashPrefab;
-    public GameObject airSlashPrefab;
+    public GameObject airSlashPrefab; // Usado para o dash
     public Vector3 effectOffset = new Vector3(0.5f, 0, 0.5f);
     public float effectDuration = 1f;
     
     [Header("Audio")]
-    public AudioClip swingSound;
-    public AudioClip airSwingSound;
+    public AudioClip swingSound; // Som para o ataque normal (chão e ar)
+    public AudioClip airSwingSound; // Som para o dash
     [Range(0,1)] public float volume = 0.7f;
     public AudioSource audioSource;
     
     [Header("Cooldowns")]
     public float groundCooldown = 0.5f;
-    public float airCooldown = 1f;
+    public float airCooldown = 1f; // Cooldown do dash
     
     [Header("Input Settings")]
     public KeyCode groundSlashKey = KeyCode.Mouse0; // Botão esquerdo do mouse
     public KeyCode airSlashKey = KeyCode.Mouse1; // Botão direito do mouse
     
-    [Header("Air Dash")]
+    [Header("Air Dash Settings")]
     public float airDashForce = 10f;
     public float airDashDuration = 0.3f;
     
     [Header("Animation")]
+    [Tooltip("Trigger para o ataque normal (chão e ar com o botão esquerdo).")]
     public string groundSlashTrigger = "GroundSlash";
+    [Tooltip("Trigger para o início do dash (ataque com o botão direito no ar).")]
     public string airSlashTrigger = "AirSlash";
-    
+    [Tooltip("Nome do parâmetro BOOLEANO no Animator que controla a animação de dash.")]
+    public string dashBoolName = "IsDashing"; // IMPORTANTE: Deve ser um bool no Animator
+
     private float lastGroundSlashTime;
     private float lastAirSlashTime;
     private PlayerController playerController;
     private CharacterController characterController;
-    private bool isDashing = false;
+    private bool isDashing = false; // Flag para controlar se o dash está a ocorrer
     private GameObject currentSlashEffect;
     private Animator animator;
 
     void Start()
     {
-        // Configuração do AudioSource
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
             {
                 audioSource = gameObject.AddComponent<AudioSource>();
-                Debug.Log("AudioSource adicionado automaticamente ao Player");
             }
         }
-        
-        // Configurações recomendadas
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0; // Som 2D
-        audioSource.loop = false;
         
         playerController = GetComponent<PlayerController>();
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        // Garante que o estado da animação de dash começa como falso
+        if (animator != null)
+        {
+            animator.SetBool(dashBoolName, false);
+        }
     }
 
     void Update()
     {
         bool isGrounded = characterController != null && characterController.isGrounded;
 
-        // Verifica input para ground slash (só se estiver ativado)
-        if (isGroundSlashEnabled && Input.GetKeyDown(groundSlashKey))
+        // --- LÓGICA DO BOTÃO ESQUERDO (Ataque Normal) ---
+        if (isGroundSlashEnabled && Input.GetKeyDown(groundSlashKey) && CanSlash(true))
         {
-            if (CanSlash(true) && isGrounded)
-            {
-                ExecuteSlash(true);
-            }
+            // Se estiver no chão OU no ar, o botão esquerdo faz o ataque normal
+            ExecuteGroundSlash();
         }
 
-        // Verifica input para air slash (só se estiver ativado)
-        if (isAirSlashEnabled && Input.GetKeyDown(airSlashKey))
+        // --- LÓGICA DO BOTÃO DIREITO (Air Dash) ---
+        if (isAirSlashEnabled && Input.GetKeyDown(airSlashKey) && !isGrounded && CanSlash(false))
         {
-            if (CanSlash(false) && !isGrounded)
-            {
-                ExecuteSlash(false);
-            }
+            // Só funciona no ar
+            ExecuteAirDash();
         }
 
         UpdateSlashEffectPosition();
     }
-
-
+    
+    // Verifica se o ataque pode ser executado (cooldown e se não está a fazer dash)
     public bool CanSlash(bool isGroundSlash)
     {
+        if (isDashing) return false; // Não pode atacar enquanto está a fazer dash
+
         float cooldown = isGroundSlash ? groundCooldown : airCooldown;
         float lastSlashTime = isGroundSlash ? lastGroundSlashTime : lastAirSlashTime;
 
-        bool isPlayerDashing = playerController != null && playerController.IsDashing();
-
-        return Time.time > lastSlashTime + cooldown && !isPlayerDashing;
+        return Time.time > lastSlashTime + cooldown;
     }
 
-    void ExecuteSlash(bool isGroundSlash)
+    // Função para o ataque normal (Botão Esquerdo)
+    void ExecuteGroundSlash()
     {
-        TriggerSlashAnimation(isGroundSlash);
-        CreateSlashEffect(isGroundSlash);
-        PlaySlashSound(isGroundSlash);
-        ApplySlashDamage(isGroundSlash);
+        lastGroundSlashTime = Time.time;
         
-        if (!isGroundSlash)
-        {
-            StartCoroutine(AirDash());
-        }
-        
-        if (isGroundSlash)
-        {
-            lastGroundSlashTime = Time.time;
-        }
-        else
-        {
-            lastAirSlashTime = Time.time;
-        }
+        // Usa a animação, efeito e som do "Ground Slash"
+        if (animator != null) animator.SetTrigger(groundSlashTrigger);
+        CreateSlashEffect(true);
+        PlaySlashSound(true);
+        ApplySlashDamage(true);
     }
-
-    void TriggerSlashAnimation(bool isGroundSlash)
+    
+    // Função para o Air Dash (Botão Direito no Ar)
+    void ExecuteAirDash()
     {
-        if (animator == null) return;
-        
-        string trigger = isGroundSlash ? groundSlashTrigger : airSlashTrigger;
-        animator.SetTrigger(trigger);
+        lastAirSlashTime = Time.time;
+
+        // Usa a animação, efeito e som do "Air Slash"
+        if (animator != null) animator.SetTrigger(airSlashTrigger); // Trigger para o início do dash
+        CreateSlashEffect(false);
+        PlaySlashSound(false);
+        ApplySlashDamage(false);
+
+        // Inicia a corrotina que controla o movimento e a animação do dash
+        StartCoroutine(PerformAirDash());
     }
 
-    public void CreateSlashEffect(bool isGroundSlash)
+    public void CreateSlashEffect(bool isGroundEffect)
     {
         if (currentSlashEffect != null)
         {
             Destroy(currentSlashEffect);
         }
         
-        GameObject slashPrefab = isGroundSlash ? groundSlashPrefab : airSlashPrefab;
+        GameObject slashPrefab = isGroundEffect ? groundSlashPrefab : airSlashPrefab;
         if (slashPrefab != null)
         {
             currentSlashEffect = Instantiate(
@@ -159,18 +156,13 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-    void PlaySlashSound(bool isGroundSlash)
+    void PlaySlashSound(bool isGroundSound)
     {
-        AudioClip sound = isGroundSlash ? swingSound : airSwingSound;
-        if (sound != null)
+        AudioClip sound = isGroundSound ? swingSound : airSwingSound;
+        if (sound != null && audioSource != null)
         {
-            GameObject soundObj = new GameObject("TempAudio");
-            AudioSource tempSource = soundObj.AddComponent<AudioSource>();
-            tempSource.clip = sound;
-            tempSource.volume = volume;
-            tempSource.pitch = Random.Range(0.95f, 1.05f);
-            tempSource.Play();
-            Destroy(soundObj, sound.length);
+            audioSource.pitch = Random.Range(0.95f, 1.05f);
+            audioSource.PlayOneShot(sound, volume);
         }
     }
 
@@ -184,13 +176,7 @@ public class SwordSlash : MonoBehaviour
             if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null || enemy.GetComponent<PatutHealth>() != null)
             {
                 Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
-                directionToEnemy.y = 0; 
-                Vector3 playerForward = transform.forward;
-                playerForward.y = 0;
-                
-                float angle = Vector3.Angle(playerForward, directionToEnemy);
-                
-                if (angle <= slashAngle / 2)
+                if (Vector3.Angle(transform.forward, directionToEnemy) <= slashAngle / 2)
                 {
                     EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
                     if (enemyHealth != null)
@@ -209,9 +195,12 @@ public class SwordSlash : MonoBehaviour
         }
     }
 
-    IEnumerator AirDash()
+    // Corrotina que executa o movimento do dash e controla a animação
+    IEnumerator PerformAirDash()
     {
         isDashing = true;
+        if (animator != null) animator.SetBool(dashBoolName, true); // LIGA a animação de dash
+
         float dashEndTime = Time.time + airDashDuration;
         Vector3 dashDirection = transform.forward;
         
@@ -225,6 +214,7 @@ public class SwordSlash : MonoBehaviour
         }
         
         isDashing = false;
+        if (animator != null) animator.SetBool(dashBoolName, false); // DESLIGA a animação de dash
     }
 
     void UpdateSlashEffectPosition()
@@ -236,19 +226,13 @@ public class SwordSlash : MonoBehaviour
         }
     }
     
-
-    /// <param name="isEnabled">Marque para ativar, desmarque para desativar.</param>
     public void SetGroundSlashEnabled(bool isEnabled)
     {
         isGroundSlashEnabled = isEnabled;
-        Debug.Log("Ground Slash " + (isEnabled ? "ATIVADO" : "DESATIVADO"));
     }
 
-
-    /// <param name="isEnabled">Marque para ativar, desmarque para desativar.</param>
     public void SetAirSlashEnabled(bool isEnabled)
     {
         isAirSlashEnabled = isEnabled;
-        Debug.Log("Air Slash " + (isEnabled ? "ATIVADO" : "DESATIVADO"));
     }
 }
