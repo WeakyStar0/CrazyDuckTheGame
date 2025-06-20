@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // ... (As tuas variáveis de Header continuam iguais)
+    
     #region Variáveis
     [Header("References")]
     public CharacterController characterController;
@@ -13,18 +13,12 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float crouchSpeed = 2.5f;
-    [SerializeField] private float dashSpeed = 15f;
-    [SerializeField] private float dashDuration = 0.3f;
-    [SerializeField] private float dashCooldown = 1f;
     private float currentSpeed;
     private float temporarySpeed = -1f;
-    private float lastDashTime;
-    private bool isDashing;
-    private Vector3 dashDirection;
 
     private float originalHeight;
     private Vector3 originalCenter;
-    private float crouchHeightMultiplier = 0.5f; // Changed to multiplier for clarity
+    private float crouchHeightMultiplier = 0.5f;
 
     [Header("Jumping")]
     [SerializeField] private float jumpHeight = 1.5f;
@@ -51,8 +45,6 @@ public class PlayerController : MonoBehaviour
     private static readonly int CrouchHash = Animator.StringToHash("Crouch");
     private static readonly int DirectionXHash = Animator.StringToHash("DirectionX");
     private static readonly int DirectionYHash = Animator.StringToHash("DirectionY");
-    private static readonly int DashHash = Animator.StringToHash("Dash");
-    private static readonly int IsDashingHash = Animator.StringToHash("IsDashing");
 
     private Vector3 normalScale = Vector3.one;
     private bool isGrounded;
@@ -69,9 +61,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float startRotationY = 0f;
     #endregion
 
-    
     private bool isControlFrozen = false;
-
     public bool IsMoving { get; private set; }
 
     private void Awake()
@@ -93,30 +83,23 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
         if (isControlFrozen)
         {
-            // Forçamos as direções para zero para parar o movimento no HandleMovement
             directionX = 0;
             directionY = 0;
             IsMoving = false;
-
-            // Mas continuamos a processar a gravidade e a atualizar o animador
             HandleGravity();
             UpdateAnimator();
-            return; // Impede que o código de input abaixo seja executado
+            return;
         }
 
-        // Leitura de input do jogador (só acontece se não estiver congelado)
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-        directionX = horizontalInput; // Atualiza a direção para o HandleMovement
-        directionY = verticalInput;   // Atualiza a direção para o HandleMovement
+        directionX = horizontalInput;
+        directionY = verticalInput;
         IsMoving = new Vector2(horizontalInput, verticalInput).magnitude >= 0.1f;
 
-        HandleGravity();
         HandleCrouch();
-        HandleDashInput();
         UpdateAnimator();
 
         if (Input.GetButtonDown("Jump"))
@@ -137,29 +120,24 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // A lógica de movimento é aplicada aqui, respeitando se o jogador está ou não congelado
         HandleGravity();
-        Vector3 movement = HandleMovement(); // Retornará zero se congelado
-        movement += HandleJump();            // Continuará a aplicar a gravidade
+        Vector3 movement = HandleMovement();
+        movement += HandleJump();
         characterController.Move(movement * Time.fixedDeltaTime);
     }
 
-    
     public void SetControlEnabled(bool enabled)
     {
         isControlFrozen = !enabled;
 
-        // Se estivermos a congelar os controlos, zeramos o movimento imediatamente
         if (isControlFrozen)
         {
             directionX = 0;
             directionY = 0;
-            // O DialogueSystem já chama ForceIdleAnimation, mas garantimos aqui
             animator.SetFloat(SpeedHash, 0);
         }
         else
         {
-           
             if (isGrounded)
             {
                 velocity.y = -2f;
@@ -167,40 +145,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-   
     private Vector3 HandleMovement()
     {
-        if (isDashing)
-        {
-            return dashDirection * dashSpeed;
-        }
-
-       
         Vector3 move = transform.right * directionX + transform.forward * directionY;
         move = Vector3.ClampMagnitude(move, 1f);
         float speedToUse = temporarySpeed > 0 ? temporarySpeed : (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed);
         return move * speedToUse;
     }
 
-    #region Funções Sem Alterações (ou com alterações mínimas internas)
-    private void HandleDashInput() { if (Input.GetMouseButtonDown(0) && !isGrounded && CanDash() && !isDashing) { StartDash(); } }
-    private bool CanDash() { return !isDashing && Time.time > lastDashTime + dashCooldown; }
-    private void StartDash() { isDashing = true; lastDashTime = Time.time; float horizontal = Input.GetAxis("Horizontal"); float vertical = Input.GetAxis("Vertical"); if (Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f) { dashDirection = (transform.right * horizontal + transform.forward * vertical).normalized; } else { dashDirection = transform.forward; } animator.SetTrigger(DashHash); animator.SetBool(IsDashingHash, true); if (cameraController != null) { cameraController.OnPlayerDash(); } Invoke("EndDash", dashDuration); }
-    private void EndDash() { isDashing = false; animator.SetBool(IsDashingHash, false); if (cameraController != null) { cameraController.EndDash(); } }
-    public bool IsDashing() { return isDashing; }
     private void HandleGravity() { bool wasGrounded = isGrounded; isGrounded = CheckGrounded(); if (isGrounded) { lastGroundedTime = Time.time; if (velocity.y < 0) { velocity.y = -2f; jumpsRemaining = maxJumps; isJumping = false; if (!jumpWasBlocked) { jumpConsumed = false; } } } else if (wasGrounded) { lastGroundedTime = Time.time; } }
     private bool CheckGrounded() { bool raycastGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + characterController.skinWidth, groundLayer); return characterController.isGrounded || raycastGrounded; }
     private void HandleCrouch() { if (Input.GetKey(KeyCode.LeftControl)) { if (isGrounded) canCrouchJump = true; characterController.height = originalHeight * crouchHeightMultiplier; characterController.center = originalCenter * crouchHeightMultiplier; } else { characterController.height = originalHeight; characterController.center = originalCenter; canCrouchJump = false; } }
     private Vector3 HandleJump() { Vector3 jumpVector = Vector3.zero; bool jumpBuffered = Time.time - lastJumpTime < jumpBufferTime; bool canCoyoteJump = Time.time - lastGroundedTime < coyoteTime; bool canNormalJump = !isJumping && (jumpsRemaining == maxJumps) && (isGrounded || canCoyoteJump); bool canDoubleJump = jumpsRemaining > 0 && jumpsRemaining < maxJumps; if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump)) { float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight; if (jumpsRemaining < maxJumps) { actualJumpHeight *= doubleJumpMultiplier; } velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity); jumpsRemaining--; canCrouchJump = false; if (Input.GetKey(KeyCode.LeftControl)) { animator.SetTrigger(CrouchJumpHash); } else { animator.SetTrigger(JumpHash); } jumpInput = false; isJumping = true; jumpConsumed = true; jumpWasBlocked = false; } velocity.y += gravity * Time.fixedDeltaTime; jumpVector.y = velocity.y; return jumpVector; }
     private void UpdateAnimator() { float currentSpeedValue = Mathf.Clamp01(new Vector2(directionX, directionY).magnitude); if (Input.GetKey(KeyCode.LeftControl)) { currentSpeedValue *= 0.5f; } animator.SetFloat(SpeedHash, currentSpeedValue, 0.1f, Time.deltaTime); animator.SetFloat(DirectionXHash, directionX, 0.1f, Time.deltaTime); animator.SetFloat(DirectionYHash, directionY, 0.1f, Time.deltaTime); animator.SetBool(IsGroundedHash, isGrounded); animator.SetBool(CrouchHash, Input.GetKey(KeyCode.LeftControl)); }
-    public float GetCurrentSpeed() { if (isDashing) return dashSpeed; return temporarySpeed > 0 ? temporarySpeed : (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed); }
+    public float GetCurrentSpeed() { return temporarySpeed > 0 ? temporarySpeed : (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed); }
     public void SetTemporarySpeed(float speed) { temporarySpeed = speed; currentSpeed = speed; }
     public void ResetSpeed() { temporarySpeed = -1f; currentSpeed = Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed; }
     private void OnDrawGizmos() { if (characterController != null) { Gizmos.color = Color.red; Gizmos.DrawLine(transform.position, transform.position + Vector3.down * (groundCheckDistance + characterController.skinWidth)); } }
-    public void ForceTeleport(Vector3 newPosition) { characterController.enabled = false; transform.position = newPosition; characterController.enabled = true; velocity = Vector3.zero; isDashing = false; animator.SetBool(IsDashingHash, false); }
+    public void ForceTeleport(Vector3 newPosition) { characterController.enabled = false; transform.position = newPosition; characterController.enabled = true; velocity = Vector3.zero; }
     public Vector3 GetVelocity() { return velocity; }
     public void SetVelocity(Vector3 newVelocity) { velocity = newVelocity; }
     public void ForceIdleAnimation() { if (animator != null) { animator.SetFloat(SpeedHash, 0); animator.SetBool(IsGroundedHash, true); animator.SetBool(CrouchHash, false); } }
     public void PlayAnimation(string animationName, float transitionTime = 0.1f) { if (animator != null) { animator.CrossFade(animationName, transitionTime); } }
-    #endregion
 }
