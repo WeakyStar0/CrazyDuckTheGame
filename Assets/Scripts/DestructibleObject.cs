@@ -78,7 +78,7 @@ public class DestructibleObject : MonoBehaviour, IDamageable
         renderer.material.color = originalColor;
     }
 
-    // ##### MÉTODO MODIFICADO PARA DEBUG #####
+    
     void DestroyObject()
 {
     foreach (var renderer in GetComponentsInChildren<Renderer>()) renderer.enabled = false;
@@ -86,24 +86,23 @@ public class DestructibleObject : MonoBehaviour, IDamageable
 
     if (destructionSound != null)
     {
-        // ----- MÉTODO DE DEBUG PARA FORÇAR SOM 2D -----
-        // Criamos um objeto temporário só para o som
+       
         GameObject soundPlayer = new GameObject("TempAudio"); 
-        // Colocamo-lo na posição do objeto destruído
+       
         soundPlayer.transform.position = transform.position; 
-        // Adicionamos um AudioSource
+     
         AudioSource audioSource = soundPlayer.AddComponent<AudioSource>(); 
-        // ATRIBUÍMOS O CLIPE
+       
         audioSource.clip = destructionSound;
-        // AJUSTAMOS O VOLUME
+        
         audioSource.volume = volume;
-        // ***** A LINHA MÁGICA: spatialBlend = 0 faz o som ser 2D *****
+        
         audioSource.spatialBlend = 0; 
-        // Tocamos o som
+        
         audioSource.Play();
-        // Dizemos ao Unity para destruir este objeto temporário depois do som acabar
+        
         Destroy(soundPlayer, destructionSound.length);
-        // --------------------------------------------------
+       
 
         Debug.Log("Som de destruição '" + destructionSound.name + "' foi tocado como 2D.");
     }
