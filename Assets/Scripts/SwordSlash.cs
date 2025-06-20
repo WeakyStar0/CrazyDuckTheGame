@@ -167,33 +167,30 @@ public class SwordSlash : MonoBehaviour
     }
 
     void ApplySlashDamage(bool isGroundSlash)
+{
+    Vector3 attackCenter = transform.position + transform.forward * (slashRange / 2);
+    Collider[] hitColliders = Physics.OverlapSphere(attackCenter, slashRange / 2);
+    
+    foreach (Collider hit in hitColliders)
     {
-        Vector3 attackCenter = transform.position + transform.forward * (slashRange / 2);
-        Collider[] hitEnemies = Physics.OverlapSphere(attackCenter, slashRange / 2);
+        // Tentamos obter o componente IDamageable do objeto atingido
+        IDamageable damageable = hit.GetComponent<IDamageable>();
         
-        foreach (Collider enemy in hitEnemies)
+        // Se o objeto for "danificável" (ou seja, tiver um script que implementa a interface)...
+        if (damageable != null)
         {
-            if (enemy.CompareTag("Enemy") || enemy.GetComponent<EnemyHealth>() != null || enemy.GetComponent<PatutHealth>() != null)
+            Vector3 directionToTarget = (hit.transform.position - transform.position).normalized;
+            
+            // Verifica se o objeto está dentro do ângulo de ataque
+            if (Vector3.Angle(transform.forward, directionToTarget) <= slashAngle / 2)
             {
-                Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
-                if (Vector3.Angle(transform.forward, directionToEnemy) <= slashAngle / 2)
-                {
-                    EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-                    if (enemyHealth != null)
-                    {
-                        enemyHealth.TakeDamage(slashDamage, transform.position);
-                        continue;
-                    }
-                    
-                    PatutHealth patutHealth = enemy.GetComponent<PatutHealth>();
-                    if (patutHealth != null)
-                    {
-                        patutHealth.TakeDamage(slashDamage, transform.position);
-                    }
-                }
+                // ...chama o seu método TakeDamage!
+                // Não importa se é um EnemyHealth, DestructibleObject, ou qualquer outra coisa.
+                damageable.TakeDamage(slashDamage, transform.position);
             }
         }
     }
+}
 
     // Corrotina que executa o movimento do dash e controla a animação
     IEnumerator PerformAirDash()

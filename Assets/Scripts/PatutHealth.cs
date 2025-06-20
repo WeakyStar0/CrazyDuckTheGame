@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class PatutHealth : MonoBehaviour
+public class PatutHealth : MonoBehaviour, IDamageable
 {
 
     [HideInInspector] public bool externallyInvincible = false;
