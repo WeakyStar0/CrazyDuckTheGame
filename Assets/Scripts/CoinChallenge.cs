@@ -155,12 +155,12 @@ public class CoinChallengeManager : MonoBehaviour
     private void UpdateTimerUI()
     {
         if (timerText == null) return;
-        timerText.text = $"Tempo: {Mathf.Max(0, currentTime):0.0}";
+        timerText.text = $" {Mathf.Max(0, currentTime):0.0}";
     }
 
     private void UpdateCoinCountUI()
     {
         if (coinCountText == null) return;
-        coinCountText.text = $"Moedas: {coinsCollected} / {totalCoins}";
+        coinCountText.text = $" {coinsCollected} / {totalCoins}";
     }
 }

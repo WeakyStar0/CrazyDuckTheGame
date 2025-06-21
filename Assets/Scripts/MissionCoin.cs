@@ -23,7 +23,7 @@ public class MissionCoin : MonoBehaviour
     void Update()
     {
         // Animação simples de rotação
-        transform.Rotate(Vector3.up, spinSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.forward, spinSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
