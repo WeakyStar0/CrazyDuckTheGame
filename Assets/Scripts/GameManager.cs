@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     {
         if (collectibleCounterText != null)
         {
-            collectibleCounterText.text = "Coletáveis: " + collectibleCount;
+            collectibleCounterText.text = "" + collectibleCount;
         }
     }
 }
