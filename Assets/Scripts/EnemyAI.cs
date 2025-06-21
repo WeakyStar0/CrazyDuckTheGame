@@ -7,7 +7,7 @@ public class EnemyAI : MonoBehaviour
     public float chaseSpeed = 5f;
     public float returnToPatrolDistance = 10f;
     public float gravity = 9.81f;
-    
+
     [Header("Attack Settings")]
     public float attackCooldown = 2f;
     public int damageAmount = 1;
@@ -16,27 +16,30 @@ public class EnemyAI : MonoBehaviour
     public float stunDuration = 0.5f;
     private bool isStunned = false;
     private float stunTimer = 0f;
-    
+
     [Header("Patrol Sounds")]
     public AudioClip[] patrolSounds;
     public float minPatrolInterval = 1f;
     public float maxPatrolInterval = 3f;
     public float patrolMinPitch = 0.8f;
     public float patrolMaxPitch = 1.2f;
-    
+
     [Header("Chase Sounds")]
     public AudioClip[] chaseSounds;
     public float minChaseInterval = 0.5f;
     public float maxChaseInterval = 1.5f;
     public float chaseMinPitch = 1f;
     public float chaseMaxPitch = 1.5f;
-    
+
     [Header("Audio Settings")]
     public float maxHearDistance = 10f;
     [Range(0, 1)] public float maxVolume = 0.7f;
 
     [Header("Animation Settings")]
     public Animator enemyAnimator;
+
+    [Header("Visibility Settings")]
+    public Collider[] hideZones;
 
     private Transform player;
     private EnemyPatrol patrolScript;
@@ -110,7 +113,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
-        
+
         if (!isGrounded)
         {
             velocity.y -= gravity * Time.deltaTime;
@@ -119,12 +122,13 @@ public class EnemyAI : MonoBehaviour
         {
             velocity.y = -2f;
         }
-        
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        
+
+        bool canSeePlayer = !IsPlayerHidden();
         bool wasChasing = isChasing;
-        isChasing = distanceToPlayer <= detectionRadius || (isChasing && distanceToPlayer <= chaseRadius);
-        
+        isChasing = canSeePlayer && (distanceToPlayer <= detectionRadius || (isChasing && distanceToPlayer <= chaseRadius));
+
         if (wasChasing != isChasing)
         {
             SetNextSoundTime();
@@ -142,27 +146,39 @@ public class EnemyAI : MonoBehaviour
         UpdateAnimation(false, isChasing || (patrolScript != null && patrolScript.IsMoving()));
     }
 
+    bool IsPlayerHidden()
+    {
+        foreach (var zone in hideZones)
+        {
+            if (zone != null && zone.bounds.Contains(player.position))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void ChasePlayer()
     {
         patrolScript.enabled = false;
-        
+
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0;
-        
+
         Vector3 move = direction * chaseSpeed * Time.deltaTime;
         move += velocity * Time.deltaTime;
-        
+
         if (canAttack)
         {
             controller.Move(move);
         }
-        
+
         if (direction != Vector3.zero)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, 
+            transform.rotation = Quaternion.Slerp(transform.rotation,
                 Quaternion.LookRotation(direction), 0.1f);
         }
-        
+
         lastPatrolPosition = transform.position;
     }
 
@@ -177,14 +193,14 @@ public class EnemyAI : MonoBehaviour
         {
             Vector3 direction = (lastPatrolPosition - transform.position).normalized;
             direction.y = 0;
-            
+
             Vector3 move = direction * patrolScript.moveSpeed * Time.deltaTime;
             move += velocity * Time.deltaTime;
             controller.Move(move);
-            
+
             if (direction != Vector3.zero)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, 
+                transform.rotation = Quaternion.Slerp(transform.rotation,
                     Quaternion.LookRotation(direction), 0.1f);
             }
         }
@@ -194,7 +210,7 @@ public class EnemyAI : MonoBehaviour
     {
         AudioClip[] currentSounds;
         float minPitch, maxPitch;
-        
+
         if (isChasing)
         {
             currentSounds = chaseSounds;
@@ -212,10 +228,10 @@ public class EnemyAI : MonoBehaviour
 
         AudioClip randomSound = currentSounds[Random.Range(0, currentSounds.Length)];
         audioSource.pitch = Random.Range(minPitch, maxPitch);
-        
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         float volume = Mathf.Clamp01(1 - (distanceToPlayer / maxHearDistance)) * maxVolume;
-        
+
         audioSource.PlayOneShot(randomSound, volume);
     }
 
@@ -227,13 +243,13 @@ public class EnemyAI : MonoBehaviour
             enemyAnimator.SetBool("IsWalking", walking);
         }
     }
-    
+
     public void Stun()
     {
         isStunned = true;
         stunTimer = stunDuration;
         patrolScript.enabled = false;
-        
+
         if (audioSource != null)
         {
             audioSource.Stop();
@@ -252,7 +268,7 @@ public class EnemyAI : MonoBehaviour
             patrolScript.ResetPatrol();
         }
     }
-    
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.collider.CompareTag("Player") && canAttack)
@@ -276,16 +292,28 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
-    
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
-        
+
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, chaseRadius);
-        
+
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+
+        Gizmos.color = new Color(0, 1, 1, 0.3f);
+        if (hideZones != null)
+        {
+            foreach (var zone in hideZones)
+            {
+                if (zone != null)
+                {
+                    Gizmos.DrawCube(zone.bounds.center, zone.bounds.size);
+                }
+            }
+        }
     }
 }

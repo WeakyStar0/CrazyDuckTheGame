@@ -19,6 +19,13 @@ public class DoorOpen : MonoBehaviour
     [Header("Animation Settings")]
     public float rotationSpeed = 180f; // Degrees per second
 
+    [Header("Audio Settings")]
+    public AudioClip openSound;
+    public AudioClip closeSound;
+    public float soundMinDistance = 1f;
+    public float soundMaxDistance = 15f;
+    private AudioSource audioSource;
+
     private bool playerInZone = false;
     private bool isOpen = false;
     private bool isRotating = false;
@@ -59,6 +66,14 @@ public class DoorOpen : MonoBehaviour
         {
             playerCamera = Camera.main.transform;
         }
+
+        // Add and configure AudioSource at the door's position
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f; // 3D sound
+        audioSource.rolloffMode = AudioRolloffMode.Linear;
+        audioSource.minDistance = soundMinDistance;
+        audioSource.maxDistance = soundMaxDistance;
+        audioSource.playOnAwake = false;
     }
 
     void Update()
@@ -112,6 +127,17 @@ public class DoorOpen : MonoBehaviour
 
             Vector3 targetEuler = isOpen ? targetRotations[i] : originalRotations[i];
             currentTargets[i] = Quaternion.Euler(targetEuler);
+        }
+
+        // Play appropriate 3D sound
+        if (audioSource != null)
+        {
+            AudioClip clip = isOpen ? openSound : closeSound;
+            if (clip != null)
+            {
+                audioSource.transform.position = transform.position; // Ensure it's at the object's position
+                audioSource.PlayOneShot(clip);
+            }
         }
     }
 
