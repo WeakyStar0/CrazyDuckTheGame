@@ -14,31 +14,31 @@ public class SwordSlash : MonoBehaviour
     public float slashAngle = 90f;
     public int slashDamage = 1;
     public float knockbackForce = 5f;
-    
+
     [Header("Effects")]
     public GameObject groundSlashPrefab;
     public GameObject airSlashPrefab; // Usado para o dash
     public Vector3 effectOffset = new Vector3(0.5f, 0, 0.5f);
     public float effectDuration = 1f;
-    
+
     [Header("Audio")]
     public AudioClip swingSound; // Som para o ataque normal (chão e ar)
     public AudioClip airSwingSound; // Som para o dash
-    [Range(0,1)] public float volume = 0.7f;
+    [Range(0, 1)] public float volume = 0.7f;
     public AudioSource audioSource;
-    
+
     [Header("Cooldowns")]
     public float groundCooldown = 0.5f;
     public float airCooldown = 1f; // Cooldown do dash
-    
+
     [Header("Input Settings")]
     public KeyCode groundSlashKey = KeyCode.Mouse0; // Botão esquerdo do mouse
     public KeyCode airSlashKey = KeyCode.Mouse1; // Botão direito do mouse
-    
+
     [Header("Air Dash Settings")]
     public float airDashForce = 10f;
     public float airDashDuration = 0.3f;
-    
+
     [Header("Animation")]
     [Tooltip("Trigger para o ataque normal (chão e ar com o botão esquerdo).")]
     public string groundSlashTrigger = "GroundSlash";
@@ -55,28 +55,35 @@ public class SwordSlash : MonoBehaviour
     private GameObject currentSlashEffect;
     private Animator animator;
 
-    void Start()
+void Start()
+{
+    // Ensure AudioSource exists
+    audioSource = GetComponent<AudioSource>();
+    if (audioSource == null)
     {
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                audioSource = gameObject.AddComponent<AudioSource>();
-            }
-        }
-        audioSource.playOnAwake = false;
-        
-        playerController = GetComponent<PlayerController>();
-        characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
-
-        // Garante que o estado da animação de dash começa como falso
-        if (animator != null)
-        {
-            animator.SetBool(dashBoolName, false);
-        }
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
+
+    // Configure 3D sound settings
+    audioSource.spatialBlend = 1f; // Enable full 3D spatial sound
+    audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // More natural falloff
+    audioSource.minDistance = 1f;  // Full volume within 1 unit
+    audioSource.maxDistance = 100f; // Increase to extend the hearing range
+    audioSource.playOnAwake = false;
+
+    // Initialize other components
+    playerController = GetComponent<PlayerController>();
+    characterController = GetComponent<CharacterController>();
+    animator = GetComponent<Animator>();
+
+    // Garante que o estado da animação de dash começa como falso
+    if (animator != null)
+    {
+        animator.SetBool(dashBoolName, false);
+    }
+}
+
+
 
     void Update()
     {
@@ -98,7 +105,7 @@ public class SwordSlash : MonoBehaviour
 
         UpdateSlashEffectPosition();
     }
-    
+
     // Verifica se o ataque pode ser executado (cooldown e se não está a fazer dash)
     public bool CanSlash(bool isGroundSlash)
     {
@@ -114,14 +121,14 @@ public class SwordSlash : MonoBehaviour
     void ExecuteGroundSlash()
     {
         lastGroundSlashTime = Time.time;
-        
+
         // Usa a animação, efeito e som do "Ground Slash"
         if (animator != null) animator.SetTrigger(groundSlashTrigger);
         CreateSlashEffect(true);
         PlaySlashSound(true);
         ApplySlashDamage(true);
     }
-    
+
     // Função para o Air Dash (Botão Direito no Ar)
     void ExecuteAirDash()
     {
@@ -143,7 +150,7 @@ public class SwordSlash : MonoBehaviour
         {
             Destroy(currentSlashEffect);
         }
-        
+
         GameObject slashPrefab = isGroundEffect ? groundSlashPrefab : airSlashPrefab;
         if (slashPrefab != null)
         {
@@ -167,30 +174,30 @@ public class SwordSlash : MonoBehaviour
     }
 
     void ApplySlashDamage(bool isGroundSlash)
-{
-    Vector3 attackCenter = transform.position + transform.forward * (slashRange / 2);
-    Collider[] hitColliders = Physics.OverlapSphere(attackCenter, slashRange / 2);
-    
-    foreach (Collider hit in hitColliders)
     {
-        // Tentamos obter o componente IDamageable do objeto atingido
-        IDamageable damageable = hit.GetComponent<IDamageable>();
-        
-        // Se o objeto for "danificável" (ou seja, tiver um script que implementa a interface)...
-        if (damageable != null)
+        Vector3 attackCenter = transform.position + transform.forward * (slashRange / 2);
+        Collider[] hitColliders = Physics.OverlapSphere(attackCenter, slashRange / 2);
+
+        foreach (Collider hit in hitColliders)
         {
-            Vector3 directionToTarget = (hit.transform.position - transform.position).normalized;
-            
-            // Verifica se o objeto está dentro do ângulo de ataque
-            if (Vector3.Angle(transform.forward, directionToTarget) <= slashAngle / 2)
+            // Tentamos obter o componente IDamageable do objeto atingido
+            IDamageable damageable = hit.GetComponent<IDamageable>();
+
+            // Se o objeto for "danificável" (ou seja, tiver um script que implementa a interface)...
+            if (damageable != null)
             {
-                // ...chama o seu método TakeDamage!
-                // Não importa se é um EnemyHealth, DestructibleObject, ou qualquer outra coisa.
-                damageable.TakeDamage(slashDamage, transform.position);
+                Vector3 directionToTarget = (hit.transform.position - transform.position).normalized;
+
+                // Verifica se o objeto está dentro do ângulo de ataque
+                if (Vector3.Angle(transform.forward, directionToTarget) <= slashAngle / 2)
+                {
+                    // ...chama o seu método TakeDamage!
+                    // Não importa se é um EnemyHealth, DestructibleObject, ou qualquer outra coisa.
+                    damageable.TakeDamage(slashDamage, transform.position);
+                }
             }
         }
     }
-}
 
     // Corrotina que executa o movimento do dash e controla a animação
     IEnumerator PerformAirDash()
@@ -200,7 +207,7 @@ public class SwordSlash : MonoBehaviour
 
         float dashEndTime = Time.time + airDashDuration;
         Vector3 dashDirection = transform.forward;
-        
+
         while (Time.time < dashEndTime)
         {
             if (characterController != null)
@@ -209,7 +216,7 @@ public class SwordSlash : MonoBehaviour
             }
             yield return null;
         }
-        
+
         isDashing = false;
         if (animator != null) animator.SetBool(dashBoolName, false); // DESLIGA a animação de dash
     }
@@ -222,7 +229,7 @@ public class SwordSlash : MonoBehaviour
             currentSlashEffect.transform.rotation = transform.rotation;
         }
     }
-    
+
     public void SetGroundSlashEnabled(bool isEnabled)
     {
         isGroundSlashEnabled = isEnabled;

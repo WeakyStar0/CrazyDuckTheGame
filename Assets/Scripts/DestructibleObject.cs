@@ -11,7 +11,7 @@ public class DestructibleObject : MonoBehaviour, IDamageable
     public GameObject destructionEffect;
     public GameObject damageParticlesPrefab;
     public Vector3 particlesOffset = new Vector3(0, 1f, 0);
-    
+
     [Header("Physics")]
     public float explosionForce = 5f;
     public float explosionRadius = 3f;
@@ -20,8 +20,7 @@ public class DestructibleObject : MonoBehaviour, IDamageable
     public AudioClip destructionSound;
     public AudioClip hitSound;
     [Range(0, 1)] public float volume = 0.7f;
-    
-    private AudioSource audioSource;
+
     private Material originalMaterial;
     private Color originalColor;
     private Coroutine flashCoroutine;
@@ -29,13 +28,7 @@ public class DestructibleObject : MonoBehaviour, IDamageable
     void Start()
     {
         currentHealth = maxHealth;
-        
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-        
+
         Renderer renderer = GetComponentInChildren<Renderer>();
         if (renderer != null)
         {
@@ -47,14 +40,19 @@ public class DestructibleObject : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, Vector3 attackOrigin)
     {
         if (currentHealth <= 0) return;
+
         currentHealth -= damage;
-        if (hitSound != null && audioSource != null)
+
+        if (hitSound != null)
         {
-            audioSource.PlayOneShot(hitSound, volume);
+            Play3DSound(hitSound, transform.position);
         }
+
         ShowDamageParticles(attackOrigin);
+
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
         flashCoroutine = StartCoroutine(FlashEffect());
+
         if (currentHealth <= 0)
         {
             DestroyObject();
@@ -64,6 +62,7 @@ public class DestructibleObject : MonoBehaviour, IDamageable
     void ShowDamageParticles(Vector3 attackOrigin)
     {
         if (damageParticlesPrefab == null) return;
+
         Vector3 spawnPosition = transform.position + particlesOffset;
         GameObject particles = Instantiate(damageParticlesPrefab, spawnPosition, Quaternion.identity);
         Destroy(particles, 2f);
@@ -73,63 +72,66 @@ public class DestructibleObject : MonoBehaviour, IDamageable
     {
         Renderer renderer = GetComponentInChildren<Renderer>();
         if (renderer == null || originalMaterial == null) yield break;
+
         renderer.material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         renderer.material.color = originalColor;
     }
 
-    
     void DestroyObject()
-{
-    foreach (var renderer in GetComponentsInChildren<Renderer>()) renderer.enabled = false;
-    foreach (var collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
+    {
+        foreach (var renderer in GetComponentsInChildren<Renderer>()) renderer.enabled = false;
+        foreach (var collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
 
-    if (destructionSound != null)
-    {
-       
-        GameObject soundPlayer = new GameObject("TempAudio"); 
-       
-        soundPlayer.transform.position = transform.position; 
-     
-        AudioSource audioSource = soundPlayer.AddComponent<AudioSource>(); 
-       
-        audioSource.clip = destructionSound;
-        
-        audioSource.volume = volume;
-        
-        audioSource.spatialBlend = 0; 
-        
-        audioSource.Play();
-        
-        Destroy(soundPlayer, destructionSound.length);
-       
-
-        Debug.Log("Som de destruição '" + destructionSound.name + "' foi tocado como 2D.");
-    }
-    else
-    {
-        Debug.LogWarning("O objeto foi destruído, mas não havia som de destruição (destructionSound) atribuído!", this.gameObject);
-    }
- 
-    if (destructionEffect != null)
-    {
-        GameObject effectInstance = Instantiate(destructionEffect, transform.position, Quaternion.identity);
-        Destroy(effectInstance, 5f); 
-    }
-    
-    Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius);
-    foreach (Collider hit in hitObjects)
-    {
-        Rigidbody rb = hit.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (destructionSound != null)
         {
-            rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+            Play3DSound(destructionSound, transform.position);
+            Debug.Log("Som de destruição '" + destructionSound.name + "' foi tocado como 3D.");
         }
+        else
+        {
+            Debug.LogWarning("O objeto foi destruído, mas não havia som de destruição (destructionSound) atribuído!", this.gameObject);
+        }
+
+        if (destructionEffect != null)
+        {
+            GameObject effectInstance = Instantiate(destructionEffect, transform.position, Quaternion.identity);
+            Destroy(effectInstance, 5f);
+        }
+
+        Collider[] hitObjects = Physics.OverlapSphere(transform.position, explosionRadius);
+        foreach (Collider hit in hitObjects)
+        {
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+            }
+        }
+
+        Destroy(gameObject);
     }
-    
-    Destroy(gameObject);
-}
-    
+
+    void Play3DSound(AudioClip clip, Vector3 position)
+    {
+        GameObject tempAudio = new GameObject("TempAudio_" + clip.name);
+        tempAudio.transform.position = position;
+
+        AudioSource tempSource = tempAudio.AddComponent<AudioSource>();
+        tempSource.clip = clip;
+        tempSource.volume = volume;
+        tempSource.spatialBlend = 1f;
+        tempSource.minDistance = 1f;
+        tempSource.maxDistance = 20f;
+        tempSource.rolloffMode = AudioRolloffMode.Logarithmic;
+
+        tempSource.minDistance = 1f;         // volume stays max within 1m
+        tempSource.maxDistance = 100f;        // sound fades out after 50m (default was 20f)
+
+        tempSource.Play();
+        Destroy(tempAudio, clip.length);
+    }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
