@@ -10,7 +10,7 @@ public class BackToHub : MonoBehaviour
     [SerializeField] private KeyCode interactionKey = KeyCode.E;
 
     [Header("Scene Settings")]
-    [SerializeField] private string hubSceneName = "HubScene";
+    [SerializeField] public string hubSceneName = "HubScene";
 
     [Header("Trigger Zone Settings")]
     [SerializeField] private bool isPromptZone = true;
@@ -65,4 +65,9 @@ public class BackToHub : MonoBehaviour
         if (other.CompareTag("Player"))
             playerInZone = false;
     }
+
+   public void LoadSceneByName(string sceneName)
+{
+    SceneManager.LoadScene(sceneName);
+}
 }
