@@ -79,7 +79,7 @@ if (audioSource == null)
 
         if (postProcessingController == null)
         {
-            postProcessingController = FindObjectOfType<PostProcessingController>();
+            postProcessingController = FindFirstObjectByType<PostProcessingController>();
             if (postProcessingController == null)
             {
                 Debug.LogWarning("PostProcessingController not found in scene.");

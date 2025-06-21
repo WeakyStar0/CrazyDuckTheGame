@@ -18,6 +18,7 @@ TagManager:
   - CharacterImage
   - SkipButton
   - DialogueCanvas
+  - Hazard
   layers:
   - Default
   - TransparentFX

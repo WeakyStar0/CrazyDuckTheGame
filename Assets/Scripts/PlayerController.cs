@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    
+
     #region Variáveis
     [Header("References")]
     public CharacterController characterController;
@@ -153,10 +153,90 @@ public class PlayerController : MonoBehaviour
         return move * speedToUse;
     }
 
-    private void HandleGravity() { bool wasGrounded = isGrounded; isGrounded = CheckGrounded(); if (isGrounded) { lastGroundedTime = Time.time; if (velocity.y < 0) { velocity.y = -2f; jumpsRemaining = maxJumps; isJumping = false; if (!jumpWasBlocked) { jumpConsumed = false; } } } else if (wasGrounded) { lastGroundedTime = Time.time; } }
+    private void HandleGravity()
+    {
+        bool wasGrounded = isGrounded;
+        isGrounded = CheckGrounded();
+
+        if (isGrounded)
+        {
+            lastGroundedTime = Time.time;
+            if (velocity.y < 0)
+            {
+                velocity.y = -2f;
+            }
+            jumpsRemaining = maxJumps;
+            isJumping = false;
+
+            if (!jumpWasBlocked)
+            {
+                jumpConsumed = false;
+            }
+        }
+        else if (wasGrounded)
+        {
+            // Se acabamos de sair do chão, começa a contar o Coyote Time
+            lastGroundedTime = Time.time;
+        }
+    }
     private bool CheckGrounded() { bool raycastGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + characterController.skinWidth, groundLayer); return characterController.isGrounded || raycastGrounded; }
     private void HandleCrouch() { if (Input.GetKey(KeyCode.LeftControl)) { if (isGrounded) canCrouchJump = true; characterController.height = originalHeight * crouchHeightMultiplier; characterController.center = originalCenter * crouchHeightMultiplier; } else { characterController.height = originalHeight; characterController.center = originalCenter; canCrouchJump = false; } }
-    private Vector3 HandleJump() { Vector3 jumpVector = Vector3.zero; bool jumpBuffered = Time.time - lastJumpTime < jumpBufferTime; bool canCoyoteJump = Time.time - lastGroundedTime < coyoteTime; bool canNormalJump = !isJumping && (jumpsRemaining == maxJumps) && (isGrounded || canCoyoteJump); bool canDoubleJump = jumpsRemaining > 0 && jumpsRemaining < maxJumps; if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump)) { float actualJumpHeight = canCrouchJump ? crouchJumpHeight : jumpHeight; if (jumpsRemaining < maxJumps) { actualJumpHeight *= doubleJumpMultiplier; } velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity); jumpsRemaining--; canCrouchJump = false; if (Input.GetKey(KeyCode.LeftControl)) { animator.SetTrigger(CrouchJumpHash); } else { animator.SetTrigger(JumpHash); } jumpInput = false; isJumping = true; jumpConsumed = true; jumpWasBlocked = false; } velocity.y += gravity * Time.fixedDeltaTime; jumpVector.y = velocity.y; return jumpVector; }
+    private Vector3 HandleJump()
+    {
+        Vector3 jumpVector = Vector3.zero;
+
+        // Condições para saltar
+        bool jumpBuffered = Time.time - lastJumpTime < jumpBufferTime;
+        bool canCoyoteJump = Time.time - lastGroundedTime < coyoteTime;
+        bool canNormalJump = !isJumping && (jumpsRemaining == maxJumps) && (isGrounded || canCoyoteJump);
+        bool canDoubleJump = jumpsRemaining > 0 && jumpsRemaining < maxJumps;
+
+        // Verifica se o jogador quer e pode saltar
+        if ((jumpInput || jumpBuffered) && !jumpConsumed && (canNormalJump || canDoubleJump))
+        {
+            // Verifica se o salto atual é um crouch jump
+            bool isCrouchJumping = canCrouchJump; // Guardamos o estado antes de o resetar
+
+            // Calcula a altura do salto
+            float actualJumpHeight = isCrouchJumping ? crouchJumpHeight : jumpHeight;
+
+            // Aplica o multiplicador de double jump, se aplicável
+            if (jumpsRemaining < maxJumps)
+            {
+                actualJumpHeight *= doubleJumpMultiplier;
+            }
+
+            // Calcula a velocidade vertical para o salto
+            velocity.y = Mathf.Sqrt(actualJumpHeight * -2f * gravity);
+
+            // --- AQUI ESTÁ A LÓGICA PRINCIPAL DA MUDANÇA ---
+            if (isCrouchJumping)
+            {
+                // Se foi um crouch jump, consome TODOS os saltos.
+                jumpsRemaining = 0;
+                animator.SetTrigger(CrouchJumpHash);
+            }
+            else
+            {
+                // Se foi um salto normal, apenas decrementa um.
+                jumpsRemaining--;
+                animator.SetTrigger(JumpHash);
+            }
+            // --- FIM DA LÓGICA DA MUDANÇA ---
+
+            // Reseta as flags e estados
+            canCrouchJump = false;
+            jumpInput = false;
+            isJumping = true;
+            jumpConsumed = true;
+            jumpWasBlocked = false;
+        }
+
+        // Aplica a gravidade constantemente
+        velocity.y += gravity * Time.fixedDeltaTime;
+        jumpVector.y = velocity.y;
+        return jumpVector;
+    }
     private void UpdateAnimator() { float currentSpeedValue = Mathf.Clamp01(new Vector2(directionX, directionY).magnitude); if (Input.GetKey(KeyCode.LeftControl)) { currentSpeedValue *= 0.5f; } animator.SetFloat(SpeedHash, currentSpeedValue, 0.1f, Time.deltaTime); animator.SetFloat(DirectionXHash, directionX, 0.1f, Time.deltaTime); animator.SetFloat(DirectionYHash, directionY, 0.1f, Time.deltaTime); animator.SetBool(IsGroundedHash, isGrounded); animator.SetBool(CrouchHash, Input.GetKey(KeyCode.LeftControl)); }
     public float GetCurrentSpeed() { return temporarySpeed > 0 ? temporarySpeed : (Input.GetKey(KeyCode.LeftControl) ? crouchSpeed : walkSpeed); }
     public void SetTemporarySpeed(float speed) { temporarySpeed = speed; currentSpeed = speed; }
@@ -167,4 +247,6 @@ public class PlayerController : MonoBehaviour
     public void SetVelocity(Vector3 newVelocity) { velocity = newVelocity; }
     public void ForceIdleAnimation() { if (animator != null) { animator.SetFloat(SpeedHash, 0); animator.SetBool(IsGroundedHash, true); animator.SetBool(CrouchHash, false); } }
     public void PlayAnimation(string animationName, float transitionTime = 0.1f) { if (animator != null) { animator.CrossFade(animationName, transitionTime); } }
+    
+    
 }

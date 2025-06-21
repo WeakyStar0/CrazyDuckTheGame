@@ -320,9 +320,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: c6e1c39c8d854894ba3f97f9c657e3d2, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -4653207301564637074, guid: b84ad9daa528734e5930406e445c30fe, type: 3}
+    - target: {fileID: -7511558181221131132, guid: c6e1c39c8d854894ba3f97f9c657e3d2, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: -592120653741087052, guid: 8c3c840da199dd7419ffcb7e7c422ffb, type: 3}
+      objectReference: {fileID: 2100000, guid: 9f1095db978a6c9488a4827d7be41487, type: 2}
     - target: {fileID: 919132149155446097, guid: c6e1c39c8d854894ba3f97f9c657e3d2, type: 3}
       propertyPath: m_Name
       value: MissionCoin
