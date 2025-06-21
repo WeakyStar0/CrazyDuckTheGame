@@ -61,43 +61,40 @@ public class CoinChallengeManager : MonoBehaviour
     }
 
     public void StartChallenge()
+{
+    if (isMissionCompleted) return;
+
+    isMissionActive = true;
+    currentTime = timeLimit;
+    coinsCollected = 0;
+
+    if (npcCollider != null)
     {
-        if (isMissionCompleted) return;
-
-        isMissionActive = true;
-        currentTime = timeLimit;
-        coinsCollected = 0;
-
-        // MUDANÇA: Desativa o COLISOR do NPC. Sem o colisor, o OnTriggerEnter nunca será chamado.
-        // Esta é uma abordagem mais fiável do que desativar o script.
-        if (npcCollider != null)
-        {
-            npcCollider.enabled = false;
-        }
-
-        // Reativa as moedas
-        if (coinsParent != null)
-        {
-            coinsParent.SetActive(true);
-            totalCoins = coinsParent.transform.childCount;
-            foreach (Transform coin in coinsParent.transform)
-            {
-                coin.gameObject.SetActive(true);
-                Collider col = coin.GetComponent<Collider>();
-                if (col != null) col.enabled = true;
-                Renderer ren = coin.GetComponent<Renderer>();
-                if (ren != null) ren.enabled = true;
-            }
-        }
-        else
-        {
-            totalCoins = 0;
-        }
-
-        if (missionUIPanel != null) missionUIPanel.SetActive(true);
-        UpdateCoinCountUI();
-        UpdateTimerUI();
+        npcCollider.enabled = false;
     }
+
+    // ESTA É A PARTE IMPORTANTE PARA O RESET
+    if (coinsParent != null)
+    {
+        coinsParent.SetActive(true);
+        totalCoins = coinsParent.transform.childCount;
+
+        // Este loop vai passar por TODOS os filhos de 'coinsParent',
+        // mesmo os que estão inativos, e reativá-los.
+        foreach (Transform coin in coinsParent.transform)
+        {
+            coin.gameObject.SetActive(true);
+        }
+    }
+    else
+    {
+        totalCoins = 0;
+    }
+
+    if (missionUIPanel != null) missionUIPanel.SetActive(true);
+    UpdateCoinCountUI();
+    UpdateTimerUI();
+}
 
     public void OnCoinCollected()
     {

@@ -35,41 +35,32 @@ public class MissionCoin : MonoBehaviour
     }
 
     private void Collect()
+{
+    // Toca o som de coleta
+    if (collectClip != null)
     {
-        // Desativa o collider para não ser coletado duas vezes
-        if (objectCollider != null)
-        {
-            objectCollider.enabled = false;
-        }
-
-        // Toca o som de coleta
-        if (collectClip != null)
-        {
-            AudioSource.PlayClipAtPoint(collectClip, transform.position);
-        }
-
-        // Mostra o efeito de partículas
-        if (collectEffect != null)
-        {
-            Instantiate(collectEffect, transform.position, Quaternion.identity);
-        }
-
-        // **A PARTE MAIS IMPORTANTE**
-        // Notifica o gerenciador da missão que uma moeda foi coletada.
-        if (CoinChallengeManager.Instance != null)
-        {
-            CoinChallengeManager.Instance.OnCoinCollected();
-        }
-        else
-        {
-            Debug.LogWarning("CoinChallengeManager não encontrado na cena!");
-        }
-
-        // Esconde o mesh renderer e destrói o objeto após um pequeno delay
-        if (objectRenderer != null)
-        {
-            objectRenderer.enabled = false;
-        }
-        Destroy(gameObject, 1f); // Destrói o objeto para limpar a cena
+        AudioSource.PlayClipAtPoint(collectClip, transform.position);
     }
+
+    // Mostra o efeito de partículas
+    if (collectEffect != null)
+    {
+        Instantiate(collectEffect, transform.position, Quaternion.identity);
+    }
+
+    // Notifica o gerenciador da missão que uma moeda foi coletada.
+    if (CoinChallengeManager.Instance != null)
+    {
+        CoinChallengeManager.Instance.OnCoinCollected();
+    }
+    else
+    {
+        Debug.LogWarning("CoinChallengeManager não encontrado na cena!");
+    }
+
+    // A MUDANÇA PRINCIPAL ESTÁ AQUI:
+    // Em vez de destruir, apenas desativamos o GameObject.
+    // Ele ficará invisível e inativo até ser reativado pelo Manager.
+    gameObject.SetActive(false);
+}
 }
