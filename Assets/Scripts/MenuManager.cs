@@ -11,11 +11,13 @@ public class MenuManager : MonoBehaviour
 
     public void LoadGame()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneName); 
     }
 
     public void LoadCredits()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneCredits); 
     }
 }
