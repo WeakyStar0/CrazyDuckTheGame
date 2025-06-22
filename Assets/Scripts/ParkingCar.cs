@@ -1,9 +1,15 @@
-// ParkingCar.cs - VERSÃO COM TRIGGER
+// ParkingCar.cs - VERSÃO COM ROTAÇÃO FIXA
 using UnityEngine;
 using System.Collections;
 
 public class ParkingCar : MonoBehaviour
 {
+    public enum CarBehavior { Constant, Stoppable }
+
+    [Header("Comportamento")]
+    [Tooltip("Constant: O carro move-se sempre.\nStoppable: O carro pode ser parado por um semáforo.")]
+    public CarBehavior behaviorMode = CarBehavior.Constant;
+
     [Header("Pontos de Movimento")]
     public Transform startPoint;
     public Transform endPoint;
@@ -14,9 +20,8 @@ public class ParkingCar : MonoBehaviour
 
     [Header("Configurações de Dano")]
     public int damageAmount = 1;
-    
-    // O Rigidbody não é mais necessário para o movimento, 
-    // mas o Collider sim, configurado como Trigger.
+
+    private bool isStoppedByTrafficLight = false;
 
     void Start()
     {
@@ -27,7 +32,13 @@ public class ParkingCar : MonoBehaviour
             return;
         }
 
+        // Posiciona o carro no ponto inicial
         transform.position = startPoint.position;
+
+        // ALTERAÇÃO: Definimos a rotação inicial APENAS UMA VEZ aqui no Start().
+        // O carro vai olhar na direção do primeiro movimento (para o endPoint) e manter essa rotação.
+        transform.LookAt(endPoint.position);
+
         StartCoroutine(MovementCycle());
     }
 
@@ -35,29 +46,78 @@ public class ParkingCar : MonoBehaviour
     {
         while (true)
         {
+            // Move de start para end (para a frente)
             yield return StartCoroutine(MoveBetweenPoints(startPoint.position, endPoint.position));
-            yield return new WaitForSeconds(pauseDuration);
+            yield return StartCoroutine(PauseAtPoint(pauseDuration));
+            
+            // Move de end para start (em marcha-atrás)
             yield return StartCoroutine(MoveBetweenPoints(endPoint.position, startPoint.position));
-            yield return new WaitForSeconds(pauseDuration);
+            yield return StartCoroutine(PauseAtPoint(pauseDuration));
         }
     }
 
     private IEnumerator MoveBetweenPoints(Vector3 from, Vector3 to)
     {
         float elapsedTime = 0f;
+        
+        // ALTERAÇÃO: Removemos esta linha para que o carro não mude mais de rotação.
+        // transform.LookAt(to); 
 
         while (elapsedTime < moveDuration)
         {
+            while (isStoppedByTrafficLight)
+            {
+                yield return null;
+            }
+
             float t = elapsedTime / moveDuration;
             t = Mathf.SmoothStep(0f, 1f, t);
 
-            // Voltamos a mover o transform diretamente. Simples e eficaz para triggers.
             transform.position = Vector3.Lerp(from, to, t);
             
             elapsedTime += Time.deltaTime;
-            yield return null; // Espera pelo frame de renderização normal.
+            yield return null;
         }
 
         transform.position = to;
+    }
+
+    private IEnumerator PauseAtPoint(float duration)
+    {
+        float pauseTimer = 0f;
+        while(pauseTimer < duration)
+        {
+            while (isStoppedByTrafficLight)
+            {
+                yield return null;
+            }
+            pauseTimer += Time.deltaTime;
+            yield return null;
+        }
+    }
+    
+    public void StopCar()
+    {
+        if (behaviorMode == CarBehavior.Stoppable)
+        {
+            isStoppedByTrafficLight = true;
+        }
+    }
+
+    public void ResumeCar()
+    {
+        if (behaviorMode == CarBehavior.Stoppable)
+        {
+            isStoppedByTrafficLight = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Carro atingiu o jogador!");
+            // other.GetComponent<PlayerHealth>().TakeDamage(damageAmount);
+        }
     }
 }
