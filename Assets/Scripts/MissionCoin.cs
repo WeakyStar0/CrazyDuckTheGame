@@ -35,32 +35,40 @@ public class MissionCoin : MonoBehaviour
     }
 
     private void Collect()
-{
-    // Toca o som de coleta
-    if (collectClip != null)
     {
-        AudioSource.PlayClipAtPoint(collectClip, transform.position);
-    }
+        // Toca o som de coleta
+        if (collectClip != null)
+        {
+            AudioSource.PlayClipAtPoint(collectClip, transform.position);
+        }
 
-    // Mostra o efeito de partículas
-    if (collectEffect != null)
-    {
-        Instantiate(collectEffect, transform.position, Quaternion.identity);
-    }
+        // Mostra o efeito de partículas
+        if (collectEffect != null)
+        {
+            Instantiate(collectEffect, transform.position, Quaternion.identity);
+        }
 
-    // Notifica o gerenciador da missão que uma moeda foi coletada.
-    if (CoinChallengeManager.Instance != null)
+        // Notifica o gerenciador da missão que uma moeda foi coletada.
+        if (CoinChallengeManager.Instance != null)
+        {
+            CoinChallengeManager.Instance.OnCoinCollected();
+        }
+        else
+        {
+            Debug.LogWarning("CoinChallengeManager não encontrado na cena!");
+        }
+
+        gameObject.SetActive(false);
+    CoinCorridorManager manager = GetComponentInParent<CoinCorridorManager>();
+    if (manager != null)
     {
-        CoinChallengeManager.Instance.OnCoinCollected();
+        manager.OnCoinCollected();
     }
     else
     {
-        Debug.LogWarning("CoinChallengeManager não encontrado na cena!");
+        Debug.LogWarning("CoinCorridorManager não encontrado nos pais desta moeda!");
     }
 
-    // A MUDANÇA PRINCIPAL ESTÁ AQUI:
-    // Em vez de destruir, apenas desativamos o GameObject.
-    // Ele ficará invisível e inativo até ser reativado pelo Manager.
     gameObject.SetActive(false);
 }
 }
