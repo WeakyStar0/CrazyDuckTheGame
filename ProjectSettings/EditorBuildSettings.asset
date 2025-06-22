@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SecretGameRoom.unity
     guid: 20dc998d9b5021d4c97c9a18aad7782e
+  - enabled: 1
+    path: Assets/Scenes/Tomas.unity
+    guid: cb4f29c67a0361941af08faa83deb210
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
