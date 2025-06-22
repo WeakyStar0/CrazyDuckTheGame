@@ -24,7 +24,7 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (isPaused)
             {
@@ -69,7 +69,7 @@ public class PauseManager : MonoBehaviour
 
     public void QuitToMainMenu()
     {
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu"); // Change to your scene name
     }
 

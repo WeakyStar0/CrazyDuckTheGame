@@ -9798,10 +9798,11 @@ RectTransform:
   m_GameObject: {fileID: 287834431}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.69, y: 0.69, z: 0.69}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2061466168}
+  - {fileID: 518148782}
   - {fileID: 1915329413}
   m_Father: {fileID: 647602351}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17010,6 +17011,81 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 512770105}
   m_Mesh: {fileID: -3935645164499962474, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+--- !u!1 &518148781
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 518148782}
+  - component: {fileID: 518148784}
+  - component: {fileID: 518148783}
+  m_Layer: 5
+  m_Name: Instructions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &518148782
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518148781}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 287834432}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -43}
+  m_SizeDelta: {x: 1126, y: 752}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &518148783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518148781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 295cf9236c563e343a30dba02b2f3cc0, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &518148784
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518148781}
+  m_CullTransparentMesh: 1
 --- !u!1 &520205497
 GameObject:
   m_ObjectHideFlags: 0
@@ -23197,8 +23273,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92336afb14825841bdd3dcb32aa25c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectSound: {fileID: 8300000, guid: fc503b2b172e35040acbe506f90fd96d, type: 3}
+  ambienceClip: {fileID: 0}
+  collectClip: {fileID: 0}
+  audioSource: {fileID: 0}
   collectEffect: {fileID: 0}
+  spinSpeed: 360
+  floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!135 &694304302
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -45123,8 +45204,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92336afb14825841bdd3dcb32aa25c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectSound: {fileID: 8300000, guid: fc503b2b172e35040acbe506f90fd96d, type: 3}
+  ambienceClip: {fileID: 0}
+  collectClip: {fileID: 0}
+  audioSource: {fileID: 0}
   collectEffect: {fileID: 0}
+  spinSpeed: 360
+  floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!135 &1234456168
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -52536,6 +52622,21 @@ MonoBehaviour:
   gravity: 9.81
   attackCooldown: 2
   damageAmount: 1
+  stunDuration: 0.5
+  patrolSounds: []
+  minPatrolInterval: 1
+  maxPatrolInterval: 3
+  patrolMinPitch: 0.8
+  patrolMaxPitch: 1.2
+  chaseSounds: []
+  minChaseInterval: 0.5
+  maxChaseInterval: 1.5
+  chaseMinPitch: 1
+  chaseMaxPitch: 1.5
+  maxHearDistance: 10
+  maxVolume: 0.7
+  enemyAnimator: {fileID: 0}
+  hideZones: []
 --- !u!114 &1261966331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52651,9 +52752,12 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  damageParticlesPrefab: {fileID: 0}
+  particlesOffset: {x: 0, y: 1, z: 0}
   deathSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   hitSound: {fileID: 0}
   volume: 0.7
+  enemyAnimator: {fileID: 0}
 --- !u!1001 &1282199097
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -79493,7 +79597,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000015259, y: -262}
+  m_AnchoredPosition: {x: 0.000015259, y: -352}
   m_SizeDelta: {x: 28.42, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1915329414
@@ -84523,6 +84627,10 @@ MonoBehaviour:
   getUpTrigger: GetUp
   getUpToIdleBlendTime: 0.3
   getUpAnimationLength: 1
+  postProcessingController: {fileID: 0}
+  heartbeatSound: {fileID: 0}
+  heartbeatVolume: 0.7
+  audioSource: {fileID: 0}
 --- !u!114 &2039022161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84535,6 +84643,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d6f8aaeb264dc4ebf64ba8eddee28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGroundSlashEnabled: 1
+  isAirSlashEnabled: 1
   slashRange: 30
   slashAngle: 90
   slashDamage: 1
@@ -84546,13 +84656,16 @@ MonoBehaviour:
   swingSound: {fileID: 8300000, guid: b27eb33bd8eca1b4e8638ff987f739dd, type: 3}
   airSwingSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   volume: 1
+  audioSource: {fileID: 0}
   groundCooldown: 1
   airCooldown: 1
-  slashKey: 323
+  groundSlashKey: 323
+  airSlashKey: 324
   airDashForce: 300
   airDashDuration: 0.3
   groundSlashTrigger: GroundSlash
   airSlashTrigger: AirSlash
+  dashBoolName: IsDashing
 --- !u!114 &2039022162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84667,9 +84780,6 @@ MonoBehaviour:
   playerVisual: {fileID: 2039022170}
   walkSpeed: 50
   crouchSpeed: 10
-  dashSpeed: 15
-  dashDuration: 0.3
-  dashCooldown: 1
   jumpHeight: 25
   crouchJumpHeight: 50
   gravity: -250
@@ -84682,6 +84792,7 @@ MonoBehaviour:
   coyoteTime: 0.1
   doubleJumpMultiplier: 0.7
   turnSmoothTime: 0.1
+  startRotationY: 0
 --- !u!143 &2039022167
 CharacterController:
   m_ObjectHideFlags: 0
@@ -85488,7 +85599,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 247}
+  m_AnchoredPosition: {x: 0, y: 303}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2061466169
@@ -85886,8 +85997,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e92336afb14825841bdd3dcb32aa25c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectSound: {fileID: 8300000, guid: fc503b2b172e35040acbe506f90fd96d, type: 3}
+  ambienceClip: {fileID: 0}
+  collectClip: {fileID: 0}
+  audioSource: {fileID: 0}
   collectEffect: {fileID: 0}
+  spinSpeed: 360
+  floatUpSpeed: 2
+  fadeOutDuration: 0.5
 --- !u!135 &2073656313
 SphereCollider:
   m_ObjectHideFlags: 0
