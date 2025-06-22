@@ -10,7 +10,7 @@ public class BackToHub : MonoBehaviour
     [SerializeField] private KeyCode interactionKey = KeyCode.E;
 
     [Header("Scene Settings")]
-    [SerializeField] public string hubSceneName = "HubScene";
+    [SerializeField] public string sceneToLoad;
 
     [Header("Trigger Zone Settings")]
     [SerializeField] private bool isPromptZone = true;
@@ -44,7 +44,13 @@ public class BackToHub : MonoBehaviour
 
             if (isInteractionZone && Input.GetKeyDown(interactionKey))
             {
-                SceneManager.LoadScene(hubSceneName);
+                // ✅ Chamar o save automático antes de mudar de cena
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.GuardarProgresso();
+                }
+
+                SceneManager.LoadScene(sceneToLoad);
             }
         }
         else
@@ -66,8 +72,12 @@ public class BackToHub : MonoBehaviour
             playerInZone = false;
     }
 
-   public void LoadSceneByName(string sceneName)
-{
-    SceneManager.LoadScene(sceneName);
-}
+    public void LoadSceneByName(string sceneName)
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.GuardarProgresso();
+        }
+        SceneManager.LoadScene(sceneName);
+    }
 }
