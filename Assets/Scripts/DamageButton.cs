@@ -1,4 +1,4 @@
-// DamageButton.cs
+// DamageButton.cs - VERSÃO COMPLETA E ATUALIZADA
 using UnityEngine;
 
 public class DamageButton : MonoBehaviour
@@ -6,18 +6,25 @@ public class DamageButton : MonoBehaviour
     [Header("Referências")]
     [Tooltip("Arrasta para aqui o GameObject do Boss que tem o BossFightController.")]
     public BossFightController bossController;
-    public GameObject interactionPrompt; // Texto "Pressiona E" (opcional)
+    public GameObject interactionPrompt; 
 
     private bool playerIsInRange = false;
+    private bool hasBeenPressed = false; // Controla se já foi pressionado
 
-    void Start()
+    // Sempre que o botão (e o seu corredor) for ativado, ele é resetado.
+    private void OnEnable()
     {
-        if (interactionPrompt != null) interactionPrompt.SetActive(false);
+        hasBeenPressed = false;
+        if (interactionPrompt != null)
+        {
+            interactionPrompt.SetActive(false);
+        }
     }
 
     private void Update()
     {
-        if (playerIsInRange && Input.GetKeyDown(KeyCode.E))
+        // Só permite interagir se o jogador estiver perto E o botão ainda não tiver sido pressionado
+        if (playerIsInRange && !hasBeenPressed && Input.GetKeyDown(KeyCode.E))
         {
             PressButton();
         }
@@ -25,20 +32,31 @@ public class DamageButton : MonoBehaviour
 
     private void PressButton()
     {
+        // Verificação dupla, só por segurança
+        if (hasBeenPressed) return; 
+
+        hasBeenPressed = true;
+        Debug.Log("--- BOTÃO PRESSIONADO UMA VEZ! Dando dano ao boss. ---");
+
+        if (interactionPrompt != null)
+        {
+            interactionPrompt.SetActive(false);
+        }
+        
         if (bossController != null)
         {
             bossController.TakeDamage(1);
-            // O próprio BossController vai desativar este corredor (e o botão junto)
         }
         else
         {
-            Debug.LogError("Referência do BossController não está definida no botão!");
+            Debug.LogError("ERRO: O campo 'Boss Controller' no botão está VAZIO!");
         }
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        // Só mostra a dica se o botão ainda não foi pressionado
+        if (other.CompareTag("Player") && !hasBeenPressed)
         {
             playerIsInRange = true;
             if (interactionPrompt != null) interactionPrompt.SetActive(true);

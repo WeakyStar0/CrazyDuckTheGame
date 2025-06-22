@@ -18,6 +18,9 @@ public class CameraZoneTrigger : MonoBehaviour
     [Header("Objects to Lock Rotation")]
     public GameObject[] objectsToLockRotation;
 
+    [Header("Locked Rotation Settings")]
+    [SerializeField] public float lockedYRotation = 180f;
+
     [Header("Spotlight Settings")]
     public Light spotLight;              // Assign your spotlight here
     public Transform spotLightPosition; // Fixed position of the spotlight (set in inspector)
@@ -56,7 +59,7 @@ public class CameraZoneTrigger : MonoBehaviour
                 {
                     // Create a rotation with Y at 180 degrees, keeping other axes as they were
                     Vector3 euler = objectsToLockRotation[i].transform.rotation.eulerAngles;
-                    lockedObjectRotations[i] = Quaternion.Euler(euler.x, 180f, euler.z);
+                    lockedObjectRotations[i] = Quaternion.Euler(euler.x, lockedYRotation, euler.z);
                 }
             }
         }

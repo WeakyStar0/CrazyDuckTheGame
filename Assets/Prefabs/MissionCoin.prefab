@@ -378,8 +378,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0, y: 0.0000000037252894, z: -2.646978e-23}
+  m_Radius: 1.4344813
+  m_Center: {x: 0, y: 0.0000000037252899, z: -7.543887e-23}
 --- !u!82 &2051263090143475536
 AudioSource:
   m_ObjectHideFlags: 0
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a07b8a3854dea4aaba6f6b83354bfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectClip: {fileID: 0}
+  collectClip: {fileID: 8300000, guid: a1d87276e5e454a4db089e4cc9cfd7cf, type: 3}
   collectEffect: {fileID: 0}
   spinSpeed: 180
 --- !u!4 &9195663696538025002 stripped
