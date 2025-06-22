@@ -19,10 +19,20 @@ public class Collectible : MonoBehaviour
     private Renderer objectRenderer;
     private Collider objectCollider;
 
+    [Header("Collectible ID")]
+    public string collectibleID; // Adiciona este campo para identificar o coletável no save
+
     private void Start()
     {
         objectRenderer = GetComponent<Renderer>();
         objectCollider = GetComponent<Collider>();
+
+        // Verifica se já foi apanhado
+        if (GameManager.Instance != null && GameManager.Instance.ColetavelJaApanhado(collectibleID))
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         if (audioSource != null && ambienceClip != null)
         {
@@ -93,7 +103,7 @@ public class Collectible : MonoBehaviour
         // Notify GameManager
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.CollectItem();
+            GameManager.Instance.CollectItem(collectibleID);
         }
 
         // Start fade out effect

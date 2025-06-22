@@ -16,7 +16,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 43
-    width: 1920
+    width: 2560
     height: 989
   m_ShowMode: 4
   m_Title: Hierarchy
@@ -43,7 +43,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 36
-    width: 1920
+    width: 2560
     height: 933
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
@@ -65,9 +65,9 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 1466
+    x: 1955
     y: 0
-    width: 454
+    width: 605
     height: 933
   m_MinSize: {x: 276, y: 76}
   m_MaxSize: {x: 4001, y: 4026}
@@ -93,8 +93,13 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 363
     height: 553
+=======
+    width: 484
+    height: 629
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_MinSize: {x: 201, y: 226}
   m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 14}
@@ -118,9 +123,15 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
+<<<<<<< HEAD
     y: 553
     width: 1466
     height: 380
+=======
+    y: 629
+    width: 1955
+    height: 304
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_MinSize: {x: 231, y: 276}
   m_MaxSize: {x: 10001, y: 10026}
   m_ActualView: {fileID: 12}
@@ -149,7 +160,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1920
+    width: 2560
     height: 989
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -174,7 +185,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1920
+    width: 2560
     height: 36
   m_MinSize: {x: 0, y: 0}
   m_MaxSize: {x: 0, y: 0}
@@ -196,7 +207,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 969
-    width: 1920
+    width: 2560
     height: 20
   m_MinSize: {x: 0, y: 0}
   m_MaxSize: {x: 0, y: 0}
@@ -219,7 +230,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1466
+    width: 1955
     height: 933
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
@@ -245,8 +256,13 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+<<<<<<< HEAD
     width: 1466
     height: 553
+=======
+    width: 1955
+    height: 629
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
@@ -267,10 +283,15 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 363
+    x: 484
     y: 0
+<<<<<<< HEAD
     width: 1103
     height: 553
+=======
+    width: 1471
+    height: 629
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_MinSize: {x: 202, y: 226}
   m_MaxSize: {x: 4002, y: 4026}
   m_ActualView: {fileID: 15}
@@ -301,9 +322,15 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
+<<<<<<< HEAD
     y: 577
     width: 1465
     height: 354
+=======
+    y: 653
+    width: 1954
+    height: 278
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -343,9 +370,15 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
+<<<<<<< HEAD
     m_SelectedIDs: f4350000
     m_LastClickedID: 13812
     m_ExpandedIDs: ffffffff00000000947c0100967c0100987c01009a7c01009c7c01009e7c0100a07c0100a27c0100a47c0100a67c0100a87c0100aa7c0100ac7c0100ae7c0100b07c0100b27c0100b47c0100b67c0100b87c0100ba7c0100bc7c0100be7c0100c07c010000ca9a3b
+=======
+    m_SelectedIDs: 167c0100
+    m_LastClickedID: 97302
+    m_ExpandedIDs: 00000000dc5b0100de5b0100e05b0100e25b0100e45b0100
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -374,7 +407,11 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
+<<<<<<< HEAD
     m_ExpandedIDs: ffffffff00000000947c0100967c0100987c01009a7c01009c7c01009e7c0100a07c0100a27c0100a47c0100a67c0100a87c0100aa7c0100ac7c0100ae7c0100b07c0100b27c0100b47c0100b67c0100b87c0100ba7c0100bc7c0100be7c0100c07c010000ca9a3b
+=======
+    m_ExpandedIDs: 00000000dc5b0100de5b0100e05b0100e25b0100e45b0100
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -453,9 +490,9 @@ MonoBehaviour:
     m_TextWithWhitespace: "Inspector\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1467
+    x: 1956
     y: 24
-    width: 453
+    width: 604
     height: 907
   m_SerializedDataModeController:
     m_DataMode: 0
@@ -504,8 +541,13 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 24
+<<<<<<< HEAD
     width: 362
     height: 527
+=======
+    width: 483
+    height: 603
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -568,10 +610,15 @@ MonoBehaviour:
     m_TextWithWhitespace: "Scene\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 364
+    x: 485
     y: 24
+<<<<<<< HEAD
     width: 1101
     height: 527
+=======
+    width: 1469
+    height: 603
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1154,7 +1201,11 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
+<<<<<<< HEAD
     m_Target: {x: -2119.2927, y: 36.254593, z: 119.885925}
+=======
+    m_Target: {x: -437.7625, y: 174.12238, z: -817.05963}
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
     speed: 2
     m_Value: {x: 0, y: 0, z: 0}
   m_RenderMode: 0
@@ -1202,11 +1253,19 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
+<<<<<<< HEAD
     m_Target: {x: 0.2001542, y: -0.7531196, z: 0.56766444, w: 0.26554397}
+=======
+    m_Target: {x: -0.0001245689, y: -0.999495, z: 0.03239284, w: -0.0057103233}
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
     speed: 2
     m_Value: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
   m_Size:
+<<<<<<< HEAD
     m_Target: 204.38054
+=======
+    m_Target: 272.46454
+>>>>>>> 071c146c253a0264afd457a426ad97ef89ac6040
     speed: 2
     m_Value: 10
   m_Ortho:
