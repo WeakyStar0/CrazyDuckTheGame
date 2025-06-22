@@ -90,6 +90,7 @@ public class ThingsMover : MonoBehaviour
             audioSource.rolloffMode = AudioRolloffMode.Linear;
             audioSource.minDistance = minAudioDistance;
             audioSource.maxDistance = maxAudioDistance;
+            audioSource.dopplerLevel = 0f; // <--- Disable Doppler effect
             audioSource.playOnAwake = false;
             audioSource.loop = true;
         }
@@ -97,6 +98,7 @@ public class ThingsMover : MonoBehaviour
         audioSource.clip = swooshClip;
         audioSource.Play();
     }
+
 
     private void StopSwoosh()
     {
