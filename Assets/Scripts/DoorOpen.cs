@@ -116,7 +116,7 @@ public class DoorOpen : MonoBehaviour
         }
     }
 
-    void ToggleRotations()
+    public void ToggleRotations()
     {
         isOpen = !isOpen;
         isRotating = true;
