@@ -39,8 +39,11 @@ public class MissionCoin : MonoBehaviour
         // Toca o som de coleta
         if (collectClip != null)
         {
+            //make audio 3d
             AudioSource.PlayClipAtPoint(collectClip, transform.position);
+            
         }
+
 
         // Mostra o efeito de partículas
         if (collectEffect != null)
