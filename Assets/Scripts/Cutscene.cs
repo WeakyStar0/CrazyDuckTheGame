@@ -11,22 +11,16 @@ public class CutsceneController : MonoBehaviour
 
     public Sprite[] images;
 
-    [TextArea(2, 5)] public string[] texts;  // Allows multi-line text in Inspector
+    [TextArea(2, 5)] public string[] texts;
 
-    public AudioClip[] audioClips;  // <-- Add this new array for audio clips
+    // NOVO: Durações personalizadas para cada frame
+    public float[] durations;
 
     public float typingSpeed = 0.05f;
     public float fadeDuration = 1f;
 
-    [Tooltip("Tempo em segundos para avançar automaticamente. 0 = só avança com espaço.")]
-    public float autoAdvanceTime = 0f;
-
-    [Tooltip("Nome ou índice da próxima cena a ser carregada ao final da cutscene.")]
     public string nextSceneName = "";
-
-    public AudioSource typingAudioSource; // Typing sound
-
-    public AudioSource audioSource;  // <-- Add an AudioSource to play clips for each step
+    public AudioSource typingAudioSource;
 
     private int currentIndex = 0;
 
@@ -42,40 +36,18 @@ public class CutsceneController : MonoBehaviour
         {
             cutsceneImage.sprite = images[currentIndex];
 
-            // Play the audio clip for the current step if assigned
-            if (audioSource != null && audioClips != null && currentIndex < audioClips.Length && audioClips[currentIndex] != null)
-            {
-                audioSource.Stop();
-                audioSource.clip = audioClips[currentIndex];
-                audioSource.Play();
-            }
-
             yield return StartCoroutine(FadeIn());
-
             yield return StartCoroutine(TypeText(texts[currentIndex]));
 
-            yield return new WaitForSeconds(0.1f);
-
-            float timer = 0f;
-            bool advanced = false;
-            while (!advanced)
+            // NOVO: Aguarda o tempo definido para este índice
+            float waitTime = 0f;
+            if (durations != null && currentIndex < durations.Length)
             {
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    advanced = true;
-                }
-
-                if (autoAdvanceTime > 0f && timer >= autoAdvanceTime)
-                {
-                    advanced = true;
-                }
-
-                timer += Time.deltaTime;
-                yield return null;
+                waitTime = durations[currentIndex];
             }
+            yield return new WaitForSeconds(waitTime);
 
             yield return StartCoroutine(FadeOut());
-
             currentIndex++;
         }
 
@@ -88,25 +60,15 @@ public class CutsceneController : MonoBehaviour
     IEnumerator TypeText(string text)
     {
         cutsceneText.text = "";
-
-        if (typingAudioSource != null)
-            typingAudioSource.Play();
+        if (typingAudioSource != null) typingAudioSource.Play();
 
         foreach (char c in text)
         {
             cutsceneText.text += c;
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                cutsceneText.text = text;
-                break;
-            }
-
             yield return new WaitForSeconds(typingSpeed);
         }
 
-        if (typingAudioSource != null)
-            typingAudioSource.Stop();
+        if (typingAudioSource != null) typingAudioSource.Stop();
     }
 
     IEnumerator FadeIn()
