@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
         {
             coletaveisApanhados[cenaAtual].Add(idColetavel);
         }
-        
+
         // Após apanhar o item, atualizamos a UI com a contagem total.
         UpdateCounterUI();
     }
@@ -113,10 +113,20 @@ public class GameManager : MonoBehaviour
 
     public void ResetProgresso()
     {
-        PlayerPrefs.DeleteKey("ProgressoGuardado"); 
+        PlayerPrefs.DeleteKey("ProgressoGuardado");
         coletaveisApanhados.Clear();
         tpDesbloqueados.Clear();
         UpdateCounterUI(); // Atualiza a UI para 0
         Debug.Log("Progresso reiniciado.");
     }
+    
+    public int GetTotalColetaveis()
+{
+    int totalGeral = 0;
+    foreach (var listaDeColetaveisNaCena in coletaveisApanhados.Values)
+    {
+        totalGeral += listaDeColetaveisNaCena.Count;
+    }
+    return totalGeral;
+}
 }
