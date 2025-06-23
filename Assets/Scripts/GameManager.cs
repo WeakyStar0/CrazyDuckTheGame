@@ -1,18 +1,23 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public Text collectibleCounterText;
-
-    // Novo: Guarda coletáveis por nível
+    // ----- DADOS PERSISTENTES -----
+    // A estrutura para guardar por cena continua útil para o sistema de save e para saber quais foram apanhados
     public Dictionary<string, List<string>> coletaveisApanhados = new Dictionary<string, List<string>>();
     public List<string> tpDesbloqueados = new List<string>();
 
-    public string cenaAtual;
+    // ----- ESTADO ATUAL -----
+    public string cenaAtual { get; private set; }
+
+    // ----- EVENTO PARA A UI -----
+    // Este evento agora vai enviar a CONTAGEM TOTAL
+    public static event Action<int> OnContagemColetaveisMudou;
 
     private void Awake()
     {
@@ -20,6 +25,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -27,20 +33,36 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        cenaAtual = scene.name;
+        // Ao carregar uma nova cena, garantimos que a UI é atualizada com o valor total mais recente.
+        UpdateCounterUI();
+    }
+
     private void Start()
     {
         CarregarProgresso();
-        UpdateCounterUI();
     }
 
     public void CollectItem(string idColetavel)
     {
         if (!coletaveisApanhados.ContainsKey(cenaAtual))
+        {
             coletaveisApanhados[cenaAtual] = new List<string>();
+        }
 
         if (!coletaveisApanhados[cenaAtual].Contains(idColetavel))
+        {
             coletaveisApanhados[cenaAtual].Add(idColetavel);
-
+        }
+        
+        // Após apanhar o item, atualizamos a UI com a contagem total.
         UpdateCounterUI();
     }
 
@@ -49,27 +71,52 @@ public class GameManager : MonoBehaviour
         return coletaveisApanhados.ContainsKey(cenaAtual) && coletaveisApanhados[cenaAtual].Contains(idColetavel);
     }
 
+    // ★★★ A MUDANÇA PRINCIPAL ESTÁ AQUI ★★★
     public void UpdateCounterUI()
     {
-        int total = coletaveisApanhados.ContainsKey(cenaAtual) ? coletaveisApanhados[cenaAtual].Count : 0;
-
-        if (collectibleCounterText != null)
+        int totalGeral = 0;
+        // Itera sobre cada entrada no dicionário (cada cena que tem coletáveis)
+        foreach (var listaDeColetaveisNaCena in coletaveisApanhados.Values)
         {
-            collectibleCounterText.text = "" + total;
+            // Soma o número de itens na lista dessa cena ao total geral
+            totalGeral += listaDeColetaveisNaCena.Count;
         }
+
+        // Dispara o evento com o valor TOTAL GERAL.
+        OnContagemColetaveisMudou?.Invoke(totalGeral);
     }
+
+    // Funções de Save/Load permanecem iguais
     public void GuardarProgresso()
     {
-        FindObjectOfType<SaveSystem>().SaveGame();
+        SaveSystem saveSystem = FindObjectOfType<SaveSystem>();
+        if (saveSystem != null)
+        {
+            saveSystem.SaveGame();
+        }
+        else
+        {
+            Debug.LogWarning("SaveSystem não encontrado na cena para guardar o progresso.");
+        }
     }
+
     public void CarregarProgresso()
     {
-        FindObjectOfType<SaveSystem>().LoadGame();
+        SaveSystem saveSystem = FindObjectOfType<SaveSystem>();
+        if (saveSystem != null)
+        {
+            saveSystem.LoadGame();
+            // Após carregar, força uma atualização da UI com a contagem total
+            UpdateCounterUI();
+        }
     }
+
     public void ResetProgresso()
     {
-        PlayerPrefs.DeleteKey("ProgressoGuardado");
+        PlayerPrefs.DeleteKey("ProgressoGuardado"); 
         coletaveisApanhados.Clear();
         tpDesbloqueados.Clear();
+        UpdateCounterUI(); // Atualiza a UI para 0
+        Debug.Log("Progresso reiniciado.");
     }
 }
