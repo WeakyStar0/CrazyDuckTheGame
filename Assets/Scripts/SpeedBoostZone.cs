@@ -10,19 +10,28 @@ public class SpeedBoostZone : MonoBehaviour
     [SerializeField] private float boostedSpeed = 80f;
 
     [Header("Camera Settings")]
-    [SerializeField] private GameObject mainCameraObject; // Main camera GameObject
-    [SerializeField] private GameObject zoneCameraObject; // New camera GameObject (disabled by default)
-    [SerializeField] private Transform cameraTarget;     // Target to follow
-    [SerializeField] private Vector3 cameraOffset;       // Offset from target
-    [SerializeField] private Vector3 cameraRotationEuler; // Camera rotation in degrees
+    [SerializeField] private GameObject mainCameraObject;
+    [SerializeField] private GameObject zoneCameraObject;
+    [SerializeField] private Transform cameraTarget;
+    [SerializeField] private Vector3 cameraOffset;
+    [SerializeField] private Vector3 cameraRotationEuler;
 
     [Header("Audio Settings")]
-    [SerializeField] private AudioSource audioSource;    // AudioSource component to play music
-    [SerializeField] private AudioClip zoneMusic;        // Music to play on first enter
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip zoneMusic;
+
+    [Header("Light Blink Settings")]
+    [SerializeField] private bool enableBlinkingLights = false;
+    [SerializeField] private GameObject lightRootObject; // Parent containing child lights
 
     private float originalSpeed;
     private bool playerInside = false;
     private bool musicPlayed = false;
+    private Light[] childLights;
+    private float blinkTimer = 0f;
+
+    private const float MAX_INTENSITY = 1000f;
+    private const float BLINK_SPEED = 2f;
 
     private void Awake()
     {
@@ -30,25 +39,19 @@ public class SpeedBoostZone : MonoBehaviour
             Debug.LogError("PlayerController reference is not assigned!");
 
         if (speedParticles == null)
-        {
-            Debug.LogWarning("Speed particles not assigned, no particles will be shown.");
-        }
-        else
-        {
-            var main = speedParticles.main;
-            main.loop = true;
-        }
+            Debug.LogWarning("Speed particles not assigned.");
 
-        if (mainCameraObject == null)
-            Debug.LogWarning("Main Camera Object is not assigned.");
-
-        if (zoneCameraObject == null)
-            Debug.LogWarning("Zone Camera Object is not assigned.");
-        else
+        if (zoneCameraObject != null)
             zoneCameraObject.SetActive(false);
 
         if (audioSource == null)
-            Debug.LogWarning("AudioSource is not assigned. Music won't play.");
+            Debug.LogWarning("AudioSource is not assigned.");
+
+        // Load child lights if object is assigned
+        if (lightRootObject != null)
+        {
+            childLights = lightRootObject.GetComponentsInChildren<Light>();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -98,8 +101,12 @@ public class SpeedBoostZone : MonoBehaviour
 
         playerInside = false;
 
-        // Optional: reset music if you want it to play again on re-entry
-        // musicPlayed = false;
+        // Reset all light intensities when exiting
+        if (enableBlinkingLights && childLights != null)
+        {
+            foreach (var light in childLights)
+                light.intensity = 0f;
+        }
     }
 
     private void Update()
@@ -108,6 +115,19 @@ public class SpeedBoostZone : MonoBehaviour
         {
             zoneCameraObject.transform.position = cameraTarget.position + cameraOffset;
             zoneCameraObject.transform.rotation = Quaternion.Euler(cameraRotationEuler);
+        }
+
+        // Blinking logic
+        if (enableBlinkingLights && playerInside && childLights != null)
+        {
+            blinkTimer += Time.deltaTime * BLINK_SPEED;
+            float intensity = Mathf.PingPong(blinkTimer * MAX_INTENSITY, MAX_INTENSITY);
+
+            foreach (var light in childLights)
+            {
+                if (light != null)
+                    light.intensity = intensity;
+            }
         }
     }
 

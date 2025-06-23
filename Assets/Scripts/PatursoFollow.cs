@@ -25,9 +25,22 @@ public class PatursoFollow : MonoBehaviour
     [Header("References")]
     public Animator animator;
 
+    // NEW: Inspector field to assign the trigger volume.
+    [Header("Trigger Settings")]
+    [Tooltip("If this collider is assigned, Paturso will only start moving when the player enters it.")]
+    public Collider startTrigger;
+
+    // NEW: Tag to identify the player object.
+    [Tooltip("The tag of the player object that will activate the trigger.")]
+    public string playerTag = "Player";
+
     private int currentIndex = 0;
     private bool isMoving = false;
     private float currentMoveSpeed;
+
+    // NEW: Variables to handle the trigger logic.
+    private Transform playerTransform;
+    private bool hasBeenTriggered = false;
 
     void Start()
     {
@@ -36,16 +49,45 @@ public class PatursoFollow : MonoBehaviour
 
         currentMoveSpeed = moveSpeed;
 
+        // NEW: Don't start moving immediately. Instead, prepare for the trigger.
+        // If no trigger is assigned, Paturso will simply wait.
+        // We also find and cache the player's transform for efficiency.
+        if (startTrigger != null)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag(playerTag);
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
+            else
+            {
+                Debug.LogWarning($"PatursoFollow: Could not find a GameObject with the tag '{playerTag}'. The trigger will not work.", this);
+            }
+        }
+
+        // NEW: Ensure Paturso starts at the first point if the list isn't empty, but doesn't move.
         if (followPoints.Count > 0)
         {
-            transform.position = followPoints[0].position;
-            currentIndex = 1;
-            MoveToNextPoint();
+            // Paturso will now wait at its starting position in the scene until triggered.
+            // If you want Paturso to start AT the first point, uncomment the line below:
+            // transform.position = followPoints[0].position;
         }
     }
 
     void Update()
     {
+        // NEW: Check for the trigger condition before doing anything else.
+        // This only runs if a trigger is assigned and it hasn't been activated yet.
+        if (startTrigger != null && !hasBeenTriggered && playerTransform != null)
+        {
+            // Check if the player's position is inside the trigger's bounds.
+            if (startTrigger.bounds.Contains(playerTransform.position))
+            {
+                StartFollowing();
+            }
+        }
+
+        // --- Original movement logic continues below ---
         if (!isMoving || currentIndex >= followPoints.Count)
             return;
 
@@ -66,6 +108,21 @@ public class PatursoFollow : MonoBehaviour
         {
             ArriveAtPoint();
         }
+    }
+    
+    // NEW: Public method to begin the path following sequence.
+    public void StartFollowing()
+    {
+        if (hasBeenTriggered || followPoints.Count == 0)
+        {
+            // Don't start if already triggered or if there are no points.
+            return;
+        }
+
+        Debug.Log("Player entered the trigger. Paturso is starting its path.", this);
+        hasBeenTriggered = true;
+        currentIndex = 0; // Start with the first point in the list.
+        MoveToNextPoint();
     }
 
     void ArriveAtPoint()
@@ -95,6 +152,12 @@ public class PatursoFollow : MonoBehaviour
 
     void MoveToNextPoint()
     {
+        if (currentIndex >= followPoints.Count)
+        {
+            isMoving = false;
+            return;
+        }
+
         FollowPoint nextPoint = followPoints[currentIndex];
 
         // If the next point has a non-zero speed, use it; otherwise keep current
@@ -102,12 +165,19 @@ public class PatursoFollow : MonoBehaviour
         {
             currentMoveSpeed = nextPoint.moveSpeed;
         }
+        else
+        {
+            // NEW: Ensure we fall back to the default speed if the point has no override.
+            currentMoveSpeed = moveSpeed;
+        }
 
         isMoving = true;
     }
 
     void OnDrawGizmos()
     {
+        if (followPoints == null || followPoints.Count == 0) return;
+
         Gizmos.color = Color.green;
         for (int i = 0; i < followPoints.Count; i++)
         {
