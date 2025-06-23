@@ -4,6 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Hub 1.unity
+    guid: a10cee299f6f7744cb2da7e2839a3b42
+  - enabled: 1
+    path: Assets/Scenes/City 1.unity
+    guid: 3b38343376739ba468c99ca32720928d
+  - enabled: 1
+    path: Assets/Scenes/SecretGameRoom.unity
+    guid: 20dc998d9b5021d4c97c9a18aad7782e
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

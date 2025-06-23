@@ -11,10 +11,15 @@ public class BackToHub : MonoBehaviour
 
     [Header("Scene Settings")]
     [SerializeField] public string sceneToLoad;
+    [Header("Save Settings")]
+    [SerializeField] private bool guardarAntesDeMudarCena = true;
 
     [Header("Trigger Zone Settings")]
     [SerializeField] private bool isPromptZone = true;
     [SerializeField] private bool isInteractionZone = true;
+
+
+
 
     private bool playerInZone = false;
     private Transform playerCamera;
@@ -44,14 +49,14 @@ public class BackToHub : MonoBehaviour
 
             if (isInteractionZone && Input.GetKeyDown(interactionKey))
             {
-                // ✅ Chamar o save automático antes de mudar de cena
-                if (GameManager.Instance != null)
+                if (guardarAntesDeMudarCena && GameManager.Instance != null)
                 {
                     GameManager.Instance.GuardarProgresso();
                 }
 
                 SceneManager.LoadScene(sceneToLoad);
             }
+
         }
         else
         {
@@ -74,7 +79,7 @@ public class BackToHub : MonoBehaviour
 
     public void LoadSceneByName(string sceneName)
     {
-        if (GameManager.Instance != null)
+        if (guardarAntesDeMudarCena && GameManager.Instance != null)
         {
             GameManager.Instance.GuardarProgresso();
         }
