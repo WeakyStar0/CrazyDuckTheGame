@@ -19,6 +19,7 @@ TagManager:
   - SkipButton
   - DialogueCanvas
   - Hazard
+  - Paturso
   layers:
   - Default
   - TransparentFX

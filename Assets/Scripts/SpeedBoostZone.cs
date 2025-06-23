@@ -30,7 +30,9 @@ public class SpeedBoostZone : MonoBehaviour
             Debug.LogError("PlayerController reference is not assigned!");
 
         if (speedParticles == null)
+        {
             Debug.LogWarning("Speed particles not assigned, no particles will be shown.");
+        }
         else
         {
             var main = speedParticles.main;
@@ -42,8 +44,7 @@ public class SpeedBoostZone : MonoBehaviour
 
         if (zoneCameraObject == null)
             Debug.LogWarning("Zone Camera Object is not assigned.");
-
-        if (zoneCameraObject != null)
+        else
             zoneCameraObject.SetActive(false);
 
         if (audioSource == null)
@@ -52,62 +53,60 @@ public class SpeedBoostZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == playerController.gameObject)
+        if (playerController == null || other.gameObject != playerController.gameObject)
+            return;
+
+        originalSpeed = playerController.GetCurrentSpeed();
+        playerController.SetTemporarySpeed(boostedSpeed);
+        playerController.SetJumpEnabled(false);
+
+        if (speedParticles != null && !speedParticles.isPlaying)
+            speedParticles.Play();
+
+        if (mainCameraObject != null)
+            mainCameraObject.SetActive(false);
+
+        if (zoneCameraObject != null)
+            zoneCameraObject.SetActive(true);
+
+        playerInside = true;
+
+        if (!musicPlayed && audioSource != null && zoneMusic != null && !audioSource.isPlaying)
         {
-            originalSpeed = playerController.GetCurrentSpeed();
-            playerController.SetTemporarySpeed(boostedSpeed);
-
-            if (speedParticles != null && !speedParticles.isPlaying)
-            {
-                speedParticles.Play();
-            }
-
-            if (mainCameraObject != null)
-                mainCameraObject.SetActive(false);
-
-            if (zoneCameraObject != null)
-                zoneCameraObject.SetActive(true);
-
-            playerInside = true;
-
-            // Play music once on first entry
-            if (!musicPlayed && audioSource != null && zoneMusic != null)
-            {
-                audioSource.clip = zoneMusic;
-                audioSource.Play();
-                musicPlayed = true;
-            }
+            audioSource.clip = zoneMusic;
+            audioSource.Play();
+            musicPlayed = true;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == playerController.gameObject)
-        {
-            playerController.ResetSpeed();
+        if (playerController == null || other.gameObject != playerController.gameObject)
+            return;
 
-            if (speedParticles != null && speedParticles.isPlaying)
-            {
-                speedParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            }
+        playerController.ResetSpeed();
+        playerController.SetJumpEnabled(true);
 
-            if (mainCameraObject != null)
-                mainCameraObject.SetActive(true);
+        if (speedParticles != null && speedParticles.isPlaying)
+            speedParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
-            if (zoneCameraObject != null)
-                zoneCameraObject.SetActive(false);
+        if (mainCameraObject != null)
+            mainCameraObject.SetActive(true);
 
-            playerInside = false;
-        }
+        if (zoneCameraObject != null)
+            zoneCameraObject.SetActive(false);
+
+        playerInside = false;
+
+        // Optional: reset music if you want it to play again on re-entry
+        // musicPlayed = false;
     }
 
     private void Update()
     {
         if (playerInside && zoneCameraObject != null && cameraTarget != null)
         {
-            // Position camera at target + offset
             zoneCameraObject.transform.position = cameraTarget.position + cameraOffset;
-            // Rotate camera to specified rotation
             zoneCameraObject.transform.rotation = Quaternion.Euler(cameraRotationEuler);
         }
     }
@@ -131,8 +130,12 @@ public class SpeedBoostZone : MonoBehaviour
         }
         else if (col is CapsuleCollider capsule)
         {
-            Vector3 point1 = capsule.transform.position + capsule.center + Vector3.up * (capsule.height / 2 - capsule.radius);
-            Vector3 point2 = capsule.transform.position + capsule.center - Vector3.up * (capsule.height / 2 - capsule.radius);
+            Vector3 center = capsule.transform.position + capsule.center;
+            Vector3 up = capsule.transform.up;
+            float height = Mathf.Max(0, capsule.height / 2 - capsule.radius);
+
+            Vector3 point1 = center + up * height;
+            Vector3 point2 = center - up * height;
 
             Gizmos.DrawWireSphere(point1, capsule.radius);
             Gizmos.DrawWireSphere(point2, capsule.radius);

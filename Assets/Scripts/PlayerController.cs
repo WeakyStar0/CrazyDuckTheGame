@@ -57,6 +57,9 @@ public class PlayerController : MonoBehaviour
     private bool isJumping;
     private bool jumpConsumed;
     private bool jumpWasBlocked;
+
+    private bool canJump = true;
+
     [Header("Start Settings")]
     [SerializeField] private float startRotationY = 0f;
     #endregion
@@ -102,7 +105,7 @@ public class PlayerController : MonoBehaviour
         HandleCrouch();
         UpdateAnimator();
 
-        if (Input.GetButtonDown("Jump"))
+        if (canJump && Input.GetButtonDown("Jump"))
         {
             if (jumpsRemaining > 0 || isGrounded || Time.time - lastGroundedTime < coyoteTime)
             {
@@ -247,6 +250,14 @@ public class PlayerController : MonoBehaviour
     public void SetVelocity(Vector3 newVelocity) { velocity = newVelocity; }
     public void ForceIdleAnimation() { if (animator != null) { animator.SetFloat(SpeedHash, 0); animator.SetBool(IsGroundedHash, true); animator.SetBool(CrouchHash, false); } }
     public void PlayAnimation(string animationName, float transitionTime = 0.1f) { if (animator != null) { animator.CrossFade(animationName, transitionTime); } }
-    
-    
+
+
+
+
+
+    public void SetJumpEnabled(bool value)
+    {
+        canJump = value;
+    }
+
 }
