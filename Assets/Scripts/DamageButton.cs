@@ -1,4 +1,4 @@
-// DamageButton.cs - VERSÃO COMPLETA E ATUALIZADA
+// DamageButton.cs - VERSÃO FINAL COM EFEITOS
 using UnityEngine;
 
 public class DamageButton : MonoBehaviour
@@ -8,10 +8,37 @@ public class DamageButton : MonoBehaviour
     public BossFightController bossController;
     public GameObject interactionPrompt; 
 
-    private bool playerIsInRange = false;
-    private bool hasBeenPressed = false; // Controla se já foi pressionado
+    [Header("Efeitos")] // <-- NOVA SECÇÃO PARA ORGANIZAR
+    [Tooltip("Duração do abanão da câmara.")]
+    public float shakeDuration = 0.4f;
+    [Tooltip("Intensidade do abanão da câmara.")]
+    public float shakeMagnitude = 0.2f;
 
-    // Sempre que o botão (e o seu corredor) for ativado, ele é resetado.
+    private bool playerIsInRange = false;
+    private bool hasBeenPressed = false;
+    
+    // --- Referências para os nossos novos sistemas ---
+    private CameraShake cameraShake; // <-- NOVO
+    private AudioSource audioSource; // <-- NOVO
+
+    // Usamos Awake para garantir que as referências são apanhadas antes de tudo
+    private void Awake()
+    {
+        // Procura o script CameraShake na cena. Como só deves ter um, isto funciona bem.
+        cameraShake = FindFirstObjectByType<CameraShake>(); // <-- NOVO
+        if (cameraShake == null)
+        {
+            Debug.LogError("ERRO: Script CameraShake não encontrado na cena!");
+        }
+
+        // Pega o componente AudioSource que está neste mesmo objeto
+        audioSource = GetComponent<AudioSource>(); // <-- NOVO
+        if (audioSource == null)
+        {
+            Debug.LogWarning("AVISO: Não foi encontrado um AudioSource neste botão.");
+        }
+    }
+
     private void OnEnable()
     {
         hasBeenPressed = false;
@@ -23,7 +50,6 @@ public class DamageButton : MonoBehaviour
 
     private void Update()
     {
-        // Só permite interagir se o jogador estiver perto E o botão ainda não tiver sido pressionado
         if (playerIsInRange && !hasBeenPressed && Input.GetKeyDown(KeyCode.E))
         {
             PressButton();
@@ -32,7 +58,6 @@ public class DamageButton : MonoBehaviour
 
     private void PressButton()
     {
-        // Verificação dupla, só por segurança
         if (hasBeenPressed) return; 
 
         hasBeenPressed = true;
@@ -43,6 +68,9 @@ public class DamageButton : MonoBehaviour
             interactionPrompt.SetActive(false);
         }
         
+        // --- ATIVAR OS EFEITOS AQUI ---
+        TriggerEffects(); // <-- NOVO
+
         if (bossController != null)
         {
             bossController.TakeDamage(1);
@@ -53,9 +81,26 @@ public class DamageButton : MonoBehaviour
         }
     }
     
+    // <-- NOVA FUNÇÃO PARA OS EFEITOS -->
+    private void TriggerEffects()
+    {
+        // 1. Ativar o Camera Shake
+        if (cameraShake != null)
+        {
+            cameraShake.StartShake(shakeDuration, shakeMagnitude);
+        }
+
+        // 2. Tocar o som de explosão
+        if (audioSource != null && audioSource.clip != null)
+        {
+            // Usar PlayOneShot é boa prática para sons que podem repetir-se rapidamente
+            // e não corta outros sons do mesmo AudioSource.
+            audioSource.PlayOneShot(audioSource.clip);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Só mostra a dica se o botão ainda não foi pressionado
         if (other.CompareTag("Player") && !hasBeenPressed)
         {
             playerIsInRange = true;

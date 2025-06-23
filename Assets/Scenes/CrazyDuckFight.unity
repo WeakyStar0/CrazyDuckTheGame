@@ -2738,7 +2738,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -752.3
+      value: -785
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2746,7 +2746,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -338.3
+      value: -335
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e645a4bfa80a75c40875233f765d7fb7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7475,12 +7475,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenRenderer: {fileID: 635039028}
-  screenMaterialIndex: 4
+  screenMaterialIndex: 2
   screenImages:
   - {fileID: 2800000, guid: 10b9fb9799ff24f4499c39cd7084c543, type: 3}
   - {fileID: 2800000, guid: 148d16b13b00354459be2328d580d2d7, type: 3}
   - {fileID: 2800000, guid: 0f7cbf47794cbc94c964f6c69cf71ccd, type: 3}
-  changeInterval: 3
+  changeInterval: 1
 --- !u!23 &635039028 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 62fbdd64009f3d2428f6abd204ec3db5, type: 3}
@@ -8022,8 +8022,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 684294391}
-  - component: {fileID: 684294390}
   - component: {fileID: 684294389}
+  - component: {fileID: 684294392}
   m_Layer: 0
   m_Name: DamageButton_2
   m_TagString: Untagged
@@ -8052,20 +8052,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 267.10907, y: 158.71042, z: 74.379944}
   m_Center: {x: 126.58115, y: -6.5961914, z: 21.100494}
---- !u!114 &684294390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 684294388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2f090dc68a54db43b406e576ec91cd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossController: {fileID: 1384538130}
-  interactionPrompt: {fileID: 604992278}
 --- !u!4 &684294391
 Transform:
   m_ObjectHideFlags: 0
@@ -8082,6 +8068,22 @@ Transform:
   - {fileID: 604992281}
   m_Father: {fileID: 177430258}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &684294392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684294388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2f090dc68a54db43b406e576ec91cd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossController: {fileID: 1384538130}
+  interactionPrompt: {fileID: 307873730}
+  shakeDuration: 0.4
+  shakeMagnitude: 3
 --- !u!1 &696331730
 GameObject:
   m_ObjectHideFlags: 0
@@ -15269,6 +15271,7 @@ GameObject:
   - component: {fileID: 1344041414}
   - component: {fileID: 1344041416}
   - component: {fileID: 1344041415}
+  - component: {fileID: 1344041417}
   m_Layer: 0
   m_Name: DamageButton
   m_TagString: Untagged
@@ -15327,6 +15330,105 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bossController: {fileID: 1384538130}
   interactionPrompt: {fileID: 307873730}
+  shakeDuration: 0.4
+  shakeMagnitude: 3
+--- !u!82 &1344041417
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1344041413}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: a8b1ad3f7d427324ab915df1da6f03d3, type: 3}
+  m_Resource: {fileID: 8300000, guid: a8b1ad3f7d427324ab915df1da6f03d3, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 202.4
+  MaxDistance: 489.59
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1351205357
 GameObject:
   m_ObjectHideFlags: 0
@@ -15914,6 +16016,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bossController: {fileID: 1384538130}
   interactionPrompt: {fileID: 126230081}
+  shakeDuration: 0.4
+  shakeMagnitude: 3
 --- !u!1 &1365490117
 GameObject:
   m_ObjectHideFlags: 0
@@ -19596,6 +19700,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1799337213}
+  - component: {fileID: 1799337214}
   m_Layer: 6
   m_Name: CameraRoot
   m_TagString: Untagged
@@ -19619,6 +19724,18 @@ Transform:
   - {fileID: 607103178}
   m_Father: {fileID: 1423942312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1799337214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799337212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6511086120cb3ef4daecbd68c9e394a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1817689443
 GameObject:
   m_ObjectHideFlags: 0
