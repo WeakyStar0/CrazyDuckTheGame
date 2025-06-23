@@ -37,7 +37,7 @@ public class ParkingCar : MonoBehaviour
 
         // ALTERAÇÃO: Definimos a rotação inicial APENAS UMA VEZ aqui no Start().
         // O carro vai olhar na direção do primeiro movimento (para o endPoint) e manter essa rotação.
-        transform.LookAt(endPoint.position);
+        //transform.LookAt(endPoint.position);
 
         StartCoroutine(MovementCycle());
     }
