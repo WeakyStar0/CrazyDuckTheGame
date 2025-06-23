@@ -342,10 +342,17 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
+<<<<<<< HEAD
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: f4350000
     m_LastClickedID: 13812
     m_ExpandedIDs: ffffffff0000000040cc000042cc000044cc000046cc000048cc00004acc00004ccc00004ecc000050cc000052cc000054cc000056cc000058cc00005acc00005ccc00005ecc000060cc000062cc000064cc000066cc000068cc00006acc00006ccc000000ca9a3b
+=======
+    scrollPos: {x: 0, y: 79}
+    m_SelectedIDs: 9e7d0100
+    m_LastClickedID: 97694
+    m_ExpandedIDs: 0000000008e50000
+>>>>>>> cbb0059b056054afea6a060e4a8e9f7511ab2403
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -374,7 +381,11 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
+<<<<<<< HEAD
     m_ExpandedIDs: ffffffff0000000040cc000042cc000044cc000046cc000048cc00004acc00004ccc00004ecc000050cc000052cc000054cc000056cc000058cc00005acc00005ccc00005ecc000060cc000062cc000064cc000066cc000068cc00006acc00006ccc000000ca9a3b
+=======
+    m_ExpandedIDs: 0000000008e50000
+>>>>>>> cbb0059b056054afea6a060e4a8e9f7511ab2403
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1154,7 +1165,11 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
+<<<<<<< HEAD
     m_Target: {x: -835.5674, y: 56.6, z: -63.600006}
+=======
+    m_Target: {x: 550.5, y: 277.94284, z: 0}
+>>>>>>> cbb0059b056054afea6a060e4a8e9f7511ab2403
     speed: 2
     m_Value: {x: 0, y: 0, z: 0}
   m_RenderMode: 0
@@ -1202,15 +1217,23 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
+<<<<<<< HEAD
     m_Target: {x: 0.25503996, y: -0.27573544, z: 0.0761427, w: 0.92370147}
+=======
+    m_Target: {x: -0.006584169, y: 0.0734316, z: 0.00048531187, w: 0.9972887}
+>>>>>>> cbb0059b056054afea6a060e4a8e9f7511ab2403
     speed: 2
     m_Value: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
   m_Size:
+<<<<<<< HEAD
     m_Target: 97.764984
+=======
+    m_Target: 826.8908
+>>>>>>> cbb0059b056054afea6a060e4a8e9f7511ab2403
     speed: 2
     m_Value: 10
   m_Ortho:
-    m_Target: 0
+    m_Target: 1
     speed: 2
     m_Value: 0
   m_CameraSettings:
