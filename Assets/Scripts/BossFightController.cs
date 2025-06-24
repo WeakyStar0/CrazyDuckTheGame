@@ -1,10 +1,10 @@
-// BossFightController.cs - VERSÃO FINAL COM MÚSICA
+// BossFightController.cs - VERSÃO FINAL COM MÚSICA E DESTRUIÇÃO DE OBJETO
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement; 
-using System.Collections; // <-- NOVO: Necessário para Coroutines
+using System.Collections;
 
 public class BossFightController : MonoBehaviour
 {
@@ -27,7 +27,6 @@ public class BossFightController : MonoBehaviour
     private float currentTime;
     private bool isBossFightActive = false;
     
-    // --- NOVAS VARIÁVEIS DE ÁUDIO ---
     [Header("Configuração da Música")]
     [Tooltip("O AudioSource que tocará a música do boss.")]
     public AudioSource musicAudioSource; 
@@ -36,11 +35,17 @@ public class BossFightController : MonoBehaviour
     [Tooltip("Música que toca quando o jogador vence (Opcional).")]
     public AudioClip victoryMusicClip;
 
-    private AudioClip originalMusic; // <-- NOVO: Para guardar a música que estava a tocar antes
+    // --- NOVA VARIÁVEL PARA A BARREIRA ---
+    [Header("Recompensas da Vitória")]
+    [Tooltip("O objeto (pai da barreira e do diálogo) a ser destruído quando o boss for derrotado.")]
+    public GameObject objectToDestroyOnVictory; // <-- NOVO
+
+    private AudioClip originalMusic;
     #endregion
     
     void Start()
     {
+        // ... (O resto da função Start continua igual)
         currentHealth = maxHealth;
         if (bossUIPanel != null) bossUIPanel.SetActive(false);
         if (bossHealthSlider != null)
@@ -56,6 +61,7 @@ public class BossFightController : MonoBehaviour
 
     void Update()
     {
+        // ... (A função Update continua igual)
         if (!isBossFightActive) return;
         currentTime -= Time.deltaTime;
         UpdateTimerUI();
@@ -67,18 +73,18 @@ public class BossFightController : MonoBehaviour
 
     public void StartBossFight()
     {
+        // ... (A função StartBossFight continua igual)
         Debug.Log("A LUTA CONTRA O BOSS COMEÇOU!");
         isBossFightActive = true;
         currentTime = totalTimeLimit;
         if (bossUIPanel != null) bossUIPanel.SetActive(true);
         
-        // --- LÓGICA DE MÚSICA INICIAL ---
         if (musicAudioSource != null && bossMusicClip != null)
         {
-            originalMusic = musicAudioSource.clip; // Guarda a música atual
+            originalMusic = musicAudioSource.clip; 
             musicAudioSource.Stop();
             musicAudioSource.clip = bossMusicClip;
-            musicAudioSource.loop = true; // Garante que a música do boss toca em loop
+            musicAudioSource.loop = true; 
             musicAudioSource.Play();
         }
         
@@ -92,27 +98,33 @@ public class BossFightController : MonoBehaviour
         Debug.Log("BOSS DERROTADO! PARABÉNS!");
         if (bossUIPanel != null) bossUIPanel.SetActive(false);
 
-        // --- LÓGICA DE MÚSICA DE VITÓRIA ---
         if (musicAudioSource != null)
         {
             musicAudioSource.Stop();
             if (victoryMusicClip != null)
             {
                 musicAudioSource.clip = victoryMusicClip;
-                musicAudioSource.loop = false; // Toca a música de vitória uma vez
+                musicAudioSource.loop = false;
                 musicAudioSource.Play();
-                // Opcional: Iniciar uma coroutine para voltar à música original depois
-                // StartCoroutine(RestoreOriginalMusicAfter(victoryMusicClip.length));
             }
         }
+
+        // --- LÓGICA PARA DESTRUIR A BARREIRA ---
+        // Se um objeto foi atribuído no Inspector, destrói-o.
+        if (objectToDestroyOnVictory != null) // <-- NOVO
+        {
+            Destroy(objectToDestroyOnVictory); // <-- NOVO
+            Debug.Log($"O objeto '{objectToDestroyOnVictory.name}' foi destruído, desbloqueando o caminho."); // <-- NOVO (Opcional, bom para debug)
+        }
+        // --- FIM DA NOVA LÓGICA ---
     }
 
     private void BossFightFail()
     {
+        // ... (A função BossFightFail continua igual)
         isBossFightActive = false; 
         Debug.Log("TEMPO ESGOTADO! A reiniciar a cena...");
 
-        // --- PARA A MÚSICA ANTES DE REINICIAR ---
         if (musicAudioSource != null)
         {
             musicAudioSource.Stop();
@@ -122,8 +134,8 @@ public class BossFightController : MonoBehaviour
         SceneManager.LoadScene(currentSceneIndex);
     }
     
-    // Todas as outras funções (TakeDamage, UpdateUI, etc.) continuam iguais
     #region Funções Inalteradas
+    // ... (Todas as outras funções continuam exatamente iguais)
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
