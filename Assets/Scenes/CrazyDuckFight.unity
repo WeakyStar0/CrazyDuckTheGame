@@ -31549,11 +31549,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messages:
-  - message: '[DIALOGO FINAL AQUI]'
+  - message: Parece que te subestimei...
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
-    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Natalia
+    typingSound: {fileID: 8300000, guid: 4dd6031d7a3dc8d47bd8124ab7c8b667, type: 3}
+    characterSprite: {fileID: 21300000, guid: 3bae7504669c7e34580438ffdd9e7ec4, type: 3}
+    characterName: Crazy Duck
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 10000000
@@ -31562,11 +31562,11 @@ MonoBehaviour:
     skipKey: 0
     hasChoices: 1
     choices: []
-  - message: '[DIALOGO FINAL AQUI]'
+  - message: "Ent\xE3o, o qu\xEA que vais fazer?"
     soundEffect: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 10000000
