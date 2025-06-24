@@ -20,5 +20,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SecretGameRoom.unity
     guid: 20dc998d9b5021d4c97c9a18aad7782e
+  - enabled: 1
+    path: Assets/Scenes/CrazyDuckFight.unity
+    guid: 30c714b278782e1438efb8b8f16f3582
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
