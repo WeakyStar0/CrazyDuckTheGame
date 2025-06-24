@@ -45,6 +45,12 @@ public class PatutBoss : MonoBehaviour
     [SerializeField] private ParticleSystem deathExplosionEffectPrefab;  // Assign a prefab here
     [SerializeField] private AudioClip deathExplosionSound;
 
+    // --- NEW SECTION ADDED HERE ---
+    [Header("Sequence Triggers")]
+    [Tooltip("Reference to the script that handles the death memory sequence.")]
+    [SerializeField] private BossMemorySequence memorySequence;
+    // --- END OF NEW SECTION ---
+
     private AudioSource _audioSource;
 
     private float _projectileCooldownTimer;
@@ -133,6 +139,18 @@ public class PatutBoss : MonoBehaviour
 
     private void OnBossDefeated()
     {
+        // --- MODIFICATION HERE ---
+        // Trigger the memory sequence if the reference is set
+        if (memorySequence != null)
+        {
+            memorySequence.BeginSequence();
+        }
+        else
+        {
+            Debug.LogWarning("Memory Sequence script is not assigned in PatutBoss.", this.gameObject);
+        }
+        // --- END OF MODIFICATION ---
+
         // Play death explosion particles (instantiated as separate GameObject)
         if (deathExplosionEffectPrefab != null)
         {
