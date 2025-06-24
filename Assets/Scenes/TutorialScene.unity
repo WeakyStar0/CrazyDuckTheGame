@@ -5005,6 +5005,7 @@ MonoBehaviour:
   messages:
   - message: Boa!!!
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -10879,6 +10880,7 @@ MonoBehaviour:
   messages:
   - message: "Oh n\xE3o! O Patut!"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -10892,6 +10894,7 @@ MonoBehaviour:
   - message: "Inimigo detetado. Amea\xE7a ao Pato Mestre. Objetivo: Aniquila\xE7\xE3o
       imediata"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
@@ -10904,6 +10907,7 @@ MonoBehaviour:
     choices: []
   - message: "Cuidado, este \xE9 um inimigo a s\xE9rio. Vais ter de o derrotar"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -10916,6 +10920,7 @@ MonoBehaviour:
     choices: []
   - message: Gloria ao Pato Mestre
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
@@ -23919,6 +23924,7 @@ MonoBehaviour:
   messages:
   - message: "Alto! Deteto uma presen\xE7a sinistra depois deste corredor. Tem cuidado."
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -27564,6 +27570,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1317660252}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &664736202
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 664736203}
+  - component: {fileID: 664736204}
+  m_Layer: 7
+  m_Name: zone (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &664736203
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664736202}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.4937474, z: -0, w: 0.86960536}
+  m_LocalPosition: {x: -167.2, y: 0, z: -109.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1759589471}
+  m_LocalEulerAnglesHint: {x: 0, y: 59.174, z: 0}
+--- !u!65 &664736204
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664736202}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 146.8088, y: 77, z: 147.24469}
+  m_Center: {x: -5.317406, y: 0, z: -33.894775}
 --- !u!1001 &665085200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29102,8 +29161,8 @@ MonoBehaviour:
   cameraCollisionMask:
     serializedVersion: 2
     m_Bits: 265
-  cameraSmoothTime: 0.05
-  cameraCollisionRadius: 0.03
+  cameraSmoothTime: 0
+  cameraCollisionRadius: 1
   knockbackCameraFollowSpeed: 5
   dashCameraFollowSpeed: 1
   defaultShakeDuration: 0.5
@@ -29223,8 +29282,8 @@ CharacterController:
   serializedVersion: 3
   m_Height: 17.7
   m_Radius: 4.13
-  m_SlopeLimit: 45
-  m_StepOffset: 3
+  m_SlopeLimit: 55
+  m_StepOffset: 4
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: -0.17, y: 9, z: 0}
@@ -67236,6 +67295,7 @@ MonoBehaviour:
   messages:
   - message: Patos! Eles foram enviados para te assassinar
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -67248,6 +67308,7 @@ MonoBehaviour:
     choices: []
   - message: Pressiona [mouse1] para atacar
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -92011,6 +92072,7 @@ MonoBehaviour:
   messages:
   - message: Apanhar "Espato"?
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 0}
     characterName: 
     showCharacter: 0
@@ -97865,6 +97927,7 @@ Transform:
   - {fileID: 416041853}
   - {fileID: 1741617645}
   - {fileID: 2132137397}
+  - {fileID: 664736203}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1761511522
@@ -99144,7 +99207,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 890.1, y: 182}
+  m_AnchoredPosition: {x: 890.1, y: 156}
   m_SizeDelta: {x: 640.0112, y: 52.8807}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1790580587
@@ -99838,6 +99901,7 @@ MonoBehaviour:
   messages:
   - message: Apanhar "NatNav"?
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 0}
     characterName: 
     showCharacter: 0
@@ -99896,6 +99960,7 @@ MonoBehaviour:
           m_Calls: []
   - message: Finalmente consegui entrar em contacto contigo
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -99954,6 +100019,7 @@ MonoBehaviour:
           m_Calls: []
   - message: "N\xE3o h\xE1 tempo para explicar, tens de sair daqui"
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -103715,6 +103781,7 @@ MonoBehaviour:
   messages:
   - message: "N\xE3o caias. Pressiona [Espa\xE7o] para saltar"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -117713,6 +117780,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 679692766}
+  - {fileID: 8346585022375803704}
   - {fileID: 59720190}
   - {fileID: 1127387594}
   - {fileID: 1597943358}
@@ -117751,7 +117819,6 @@ SceneRoots:
   - {fileID: 902148315}
   - {fileID: 1432719510}
   - {fileID: 1988521795}
-  - {fileID: 8346585022375803704}
   - {fileID: 1275460031}
   - {fileID: 1607735415}
   - {fileID: 1802951540}
