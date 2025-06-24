@@ -17068,7 +17068,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 295cf9236c563e343a30dba02b2f3cc0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 263d694103dc7214ea8004f90564a0b2, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -23280,6 +23280,7 @@ MonoBehaviour:
   spinSpeed: 360
   floatUpSpeed: 2
   fadeOutDuration: 0.5
+  collectibleID: 
 --- !u!135 &694304302
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -45211,6 +45212,7 @@ MonoBehaviour:
   spinSpeed: 360
   floatUpSpeed: 2
   fadeOutDuration: 0.5
+  collectibleID: 
 --- !u!135 &1234456168
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -64356,7 +64358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bab41d30e70062438ce2e934aa10503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectibleCounterText: {fileID: 941326299}
+  tpDesbloqueados: []
 --- !u!4 &1597943358
 Transform:
   m_ObjectHideFlags: 0
@@ -86004,6 +86006,7 @@ MonoBehaviour:
   spinSpeed: 360
   floatUpSpeed: 2
   fadeOutDuration: 0.5
+  collectibleID: 
 --- !u!135 &2073656313
 SphereCollider:
   m_ObjectHideFlags: 0

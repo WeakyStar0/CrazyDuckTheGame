@@ -24,10 +24,8 @@ public class DialogueMessage
     public string message;
     public AudioClip soundEffect;
 
-    // ##### ALTERAÇÃO 1: Adicionar campo para o som de typing específico da mensagem #####
     [Tooltip("Som de 'typing' específico para esta mensagem. Se deixado vazio, usará o som padrão do Dialogue System.")]
-    public AudioClip typingSound; // Este é o novo campo!
-    // ##### FIM DA ALTERAÇÃO 1 #####
+    public AudioClip typingSound;
 
     public Sprite characterSprite;
     public string characterName;
@@ -75,7 +73,7 @@ public class DialogueSystem : MonoBehaviour
 
     [Header("Settings")]
     public float defaultTypingSpeed = 0.05f;
-    public AudioClip typingSound; // Este agora é o som de fallback/padrão
+    public AudioClip typingSound;
     public AudioClip advanceSound;
     [Range(0, 1)] public float soundVolume = 0.5f;
     public bool freezePlayerDuringDialogue = true;
@@ -116,27 +114,41 @@ public class DialogueSystem : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-
+        
         SceneManager.sceneLoaded += OnSceneLoaded;
-
-        DeactivateAllUIElements();
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+    
+    private void OnSceneUnloaded(Scene scene)
+    {
+        // Esta função limpa o ESTADO do diálogo (as variáveis lógicas)
+        // antes da próxima cena carregar.
+        EndDialogue();
     }
 
+    // ##### ALTERAÇÃO CRÍTICA AQUI #####
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Primeiro, garantimos que temos um canvas para trabalhar
         InstantiateDialogueCanvas();
+        // Depois, encontramos as referências da UI na NOVA cena
         FindUIReferences();
+        
+        // AGORA, a parte mais importante: Forçamos a desativação de toda a UI.
+        // Isto funciona como um "reset" visual a cada vez que uma cena carrega,
+        // garantindo que a UI nunca aparece sem ser chamada.
+        DeactivateAllUIElements();
 
-        if (dialogueActive)
-        {
-            DisplayCurrentMessage();
-        }
+        // Removemos o bloco 'if (dialogueActive)' que estava a causar o problema.
+        // O diálogo NUNCA deve continuar entre cenas.
     }
+    // ##### FIM DA ALTERAÇÃO #####
 
     private void InstantiateDialogueCanvas()
     {
@@ -155,7 +167,7 @@ public class DialogueSystem : MonoBehaviour
         GameObject canvasObj = GameObject.FindGameObjectWithTag("DialogueCanvas");
         if (canvasObj == null)
         {
-            Debug.LogError("DialogueCanvas not found in scene! Make sure it's instantiated and tagged.");
+            // Não logamos erro aqui, pois pode ser chamado durante a transição
             return;
         }
 
@@ -226,7 +238,7 @@ public class DialogueSystem : MonoBehaviour
         else
         {
             bool skipPressed = Input.GetKeyDown(globalSkipKey) ||
-                               (currentMessageIndex < currentDialogue.Length &&
+                               (currentDialogue != null && currentMessageIndex < currentDialogue.Length &&
                                 currentDialogue[currentMessageIndex].skipKey != KeyCode.None &&
                                 Input.GetKeyDown(currentDialogue[currentMessageIndex].skipKey));
 
@@ -269,7 +281,7 @@ public class DialogueSystem : MonoBehaviour
         {
             CompleteMessage();
         }
-        else if (currentMessageIndex < currentDialogue.Length - 1)
+        else if (currentDialogue != null && currentMessageIndex < currentDialogue.Length - 1)
         {
             NextMessage();
         }
@@ -303,7 +315,11 @@ public class DialogueSystem : MonoBehaviour
 
     private void DisplayCurrentMessage()
     {
-        if (currentMessageIndex >= currentDialogue.Length) return;
+        if (currentDialogue == null || currentMessageIndex >= currentDialogue.Length)
+        {
+            EndDialogue();
+            return;
+        }
 
         DialogueMessage message = currentDialogue[currentMessageIndex];
 
@@ -381,7 +397,8 @@ public class DialogueSystem : MonoBehaviour
         while (true)
         {
             float angle = Mathf.Sin(Time.time * characterSwingSpeed) * characterSwingAngle;
-            characterImage.transform.rotation = Quaternion.Euler(0, 0, angle) * characterInitialRotation;
+            if (characterImage != null)
+                characterImage.transform.rotation = Quaternion.Euler(0, 0, angle) * characterInitialRotation;
             yield return null;
         }
     }
@@ -408,23 +425,24 @@ public class DialogueSystem : MonoBehaviour
         typingCoroutine = StartCoroutine(TypeText(text, speed));
     }
 
-    // ##### ALTERAÇÃO 2: Modificar a corrotina TypeText para usar o som correto e ignorar espaços #####
     private IEnumerator TypeText(string text, float speed)
     {
         isTyping = true;
-        dialogueText.text = "";
+        if(dialogueText != null) dialogueText.text = "";
 
-        // Pega a mensagem atual para aceder ao som de typing específico
-        DialogueMessage currentMessage = currentDialogue[currentMessageIndex];
+        if (currentDialogue == null)
+        {
+            isTyping = false;
+            yield break;
+        }
         
-        // Decide qual som usar: o da mensagem tem prioridade, se não houver, usa o padrão.
+        DialogueMessage currentMessage = currentDialogue[currentMessageIndex];
         AudioClip soundToPlay = currentMessage.typingSound != null ? currentMessage.typingSound : this.typingSound;
 
         foreach (char letter in text.ToCharArray())
         {
-            dialogueText.text += letter;
-
-            // Toca o som apenas se houver um som definido E se o caracter não for um espaço em branco
+            if (dialogueText != null) dialogueText.text += letter;
+            
             if (soundToPlay != null && !char.IsWhiteSpace(letter))
             {
                 audioSource.PlayOneShot(soundToPlay, soundVolume * 0.5f);
@@ -434,8 +452,11 @@ public class DialogueSystem : MonoBehaviour
         }
 
         isTyping = false;
+        
+        if (currentDialogue == null) yield break;
 
-        // O resto da lógica permanece igual
+        // Re-get a a referência porque pode ter mudado
+        currentMessage = currentDialogue[currentMessageIndex];
         if (currentMessage.hasChoices && currentMessage.choices.Length > 0)
         {
             DisplayChoices(currentMessage);
@@ -445,16 +466,16 @@ public class DialogueSystem : MonoBehaviour
             StartSkipButtonAnimation();
         }
     }
-    // ##### FIM DA ALTERAÇÃO 2 #####
 
     private void DisplayChoices(DialogueMessage message)
     {
         isWaitingForChoice = true;
         selectedChoiceIndex = 0;
-        optionsPanel.SetActive(true);
+        if(optionsPanel != null) optionsPanel.SetActive(true);
 
         for (int i = 0; i < message.choices.Length; i++)
         {
+            if(optionTextPrefab == null || optionsPanel == null) continue;
             GameObject optionInstance = Instantiate(optionTextPrefab, optionsPanel.transform);
             TMP_Text optionText = optionInstance.GetComponent<TMP_Text>();
             optionText.text = message.choices[i].choiceText;
@@ -468,7 +489,8 @@ public class DialogueSystem : MonoBehaviour
     {
         for (int i = 0; i < currentChoiceUIs.Count; i++)
         {
-            currentChoiceUIs[i].color = (i == selectedChoiceIndex) ? selectedOptionColor : defaultOptionColor;
+            if(currentChoiceUIs[i] != null)
+                currentChoiceUIs[i].color = (i == selectedChoiceIndex) ? selectedOptionColor : defaultOptionColor;
         }
         if (advanceSound != null)
         {
@@ -478,6 +500,12 @@ public class DialogueSystem : MonoBehaviour
 
     private void SelectChoice()
     {
+        if (currentDialogue == null || currentDialogue[currentMessageIndex].choices == null || selectedChoiceIndex >= currentDialogue[currentMessageIndex].choices.Length)
+        {
+            EndDialogue();
+            return;
+        }
+
         DialogueChoice choice = currentDialogue[currentMessageIndex].choices[selectedChoiceIndex];
 
         isWaitingForChoice = false;
@@ -503,7 +531,7 @@ public class DialogueSystem : MonoBehaviour
         }
         foreach (TMP_Text choiceUI in currentChoiceUIs)
         {
-            Destroy(choiceUI.gameObject);
+            if (choiceUI != null) Destroy(choiceUI.gameObject);
         }
         currentChoiceUIs.Clear();
         isWaitingForChoice = false;
@@ -534,6 +562,12 @@ public class DialogueSystem : MonoBehaviour
         {
             StopCoroutine(typingCoroutine);
             typingCoroutine = null;
+        }
+
+        if (currentDialogue == null || dialogueText == null)
+        {
+            EndDialogue();
+            return;
         }
 
         dialogueText.text = currentDialogue[currentMessageIndex].message;
@@ -610,25 +644,36 @@ public class DialogueSystem : MonoBehaviour
 
     public void EndDialogue()
     {
+        // A verificação 'if (!dialogueActive)' previne que esta função
+        // seja chamada múltiplas vezes desnecessariamente.
         if (!dialogueActive) return;
 
+        dialogueActive = false;
+        
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         if (autoAdvanceCoroutine != null) StopCoroutine(autoAdvanceCoroutine);
+        
         StopSwingAnimation();
         ClearChoices();
-
         DeactivateAllUIElements();
 
         if (playerController != null)
         {
             playerController.SetControlEnabled(true);
-
-            Vector3 newVelocity = playerVelocityBeforeDialogue;
-            newVelocity.y = playerController.GetVelocity().y;
-            playerController.SetVelocity(newVelocity);
+            
+            // Apenas tentamos restaurar a velocidade se tivermos uma referência
+            if (playerVelocityBeforeDialogue != null)
+            {
+               Vector3 newVelocity = playerVelocityBeforeDialogue;
+               newVelocity.y = playerController.GetVelocity().y;
+               playerController.SetVelocity(newVelocity);
+            }
         }
-
-        dialogueActive = false;
+        
+        isTyping = false;
+        isWaitingForChoice = false;
+        currentDialogue = null;
+        currentMessageIndex = 0;
 
         if (activeTrigger != null && activeTrigger.isRepeatable)
         {
