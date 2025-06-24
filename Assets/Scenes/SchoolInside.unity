@@ -26258,6 +26258,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4958332315337656, guid: 5a652a60006d6ec46980e623412396f9, type: 3}
   m_PrefabInstance: {fileID: 1807143313}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &492120857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 492120858}
+  m_Layer: 0
+  m_Name: spawnpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &492120858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492120857}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1312.1, y: 169.2, z: -1016.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &493145451
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36230,6 +36261,7 @@ MonoBehaviour:
   messages:
   - message: Olaaaaa!
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: -709060483, guid: 98f51ef78a7e72945b5ed5a8d77a9503, type: 3}
     characterName: Pagarto
     showCharacter: 1
@@ -36242,6 +36274,7 @@ MonoBehaviour:
     choices: []
   - message: "O meu amigo Patoel est\xE1 com um problema..."
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: -709060483, guid: 98f51ef78a7e72945b5ed5a8d77a9503, type: 3}
     characterName: Pagarto
     showCharacter: 1
@@ -36255,6 +36288,7 @@ MonoBehaviour:
   - message: "Eu gostava de me sentar mas n\xE3o consigo... Esta cadeira \xE9 muito
       pequena..."
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1
@@ -36267,6 +36301,7 @@ MonoBehaviour:
     choices: []
   - message: "Podes ajud\xE1-lo a encontrar uma cadeira maior?"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: -709060483, guid: 98f51ef78a7e72945b5ed5a8d77a9503, type: 3}
     characterName: Pagarto
     showCharacter: 1
@@ -36314,8 +36349,8 @@ MonoBehaviour:
   triggerOnEnter: 0
   triggerOnInteract: 1
   interactKey: 101
-  isRepeatable: 1
-  destroyAfterTrigger: 0
+  isRepeatable: 0
+  destroyAfterTrigger: 1
   requireTag: 1
   requiredTag: Player
   interactPrompt: {fileID: 1968772670}
@@ -45402,6 +45437,75 @@ Transform:
   - {fileID: 1514293146}
   m_Father: {fileID: 1576467080}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &894609731
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 894609734}
+  - component: {fileID: 894609733}
+  - component: {fileID: 894609732}
+  m_Layer: 0
+  m_Name: DeathZone1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &894609732
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894609731}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 802.4, y: 5, z: 610.2}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &894609733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894609731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deda6d0552403bc4e8ef360a700d5f7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teleportTarget: {fileID: 492120858}
+  damageOnContact: 1
+  safePosition: {x: 0, y: 0, z: 0}
+--- !u!4 &894609734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894609731}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 817.7, y: 103.74792, z: -684.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &896721920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50149,6 +50253,7 @@ MonoBehaviour:
   messages:
   - message: Parece que esta porta precisa de uma chave...
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
@@ -50161,6 +50266,7 @@ MonoBehaviour:
     choices: []
   - message: Parece que vamos ter de explorar um pouco mais...
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
@@ -50174,8 +50280,8 @@ MonoBehaviour:
   triggerOnEnter: 1
   triggerOnInteract: 0
   interactKey: 101
-  isRepeatable: 1
-  destroyAfterTrigger: 0
+  isRepeatable: 0
+  destroyAfterTrigger: 1
   requireTag: 1
   requiredTag: Player
   interactPrompt: {fileID: 0}
@@ -108334,6 +108440,7 @@ MonoBehaviour:
   messages:
   - message: Eia mano...
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1
@@ -108346,6 +108453,7 @@ MonoBehaviour:
     choices: []
   - message: "Esta cadeira \xE9 perfeita"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1
@@ -108387,6 +108495,7 @@ MonoBehaviour:
             m_CallState: 2
   - message: Espera ai...
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1
@@ -108399,6 +108508,7 @@ MonoBehaviour:
     choices: []
   - message: Acho que me sentei em cima de alguma coisa.
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1
@@ -108428,6 +108538,7 @@ MonoBehaviour:
             m_CallState: 2
   - message: "Uma chave? Pergunto-me para que servir\xE1..."
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1
@@ -164216,3 +164327,5 @@ SceneRoots:
   - {fileID: 2072928099}
   - {fileID: 1299609226}
   - {fileID: 307750818}
+  - {fileID: 894609734}
+  - {fileID: 492120858}
