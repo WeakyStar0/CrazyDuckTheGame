@@ -5005,7 +5005,7 @@ MonoBehaviour:
   messages:
   - message: Boa!!!
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -10880,7 +10880,7 @@ MonoBehaviour:
   messages:
   - message: "Oh n\xE3o! O Patut!"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -10894,7 +10894,7 @@ MonoBehaviour:
   - message: "Inimigo detetado. Amea\xE7a ao Pato Mestre. Objetivo: Aniquila\xE7\xE3o
       imediata"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: 51f6adde59542cb4caeb0ccc54cef04f, type: 3}
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
@@ -10907,7 +10907,7 @@ MonoBehaviour:
     choices: []
   - message: "Cuidado, este \xE9 um inimigo a s\xE9rio. Vais ter de o derrotar"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -10920,7 +10920,7 @@ MonoBehaviour:
     choices: []
   - message: Gloria ao Pato Mestre
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: 51f6adde59542cb4caeb0ccc54cef04f, type: 3}
     characterSprite: {fileID: 21300000, guid: 38c5b0bbe630413428b6e9070ba149e1, type: 3}
     characterName: PATUT
     showCharacter: 1
@@ -23924,7 +23924,7 @@ MonoBehaviour:
   messages:
   - message: "Alto! Deteto uma presen\xE7a sinistra depois deste corredor. Tem cuidado."
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -31310,7 +31310,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ea6c4a4065c82b14d805199f76eeb2d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: abed58973c204004192484ed357be119, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -67370,7 +67370,7 @@ MonoBehaviour:
   messages:
   - message: Patos! Eles foram enviados para te assassinar
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -67383,7 +67383,7 @@ MonoBehaviour:
     choices: []
   - message: Pressiona [mouse1] para atacar
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -100232,7 +100232,7 @@ MonoBehaviour:
           m_Calls: []
   - message: Finalmente consegui entrar em contacto contigo
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -100291,7 +100291,7 @@ MonoBehaviour:
           m_Calls: []
   - message: "N\xE3o h\xE1 tempo para explicar, tens de sair daqui"
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -104053,7 +104053,7 @@ MonoBehaviour:
   messages:
   - message: "N\xE3o caias. Pressiona [Espa\xE7o] para saltar"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: ???
     showCharacter: 1
@@ -105233,16 +105233,148 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messages:
-  - message: chupa
+  - message: "Est\xE1s bem? Parece que viste alguma coisa"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
-    characterSprite: {fileID: 0}
-    characterName: 
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
     showCharacter: 1
     freezePlayer: 1
-    autoAdvanceDelay: 0
-    typingSpeed: 0
-    fontSize: 0
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Acho que te devo explica\xE7\xF5es"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Est\xE1s dentro da mente do Dr. Silverstein"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Aqui quem reina \xE9 o Pato Mestre, o lado pato do Dr. Silverstein"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Ou podes cham\xE1-lo de... Crazy Duck"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Eu fa\xE7o parte do ex\xE9rcito malvado dele"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: Sou a Sacerdotisa do Pato Mestre, mas podes chamar-me Natalia
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: ???
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Apesar de trabalhar para o Crazy Duck, eu decidi ajudar-te pois n\xE3o
+      concordo com os atos dele"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: Se queres sair daqui, tens de o derrotar
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "A melhor maneira \xE9 encontrar os artefactos com as mem\xF3rias do
+      Dr. Silverstein, espalhos pela mente dele"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: "Vamos l\xE1?"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 9999
+    typingSpeed: 0.025
+    fontSize: 50
     skipKey: 0
     hasChoices: 0
     choices: []
