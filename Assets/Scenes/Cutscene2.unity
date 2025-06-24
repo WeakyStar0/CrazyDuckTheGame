@@ -165,8 +165,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: e458ad52df2d2a4448326babec17a8f5, type: 3}
+  m_Resource: {fileID: 8300000, guid: e458ad52df2d2a4448326babec17a8f5, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -354,8 +354,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 61af0fd2454480c42ac199de0820a286, type: 3}
-  m_Resource: {fileID: 8300000, guid: 61af0fd2454480c42ac199de0820a286, type: 3}
+  m_audioClip: {fileID: 8300000, guid: e458ad52df2d2a4448326babec17a8f5, type: 3}
+  m_Resource: {fileID: 8300000, guid: e458ad52df2d2a4448326babec17a8f5, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1
@@ -575,27 +575,66 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b8fa4db9d613a6549ba6121f8a909576, type: 3}
   - {fileID: 21300000, guid: a8d4b74eef171e743bdf9a815ec0310d, type: 3}
   - {fileID: 21300000, guid: b461b86cac7e6b348b34ddf2e69ddd52, type: 3}
-  - {fileID: 21300000, guid: 840d49a6da5456948bc85367a6d43749, type: 3}
   - {fileID: 21300000, guid: 2d647dbf1c13f2b4fa7815e2239a49d0, type: 3}
   - {fileID: 21300000, guid: caf524b1dfc576f46b9a1ae1f40648fb, type: 3}
-  - {fileID: 21300000, guid: a3f42377152123d4fa0875afb968e6d7, type: 3}
-  - {fileID: 21300000, guid: 3b1b52be1d0d79d49892f6b18d77788d, type: 3}
+  - {fileID: 21300000, guid: 4324e8e39d798bb42a5fe6ac24d77a3b, type: 3}
+  - {fileID: 21300000, guid: c9fd13da41afd2749918ad0ab208f077, type: 3}
   - {fileID: 21300000, guid: 042438ffa7a410d45a2aeffdea03de23, type: 3}
   - {fileID: 21300000, guid: bc3b48765cce73a42a0107d264864e6f, type: 3}
   - {fileID: 21300000, guid: 127f1e8d0c0e6e5439954a4eed5a98a7, type: 3}
   - {fileID: 21300000, guid: f640923937f4dcf4db72643ced6abd9b, type: 3}
   - {fileID: 21300000, guid: c97f947cadfe9bc419d7761b651f78b4, type: 3}
-  - {fileID: 21300000, guid: da2014b32264a194e80bfba745091319, type: 3}
+  - {fileID: 21300000, guid: 9e5e8a3e6e6f99e439a01774172e744d, type: 3}
   texts:
   - 
   - 
   - 
   - 
-  durations: []
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  durations:
+  - 4
+  - 1
+  - 1
+  - 3
+  - 3
+  - 2
+  - 4
+  - 10
+  - 1
+  - 3
+  - 5
+  - 15
+  - 1
+  - 2
+  - 1
+  - 5
+  - 1
+  - 1
+  - 2
+  - 2
+  - 2
+  - 6
   typingSpeed: 0.05
   fadeDuration: 1
   nextSceneName: Hub 1
-  typingAudioSource: {fileID: 0}
+  typingAudioSource: {fileID: 421368666}
 --- !u!4 &726821321
 Transform:
   m_ObjectHideFlags: 0
