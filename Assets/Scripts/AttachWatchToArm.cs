@@ -5,7 +5,7 @@ public class AttachWatchToArm : MonoBehaviour
     public GameObject watch; // Arrasta o modelo do relógio para aqui no Inspector
     private Animator animator;
 
-    void Start()
+    public void Start()
     {
         animator = GetComponent<Animator>();
         if (animator != null && watch != null)
