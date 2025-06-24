@@ -65762,7 +65762,7 @@ MonoBehaviour:
   bossUIPanel: {fileID: 1313936367}
   bossHealthSlider: {fileID: 445068161}
   timerText: {fileID: 1902117779}
-  totalTimeLimit: 3
+  totalTimeLimit: 180
   playerController: {fileID: 232741579}
   musicAudioSource: {fileID: 377205820}
   bossMusicClip: {fileID: 8300000, guid: 205cbf88738b62d469111b311fc62585, type: 3}
