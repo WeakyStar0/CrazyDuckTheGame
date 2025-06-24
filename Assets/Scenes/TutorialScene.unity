@@ -7108,7 +7108,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 174042956}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 1, g: 0.7789473, b: 0, a: 1}
@@ -7692,7 +7692,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b4b896154d2e1534a9f097e0e7a2faa2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3
+      value: -25.03
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b4b896154d2e1534a9f097e0e7a2faa2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -29114,7 +29114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGroundSlashEnabled: 0
   isAirSlashEnabled: 0
-  slashRange: 20
+  slashRange: 25
   slashAngle: 90
   slashDamage: 1
   knockbackForce: 5
@@ -29250,7 +29250,7 @@ MonoBehaviour:
   walkSpeed: 50
   crouchSpeed: 35
   jumpHeight: 30
-  crouchJumpHeight: 60
+  crouchJumpHeight: 50
   gravity: -250
   maxJumps: 2
   groundCheckDistance: 0.2
@@ -99479,7 +99479,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 890.1, y: 156}
+  m_AnchoredPosition: {x: 890.1, y: 115}
   m_SizeDelta: {x: 640.0112, y: 52.8807}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1790580587
@@ -111522,7 +111522,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 170
+  MaxDistance: 76.55
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -111639,7 +111639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717c6149c371bf5489034ebc37f1997c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spinSpeed: 420
+  spinSpeed: 0
 --- !u!114 &2117539131
 MonoBehaviour:
   m_ObjectHideFlags: 0
