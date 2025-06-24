@@ -14048,7 +14048,7 @@ MonoBehaviour:
   guardarAntesDeMudarCena: 1
   interactionKey: 101
   requerColetaveis: 1
-  coletaveisNecessarios: 13
+  coletaveisNecessarios: 12
   mensagemPermitido: Pressionar [E] para visitar o CrazyDuck
   mensagemBloqueado: Necessita de {0} artefactos
   promptText3D: {fileID: 54623523}
@@ -19776,7 +19776,7 @@ MonoBehaviour:
   guardarAntesDeMudarCena: 1
   interactionKey: 101
   requerColetaveis: 1
-  coletaveisNecessarios: 8
+  coletaveisNecessarios: 7
   mensagemPermitido: Pressionar [E] para viajar para a escola
   mensagemBloqueado: Necessita de {0} artefactos
   promptText3D: {fileID: 1902585437}
