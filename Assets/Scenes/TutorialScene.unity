@@ -61480,7 +61480,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &941326298
 RectTransform:
   m_ObjectHideFlags: 0
@@ -83827,7 +83827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToLoad: Hub 1
-  guardarAntesDeMudarCena: 1
+  guardarAntesDeMudarCena: 0
   interactionKey: 101
   requerColetaveis: 0
   coletaveisNecessarios: 10
