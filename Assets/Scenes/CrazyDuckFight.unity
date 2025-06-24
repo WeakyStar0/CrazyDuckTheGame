@@ -779,9 +779,9 @@ MonoBehaviour:
   messages:
   - message: "R\xE1pido, apanha todas as moedas"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 0
     autoAdvanceDelay: 3
@@ -6342,7 +6342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+  duckSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -10421,7 +10421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+  duckSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -17805,9 +17805,9 @@ MonoBehaviour:
   messages:
   - message: Finalmente chegamos ao covil do Crazy Duck
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 1000000
@@ -17817,10 +17817,10 @@ MonoBehaviour:
     hasChoices: 0
     choices: []
   - message: "Precisas disto se queres derrotar este vil\xE3o maluco"
-    soundEffect: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
-    typingSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 10000
@@ -17848,9 +17848,9 @@ MonoBehaviour:
             m_CallState: 2
   - message: Clica [mouse2] enquanto no ar para usar a investida
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 8300000, guid: 343f4e0b9dea7d647be6c158dca9ba21, type: 3}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: 0d716105377109645abc354a3365a309, type: 3}
-    characterName: 
+    characterName: Natalia
     showCharacter: 0
     freezePlayer: 1
     autoAdvanceDelay: 10000
@@ -21028,7 +21028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+  duckSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -23925,7 +23925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+  duckSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -31272,9 +31272,9 @@ MonoBehaviour:
   messages:
   - message: '[DIALOGO FINAL AQUI]'
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 1
     autoAdvanceDelay: 10000000
@@ -31284,7 +31284,7 @@ MonoBehaviour:
     hasChoices: 1
     choices: []
   - message: '[DIALOGO FINAL AQUI]'
-    soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+    soundEffect: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
@@ -34826,9 +34826,9 @@ MonoBehaviour:
   messages:
   - message: "Finalmente, este \xE9 o ultimo andar antes do Crazy Duck"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 0
     autoAdvanceDelay: 3.5
@@ -57732,11 +57732,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messages:
-  - message: "Mata todos os lacaios, r\xE1pido, n\xE3o podemos falhar agora"
+  - message: "N\xC3O \xC9 POSS\xCDVEL. EU SOU A RA\xC7A SUPERIOR"
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Crazy Duck
     showCharacter: 1
     freezePlayer: 0
     autoAdvanceDelay: 4.5
@@ -60847,9 +60847,9 @@ MonoBehaviour:
   messages:
   - message: A sua tirania termina aqui
     soundEffect: {fileID: 0}
-    typingSound: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
-    characterName: Sacerdotisa
+    characterName: Natalia
     showCharacter: 1
     freezePlayer: 0
     autoAdvanceDelay: 3
@@ -62861,7 +62861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+  duckSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -76475,6 +76475,7 @@ Transform:
   - {fileID: 683875565}
   - {fileID: 1269516269}
   - {fileID: 605392002}
+  - {fileID: 1754821491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1639998545
@@ -81096,6 +81097,96 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1114774598}
   m_SourcePrefab: {fileID: 100100000, guid: 8386fa60b76534bc0856f1d023537484, type: 3}
+--- !u!1 &1754821490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1754821491}
+  - component: {fileID: 1754821493}
+  - component: {fileID: 1754821492}
+  m_Layer: 0
+  m_Name: Dialogue (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1754821491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754821490}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.7046141, z: -0, w: -0.7095908}
+  m_LocalPosition: {x: -817, y: 372.7, z: -265.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1638802469}
+  m_LocalEulerAnglesHint: {x: 0, y: -116.282, z: 0}
+--- !u!114 &1754821492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754821490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090f0faf2e217c149b0ea83a0f8e6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messages:
+  - message: "Nunca me ir\xE1s derrotar. Eu sou superior"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: ecef65ff128a91c4dbfb83622e4a859c, type: 3}
+    characterSprite: {fileID: 21300000, guid: 3bae7504669c7e34580438ffdd9e7ec4, type: 3}
+    characterName: Crazy Duck
+    showCharacter: 1
+    freezePlayer: 0
+    autoAdvanceDelay: 3
+    typingSpeed: 0.0001
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  triggerOnEnter: 1
+  triggerOnInteract: 0
+  interactKey: 101
+  isRepeatable: 0
+  destroyAfterTrigger: 0
+  requireTag: 1
+  requiredTag: Player
+  interactPrompt: {fileID: 0}
+  interactMessage: Clique 'E' para interagir
+  promptOffset: {x: -27.8, y: 2.79, z: -44.9}
+--- !u!65 &1754821493
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754821490}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 38.22175, y: 159.6263, z: 249.33041}
+  m_Center: {x: -22.493254, y: 47.443428, z: -91.73179}
 --- !u!1001 &1754828909
 PrefabInstance:
   m_ObjectHideFlags: 0
