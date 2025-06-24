@@ -19,6 +19,12 @@ public class PlayerHealth : MonoBehaviour
     public HealthIconSettings healthIconSettings;
     public Transform healthContainer;
 
+    // ##### ALTERAÇÃO 1: Adicionar o Ponto de Spawn Inicial aqui #####
+    [Header("Respawn Settings")]
+    [Tooltip("O ponto para onde o jogador volta se morrer ANTES de ativar qualquer checkpoint.")]
+    public Transform pontoDeSpawnInicial;
+    // ##### FIM DA ALTERAÇÃO 1 #####
+
     [Header("Damage Effects")]
     public float flashDuration = 0.1f;
     public Color damageColor = Color.red;
@@ -30,11 +36,11 @@ public class PlayerHealth : MonoBehaviour
     public float getUpAnimationLength = 1f;
 
     [Header("Post Processing Effects")]
-    public PostProcessingController postProcessingController; // assign in inspector or find at runtime
+    public PostProcessingController postProcessingController;
 
-[Header("Sound Effects")]
-public AudioClip heartbeatSound;
-public float heartbeatVolume = 0.7f;
+    [Header("Sound Effects")]
+    public AudioClip heartbeatSound;
+    public float heartbeatVolume = 0.7f;
 
     private Image[] healthIcons;
     private int currentHealth;
@@ -55,22 +61,26 @@ public float heartbeatVolume = 0.7f;
         knockback = GetComponent<PlayerKnockback>();
         animator = GetComponentInChildren<Animator>();
         playerRenderers = GetComponentsInChildren<Renderer>();
-
-        // Initialize audio source
-if (audioSource == null)
-{
-    audioSource = GetComponent<AudioSource>();
-    if (audioSource == null)
-    {
-        audioSource = gameObject.AddComponent<AudioSource>();
-    }
-}
-
+        
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
 
         if (healthContainer == null)
         {
             Debug.LogError("Health Container não foi atribuído no inspector!");
             return;
+        }
+
+        // Validação para o ponto de spawn inicial
+        if (pontoDeSpawnInicial == null)
+        {
+            Debug.LogError("Atenção! O 'Ponto De Spawn Inicial' não foi definido no PlayerHealth!", this);
         }
 
         CreateHealthUI();
@@ -124,6 +134,7 @@ if (audioSource == null)
         }
     }
 
+    // ##### ALTERAÇÃO 2: Corrigir a lógica de respawn #####
     private void RespawnPlayer()
     {
         IsDead = false;
@@ -131,25 +142,36 @@ if (audioSource == null)
         UpdateHealthUI();
         isInvincible = false;
 
+        // Reativa os componentes visuais e de colisão do jogador
         foreach (Renderer r in playerRenderers) r.enabled = true;
         GetComponent<Collider>().enabled = true;
 
         ResetToIdle();
 
-        DeathZone deathZone = FindFirstObjectByType<DeathZone>();
-        if (deathZone != null)
+        // Determina a posição correta para o respawn
+        Vector3 posicaoRespawn;
+        if (Checkpoint.TentaObterPosicao(out posicaoRespawn))
         {
-            transform.position = deathZone.safePosition;
-            Debug.Log("RESPAWN na posição: " + deathZone.safePosition);
+            // Se um checkpoint foi ativado, usa a sua posição
+            transform.position = posicaoRespawn;
+            Debug.Log("RESPAWN no checkpoint ativo: " + posicaoRespawn);
+        }
+        else if (pontoDeSpawnInicial != null)
+        {
+            // Se não, usa o ponto de spawn inicial definido no Inspector
+            transform.position = pontoDeSpawnInicial.position;
+            Debug.LogWarning("Nenhum checkpoint ativo. RESPAWN no ponto inicial: " + pontoDeSpawnInicial.position);
         }
         else
         {
-            Debug.LogError("DeathZone não encontrada!");
+            // Como último recurso, se nada estiver configurado, vai para a origem (0,0,0)
             transform.position = Vector3.zero;
+            Debug.LogError("Nenhum checkpoint ou ponto de spawn inicial definido! Respawn na origem (0,0,0).");
         }
 
         ResetAllEnemies();
     }
+    // ##### FIM DA ALTERAÇÃO 2 #####
 
     public void TakeDamageAndTeleport(int damageAmount, Vector3 teleportPosition)
     {
@@ -229,7 +251,6 @@ if (audioSource == null)
         ResetToIdle();
     }
 
-    // Called by Animation Event
     public void OnGetUpComplete()
     {
         ResetToIdle();
@@ -351,7 +372,6 @@ if (audioSource == null)
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) rb.linearVelocity = Vector3.zero;
 
-        // Stop heartbeat sound when dying
         if (heartbeatCoroutine != null)
         {
             StopCoroutine(heartbeatCoroutine);
@@ -377,13 +397,12 @@ if (audioSource == null)
 
         if (currentHealth == 1)
         {
-            postProcessingController.SetVignetteIntensity(0.1f); // stronger vignette
+            postProcessingController.SetVignetteIntensity(0.1f);
 
             if (chromaticPulseCoroutine == null)
             {
                 chromaticPulseCoroutine = StartCoroutine(ChromaticAberrationPulse());
                 
-                // Start heartbeat sound
                 if (heartbeatSound != null && heartbeatCoroutine == null)
                 {
                     heartbeatCoroutine = StartCoroutine(PlayHeartbeat());
@@ -400,7 +419,6 @@ if (audioSource == null)
                 chromaticPulseCoroutine = null;
                 postProcessingController.SetChromaticAberrationIntensity(0f);
                 
-                // Stop heartbeat sound
                 if (heartbeatCoroutine != null)
                 {
                     StopCoroutine(heartbeatCoroutine);
@@ -414,55 +432,51 @@ if (audioSource == null)
         }
     }
 
-private IEnumerator ChromaticAberrationPulse()
-{
-    float minIntensity = 0.2f;
-    float maxIntensity = 2f;
-    float speed = 6f; // Increased speed from 3f to 6f for faster pulses
-    bool soundPlayed = false;
-
-    while (currentHealth == 1 && postProcessingController != null)
+    private IEnumerator ChromaticAberrationPulse()
     {
-        float t = (Mathf.Sin(Time.time * speed) + 1f) / 2f;
-        float intensity = Mathf.Lerp(minIntensity, maxIntensity, t);
-        postProcessingController.SetChromaticAberrationIntensity(intensity);
+        float minIntensity = 0.2f;
+        float maxIntensity = 2f;
+        float speed = 6f; 
+        bool soundPlayed = false;
 
-        // Play sound slightly before visual peak
-        if (t >= 0.85f)
+        while (currentHealth == 1 && postProcessingController != null)
         {
-            if (!soundPlayed && heartbeatSound != null && audioSource != null)
+            float t = (Mathf.Sin(Time.time * speed) + 1f) / 2f;
+            float intensity = Mathf.Lerp(minIntensity, maxIntensity, t);
+            postProcessingController.SetChromaticAberrationIntensity(intensity);
+            
+            if (t >= 0.85f)
             {
-                audioSource.PlayOneShot(heartbeatSound, heartbeatVolume);
-                soundPlayed = true;
+                if (!soundPlayed && heartbeatSound != null && audioSource != null)
+                {
+                    audioSource.PlayOneShot(heartbeatSound, heartbeatVolume);
+                    soundPlayed = true;
+                }
             }
-        }
-        else
-        {
-            soundPlayed = false;
+            else
+            {
+                soundPlayed = false;
+            }
+
+            yield return null;
         }
 
-        yield return null;
+        postProcessingController.SetChromaticAberrationIntensity(0f);
+        chromaticPulseCoroutine = null;
     }
 
-    postProcessingController.SetChromaticAberrationIntensity(0f);
-    chromaticPulseCoroutine = null;
-}
 
-
-private IEnumerator PlayHeartbeat()
-{
-    if (heartbeatSound == null || audioSource == null) yield break;
-
-    if (currentHealth == 1)
+    private IEnumerator PlayHeartbeat()
     {
-        audioSource.PlayOneShot(heartbeatSound, heartbeatVolume);
+        if (heartbeatSound == null || audioSource == null) yield break;
+
+        if (currentHealth == 1)
+        {
+            audioSource.PlayOneShot(heartbeatSound, heartbeatVolume);
+        }
+        
+        yield return null;
+
+        heartbeatCoroutine = null;
     }
-
-    // Aguarda um instante pequeno só para garantir que a reprodução termina antes de sair
-    yield return null;
-
-    heartbeatCoroutine = null;
-}
-
-
 }
