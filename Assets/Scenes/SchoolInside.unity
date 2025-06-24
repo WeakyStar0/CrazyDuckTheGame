@@ -71542,6 +71542,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1275876761}
   m_LocalEulerAnglesHint: {x: 0, y: 180.002, z: 0}
+--- !u!1 &1387725518
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1387725519}
+  m_Layer: 0
+  m_Name: Dialogos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1387725519
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387725518}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1122.3, y: 38, z: 218.59}
+  m_LocalScale: {x: 1, y: 1, z: 2.072}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1660901011}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1389360078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -87410,6 +87442,123 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4895497590064792, guid: 288b229db858c114299d1bf70ffc95cd, type: 3}
   m_PrefabInstance: {fileID: 1660076060}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1660901010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1660901011}
+  - component: {fileID: 1660901013}
+  - component: {fileID: 1660901012}
+  m_Layer: 0
+  m_Name: dialoguetrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1660901011
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660901010}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 164.8, y: 151.6542, z: -579.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1387725519}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1660901012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660901010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090f0faf2e217c149b0ea83a0f8e6a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messages:
+  - message: "Esta \xE9 a escola em que o Crazy Duck estudou"
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 1
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: Apanha os artefactos para desbloquear mais portais no Hub
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 3
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 0
+    hasChoices: 0
+    choices: []
+  - message: Se quiseres voltar ao Hub, procura alguma passagem que te o permita
+      fazer
+    soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: d5479175abce64a4db26eed1bf4500c6, type: 3}
+    characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
+    characterName: Natalia
+    showCharacter: 1
+    freezePlayer: 1
+    autoAdvanceDelay: 5
+    typingSpeed: 0.025
+    fontSize: 50
+    skipKey: 101
+    hasChoices: 0
+    choices: []
+  triggerOnEnter: 1
+  triggerOnInteract: 0
+  interactKey: 101
+  isRepeatable: 0
+  destroyAfterTrigger: 1
+  requireTag: 1
+  requiredTag: Player
+  interactPrompt: {fileID: 0}
+  interactMessage: Pressiona '{key}' para conversar
+  promptOffset: {x: 0, y: 1.5, z: 0}
+--- !u!65 &1660901013
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660901010}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 58.133774, y: 50.77975, z: 46.301582}
+  m_Center: {x: -28.566887, y: -6.979845, z: -17.7756}
 --- !u!1001 &1662693043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -164329,3 +164478,4 @@ SceneRoots:
   - {fileID: 307750818}
   - {fileID: 894609734}
   - {fileID: 492120858}
+  - {fileID: 1387725519}
