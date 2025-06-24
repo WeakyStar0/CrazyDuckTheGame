@@ -20,6 +20,8 @@ TagManager:
   - DialogueCanvas
   - Hazard
   - Paturso
+  - CollectibleCounterText
+  - CollectibleCounter
   layers:
   - Default
   - TransparentFX
