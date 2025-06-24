@@ -779,6 +779,7 @@ MonoBehaviour:
   messages:
   - message: "R\xE1pido, apanha todas as moedas"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -6341,7 +6342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -10420,7 +10421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -17804,6 +17805,7 @@ MonoBehaviour:
   messages:
   - message: Finalmente chegamos ao covil do Crazy Duck
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -17816,6 +17818,7 @@ MonoBehaviour:
     choices: []
   - message: "Precisas disto se queres derrotar este vil\xE3o maluco"
     soundEffect: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
+    typingSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -17845,6 +17848,7 @@ MonoBehaviour:
             m_CallState: 2
   - message: Clica [mouse2] enquanto no ar para usar a investida
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 8300000, guid: 343f4e0b9dea7d647be6c158dca9ba21, type: 3}
     characterSprite: {fileID: 21300000, guid: 0d716105377109645abc354a3365a309, type: 3}
     characterName: 
     showCharacter: 0
@@ -21024,7 +21028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -23921,7 +23925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -31268,6 +31272,7 @@ MonoBehaviour:
   messages:
   - message: '[DIALOGO FINAL AQUI]'
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -31280,6 +31285,7 @@ MonoBehaviour:
     choices: []
   - message: '[DIALOGO FINAL AQUI]'
     soundEffect: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -34820,6 +34826,7 @@ MonoBehaviour:
   messages:
   - message: "Finalmente, este \xE9 o ultimo andar antes do Crazy Duck"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -41043,7 +41050,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3d5077dd6073bc5478e8d62ccb1e6ba3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2097.9
+      value: -2107.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3d5077dd6073bc5478e8d62ccb1e6ba3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -52839,6 +52846,7 @@ MonoBehaviour:
   messages:
   - message: "Temos de clicar em todos os bot\xF5es"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -52851,6 +52859,7 @@ MonoBehaviour:
     choices: []
   - message: "N\xE3o podemos desistir agora!!!"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -57725,6 +57734,7 @@ MonoBehaviour:
   messages:
   - message: "Mata todos os lacaios, r\xE1pido, n\xE3o podemos falhar agora"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -60837,6 +60847,7 @@ MonoBehaviour:
   messages:
   - message: A sua tirania termina aqui
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: cc1daf85e91bf4f4f925a61b4e159510, type: 3}
     characterName: Sacerdotisa
     showCharacter: 1
@@ -62850,7 +62861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c803ee2e577d54640bac357eb3c60ab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duckSound: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
+  duckSound: {fileID: 8300000, guid: 259a266dc15c3b742bbdd5cf5fd36b69, type: 3}
   volume: 0.027
   minPitch: 0.95
   maxPitch: 1.05
@@ -65762,14 +65773,14 @@ MonoBehaviour:
   bossUIPanel: {fileID: 1313936367}
   bossHealthSlider: {fileID: 445068161}
   timerText: {fileID: 1902117779}
-  totalTimeLimit: 180
+  totalTimeLimit: 3
   playerController: {fileID: 232741579}
   musicAudioSource: {fileID: 377205820}
   bossMusicClip: {fileID: 8300000, guid: 205cbf88738b62d469111b311fc62585, type: 3}
   victoryMusicClip: {fileID: 8300000, guid: 9852a194d59700e47938d73c009cc70f, type: 3}
   objectToDestroyOnVictory: {fileID: 1263439878}
   failTransitionImage: {fileID: 1047637818}
-  bossFailLaughClip: {fileID: 8300000, guid: a75641dd19c73ea42b0d75075e0ff0dd, type: 3}
+  bossFailLaughClip: {fileID: 8300000, guid: c914e2c618eabb042be5f2808c821ce7, type: 3}
   effectsAudioSource: {fileID: 1219530256}
   zoomBeginScale: 3
   zoomMiddleScale: 0.8
@@ -88489,6 +88500,7 @@ MonoBehaviour:
   messages:
   - message: "N \xC3 O P A S S A S"
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 67656370, guid: 032a548fa5effc24b9a78cca3a8a33b1, type: 3}
     characterName: Patoel
     showCharacter: 1

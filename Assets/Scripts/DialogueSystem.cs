@@ -23,6 +23,12 @@ public class DialogueMessage
     [TextArea(3, 10)]
     public string message;
     public AudioClip soundEffect;
+
+    // ##### ALTERAÇÃO 1: Adicionar campo para o som de typing específico da mensagem #####
+    [Tooltip("Som de 'typing' específico para esta mensagem. Se deixado vazio, usará o som padrão do Dialogue System.")]
+    public AudioClip typingSound; // Este é o novo campo!
+    // ##### FIM DA ALTERAÇÃO 1 #####
+
     public Sprite characterSprite;
     public string characterName;
     public bool showCharacter = true;
@@ -69,7 +75,7 @@ public class DialogueSystem : MonoBehaviour
 
     [Header("Settings")]
     public float defaultTypingSpeed = 0.05f;
-    public AudioClip typingSound;
+    public AudioClip typingSound; // Este agora é o som de fallback/padrão
     public AudioClip advanceSound;
     [Range(0, 1)] public float soundVolume = 0.5f;
     public bool freezePlayerDuringDialogue = true;
@@ -88,8 +94,7 @@ public class DialogueSystem : MonoBehaviour
     private Coroutine skipButtonBobCoroutine;
     private Vector2 skipButtonInitialPosition;
     private DialogueTrigger activeTrigger;
-
-    // Novas variáveis para as opções
+    
     private bool isWaitingForChoice = false;
     private int selectedChoiceIndex = 0;
     private List<TMP_Text> currentChoiceUIs = new List<TMP_Text>();
@@ -231,11 +236,9 @@ public class DialogueSystem : MonoBehaviour
             }
         }
     }
-
-    // ##### ALTERAÇÃO AQUI #####
+    
     private void HandleChoiceInput()
     {
-        // A tecla A ou Seta para a Esquerda/Cima diminui o índice
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             selectedChoiceIndex--;
@@ -245,7 +248,6 @@ public class DialogueSystem : MonoBehaviour
             }
             UpdateChoiceHighlight();
         }
-        // A tecla D ou Seta para a Direita/Baixo aumenta o índice
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             selectedChoiceIndex++;
@@ -255,13 +257,11 @@ public class DialogueSystem : MonoBehaviour
             }
             UpdateChoiceHighlight();
         }
-        // Confirma a seleção com Enter ou a tecla de pular global (Espaço)
         else if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(globalSkipKey))
         {
             SelectChoice();
         }
     }
-    // ##### FIM DA ALTERAÇÃO #####
 
     private void AdvanceDialogue()
     {
@@ -408,33 +408,44 @@ public class DialogueSystem : MonoBehaviour
         typingCoroutine = StartCoroutine(TypeText(text, speed));
     }
 
+    // ##### ALTERAÇÃO 2: Modificar a corrotina TypeText para usar o som correto e ignorar espaços #####
     private IEnumerator TypeText(string text, float speed)
     {
         isTyping = true;
         dialogueText.text = "";
 
+        // Pega a mensagem atual para aceder ao som de typing específico
+        DialogueMessage currentMessage = currentDialogue[currentMessageIndex];
+        
+        // Decide qual som usar: o da mensagem tem prioridade, se não houver, usa o padrão.
+        AudioClip soundToPlay = currentMessage.typingSound != null ? currentMessage.typingSound : this.typingSound;
+
         foreach (char letter in text.ToCharArray())
         {
             dialogueText.text += letter;
-            if (typingSound != null)
+
+            // Toca o som apenas se houver um som definido E se o caracter não for um espaço em branco
+            if (soundToPlay != null && !char.IsWhiteSpace(letter))
             {
-                audioSource.PlayOneShot(typingSound, soundVolume * 0.5f);
+                audioSource.PlayOneShot(soundToPlay, soundVolume * 0.5f);
             }
+            
             yield return new WaitForSeconds(speed);
         }
 
         isTyping = false;
 
-        DialogueMessage message = currentDialogue[currentMessageIndex];
-        if (message.hasChoices && message.choices.Length > 0)
+        // O resto da lógica permanece igual
+        if (currentMessage.hasChoices && currentMessage.choices.Length > 0)
         {
-            DisplayChoices(message);
+            DisplayChoices(currentMessage);
         }
         else
         {
             StartSkipButtonAnimation();
         }
     }
+    // ##### FIM DA ALTERAÇÃO 2 #####
 
     private void DisplayChoices(DialogueMessage message)
     {

@@ -15030,6 +15030,7 @@ MonoBehaviour:
   messages:
   - message: 'Aqui estamos seguros. '
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
@@ -15042,6 +15043,7 @@ MonoBehaviour:
     choices: []
   - message: Esta sala deve ser importante.
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
@@ -15055,6 +15057,7 @@ MonoBehaviour:
   - message: "Aquele computador ali \xE0 frente, deve ser o computador principal
       deste laborat\xF3rio. "
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
@@ -15068,6 +15071,7 @@ MonoBehaviour:
   - message: "J\xE1 sei, conecta-me ao computador. Vou tentar extrair qualquer informa\xE7\xE3o
       que consiga. "
     soundEffect: {fileID: 0}
+    typingSound: {fileID: 0}
     characterSprite: {fileID: 21300000, guid: e3d46447b20031b46a493793f2894113, type: 3}
     characterName: ???
     showCharacter: 1
@@ -21687,6 +21691,10 @@ PrefabInstance:
     - target: {fileID: 4014216494743458607, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_Name
       value: DialogueUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4014216494743458607, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4014216494743458607, guid: 45725e4a2996ce2499dc34e54a4ff29c, type: 3}
       propertyPath: m_TagString
