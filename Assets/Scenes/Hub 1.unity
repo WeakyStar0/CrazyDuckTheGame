@@ -24794,6 +24794,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1454785323}
     - target: {fileID: 1777420404701406229, guid: 2940415db2387664eacfd8dc78c3f7c8, type: 3}
+      propertyPath: globalSkipKey
+      value: 101
+      objectReference: {fileID: 0}
+    - target: {fileID: 1777420404701406229, guid: 2940415db2387664eacfd8dc78c3f7c8, type: 3}
       propertyPath: characterImage
       value: 
       objectReference: {fileID: 1454785322}
