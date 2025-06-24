@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/CreditosBuedaFixe.unity
+    guid: 9f77f8369f8c2f64e9c99a84052ab04b
+  - enabled: 1
     path: Assets/Scenes/TutorialScene.unity
     guid: 50e40a778c594d949988cb70fdf12a43
   - enabled: 1
