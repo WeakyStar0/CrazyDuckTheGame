@@ -21060,6 +21060,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 502293743}
   m_Mesh: {fileID: 587893334102232772, guid: c34892038ec41ca4cbfe1d7ca3642a8d, type: 3}
+--- !u!4 &503191937 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5058536241101264472, guid: 996a1ad1331eb404c99f6fd3affe072b, type: 3}
+  m_PrefabInstance: {fileID: 1222458459}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &509786264
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26838,7 +26843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024ac85a7b4d7264abf76f7efa143738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pontoDeSpawnInicial: {fileID: 0}
+  pontoDeSpawnInicial: {fileID: 503191937}
 --- !u!65 &652674087
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -85524,6 +85529,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4113160619857626, guid: 52885593799113a428a7ed330ad57782, type: 3}
   m_PrefabInstance: {fileID: 1472738815}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1477267269 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5058536241101264472, guid: 996a1ad1331eb404c99f6fd3affe072b, type: 3}
+  m_PrefabInstance: {fileID: 688830615}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1477713275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86032,7 +86042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicaDeFundo: {fileID: 8300000, guid: 6b8c94a530921f548b336025df8a249e, type: 3}
-  volumeDaMusica: 0.5
+  volumeDaMusica: 0.109
 --- !u!82 &1490701381
 AudioSource:
   m_ObjectHideFlags: 0
@@ -109949,7 +109959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024ac85a7b4d7264abf76f7efa143738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pontoDeSpawnInicial: {fileID: 0}
+  pontoDeSpawnInicial: {fileID: 1477267269}
 --- !u!65 &2062670448
 BoxCollider:
   m_ObjectHideFlags: 0
