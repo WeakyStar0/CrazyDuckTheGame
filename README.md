@@ -108,9 +108,10 @@ Criar uma experiência divertida e envolvente que combine exploração, combate 
 - [x] História e narrativa
 - [x] Mecânicas principais
 - [x] Níveis definidos
-- [ ] Modelação completa
-- [ ] Animações e efeitos
-- [ ] Testes internos e beta testing
+- [x] Modelação completa
+- [x] Animações e efeitos
+- [x] Testes internos e beta testing
+- [ ] Final release
 
 ---
 
