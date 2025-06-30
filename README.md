@@ -127,4 +127,4 @@ Criar uma experiência divertida e envolvente que combine exploração, combate 
 
 1. Clona este repositório:
    ```bash
-   git clone https://github.com/teu-utilizador/the-delusion-of-crazy-duck.git
+   git clone https://github.com/WeakyStar0/the-delusion-of-crazy-duck.git
